@@ -4,7 +4,7 @@ Dự án nghiên cứu việc sử dụng **Label-Aware Retrieval** để chọn
 
 **Câu hỏi nghiên cứu:** Việc kết hợp thông tin nhãn khi chọn demonstrations có cải thiện chất lượng phân loại so với **Standard Semantic Retrieval** chỉ dựa trên **embedding similarity** hay không?
 
-Đây là giả thuyết cần kiểm chứng bằng thực nghiệm. Repository hiện lưu tài liệu nghiên cứu, kế hoạch triển khai và các notebook **Exploratory Data Analysis (EDA)**; chưa có kết quả benchmark cho phương pháp đề xuất.
+Đây là giả thuyết cần kiểm chứng bằng thực nghiệm. Repository hiện lưu mô tả đề tài, kế hoạch triển khai và các notebook **Exploratory Data Analysis (EDA)**; chưa có kết quả benchmark cho phương pháp đề xuất.
 
 ## Mục tiêu và phạm vi
 
@@ -51,21 +51,21 @@ Nhãn của demonstrations có sẵn trong retrieval pool. Nhãn của request c
 
 | Thành phần | Hiện trạng |
 | --- | --- |
-| Đề cương và thiết kế nghiên cứu | Đã có tài liệu |
-| Literature review và systematic search log | Đã có bản khảo sát sơ bộ |
-| Dataset EDA | Đã có notebook và báo cáo sơ bộ cho dữ liệu CAPEC |
+| Mô tả và thiết kế nghiên cứu | Đã có mô tả đề tài và kế hoạch 4 tuần |
+| Literature review | Có danh mục papers; cần xác minh và tổng hợp khi triển khai |
+| Dataset EDA | Đã có notebook khảo sát dữ liệu CAPEC |
 | Dataset chính thức, preprocessing và data split | Cần hoàn thiện và chốt |
 | Pipeline A, B, C | Chưa có implementation trong repository |
 | Benchmark, ablation và báo cáo kết quả | Chưa có kết quả thực nghiệm pipeline |
 | Môi trường tái lập | Chưa có `requirements.txt` hoặc cấu hình đóng gói |
 
-Các mốc trong kế hoạch tháng 10 là mục tiêu dự kiến, không phải xác nhận rằng công việc đã hoàn tất.
+Theo dõi [kế hoạch 4 tuần cho 2 người](docs/plan/ke_hoach_4_tuan_va_nop_hoi_nghi.md) để triển khai. Các mốc là mục tiêu dự kiến, không phải xác nhận công việc đã hoàn tất.
 
 ## Dữ liệu khảo sát
 
 Dataset đang được khảo sát là **SR-BH 2020 / `data_capec_multilabel.csv`**, gồm HTTP logs với nhãn **CAPEC**. File CSV không được lưu trong repository hiện tại.
 
-Theo [báo cáo Dataset Survey](mini-reports/p1_dataset_analysis.md), các thống kê sơ bộ gồm:
+Các thống kê đã được ghi nhận trong khảo sát trước đây gồm:
 
 | Thuộc tính | Giá trị đã ghi nhận |
 | --- | --- |
@@ -77,7 +77,7 @@ Theo [báo cáo Dataset Survey](mini-reports/p1_dataset_analysis.md), các thố
 | Duplicate URL paths | 557.474, khoảng 61,4% |
 | `request_body` bị thiếu | Khoảng 97,1% |
 
-Đây là số liệu từ báo cáo đã có, chưa được chạy kiểm chứng lại trong lần cập nhật README này.
+Các số liệu trên chưa được chạy kiểm chứng lại trong lần cập nhật README này. Dùng [notebook khảo sát](data_overview/sr_bh_2020_khao_sat.ipynb) để kiểm tra lại trên dataset thực tế.
 
 Những vấn đề cần xử lý trước thực nghiệm:
 
@@ -93,18 +93,19 @@ Các lớp đang được cân nhắc cho phạm vi ban đầu gồm **Normal/Be
 ```text
 .
 ├── README.md
-├── label-aware-retrieval-roadmap.md   # Lộ trình nghiên cứu tổng thể
-├── october_plan.md                   # Kế hoạch tháng 10/2026
-├── link_papers.md                    # Danh mục papers tham khảo
-├── sr_bh_2020_khao_sat.ipynb          # Notebook khảo sát SR-BH 2020
+├── docs/
+│   ├── README.md                    # Bắt đầu tại đây: ưu tiên và các mốc chính
+│   ├── mo_ta_de_tai.md              # Mô tả đề tài để gửi lên hệ thống
+│   ├── plan/
+│   │   └── ke_hoach_4_tuan_va_nop_hoi_nghi.md
+│   └── report/
+│       └── bao_cao_dinh_huong_va_mau_hang_tuan.md
 ├── data_overview/
-│   └── sr_bh_eda.ipynb               # Notebook EDA cơ bản
-├── examples/
-│   └── eda_dataset.py                # Script EDA mẫu cho schema request/label
-├── mini-reports/                     # Đề cương, khảo sát và báo cáo tiến độ
-│   ├── checklists/                   # Checklist thực thi
-│   └── old/                          # Tài liệu phân tích trước đây
-└── papers/                           # Các paper PDF đã lưu
+│   ├── sr_bh_2020_khao_sat.ipynb     # Notebook khảo sát SR-BH 2020
+│   ├── sr_bh_eda.ipynb              # Notebook EDA cơ bản
+│   └── examples/
+│       └── eda_dataset.py           # Script EDA mẫu cho schema request/label
+└── papers/                          # Paper PDF và danh mục tham khảo
 ```
 
 ## Chạy notebook EDA
@@ -133,7 +134,7 @@ Danh sách trên chỉ phục vụ EDA, chưa phải dependency set được kh�
 
 Tự chuẩn bị file `data_capec_multilabel.csv`, sau đó sửa đường dẫn đọc dữ liệu trong notebook tương ứng:
 
-- [sr_bh_2020_khao_sat.ipynb](sr_bh_2020_khao_sat.ipynb): sửa biến `DATA_PATH`; giá trị hiện tại là `../dataset/SR-BH 2020/data_capec_multilabel.csv`.
+- [sr_bh_2020_khao_sat.ipynb](data_overview/sr_bh_2020_khao_sat.ipynb): sửa biến `DATA_PATH`; giá trị hiện tại là `../dataset/SR-BH 2020/data_capec_multilabel.csv`.
 - [data_overview/sr_bh_eda.ipynb](data_overview/sr_bh_eda.ipynb): sửa đường dẫn trong `pd.read_csv("data_capec_multilabel.csv")` theo vị trí file và working directory của kernel.
 
 ### 3. Mở notebook
@@ -144,7 +145,7 @@ jupyter lab
 
 Chọn kernel của virtual environment vừa tạo và chạy lần lượt các cell. Một số cell khảo sát truy cập mẫu cụ thể trong dataset, vì vậy cần kiểm tra lại điều kiện chọn mẫu nếu dùng dữ liệu khác.
 
-Script [examples/eda_dataset.py](examples/eda_dataset.py) là ví dụ cho file `dataset.csv` có hai cột `request` và `label`. Muốn dùng với CAPEC cần điều chỉnh đường dẫn và schema; script chưa đọc trực tiếp các cột multi-label của CAPEC.
+Script [examples/eda_dataset.py](data_overview/examples/eda_dataset.py) là ví dụ cho file `dataset.csv` có hai cột `request` và `label`. Muốn dùng với CAPEC cần điều chỉnh đường dẫn và schema; script chưa đọc trực tiếp các cột multi-label của CAPEC.
 
 ## Kế hoạch thực nghiệm
 
@@ -160,16 +161,11 @@ Các công nghệ trong thiết kế gồm **Sentence Transformers**, **FAISS** 
 
 ## Tài liệu dự án
 
+Bắt đầu từ [trang hướng dẫn tập trung công việc](docs/README.md).
+
 | Tài liệu | Nội dung |
 | --- | --- |
-| [Đề cương nghiên cứu](mini-reports/de_cuong_nghien_cuu_label_aware_retrieval.md) | Bối cảnh, research questions và thiết kế thực nghiệm |
-| [Roadmap tổng thể](label-aware-retrieval-roadmap.md) | Các phase, milestones và tiêu chí kiểm tra |
-| [Kế hoạch tháng 10/2026](october_plan.md) | Mục tiêu và công việc theo tuần |
-| [Kế hoạch tháng 10 chi tiết](mini-reports/october_plan_chi_tiet.md) | Hướng dẫn triển khai chi tiết |
-| [Dataset Survey](mini-reports/p1_dataset_analysis.md) | Thống kê và các vấn đề chất lượng dữ liệu CAPEC |
-| [Related Work](mini-reports/p1_related_work.md) | Tổng hợp các hướng nghiên cứu liên quan |
-| [Systematic Search Log](mini-reports/p1_systematic_search_log.md) | Nhật ký khảo sát tài liệu |
-| [Danh mục papers](link_papers.md) | Các paper tham khảo |
-| [Checklist nghiên cứu](mini-reports/checklists/checklist_thuc_thi_nghien_cuu.md) | Các bước thực thi nghiên cứu |
-
-Một số tài liệu giai đoạn đầu còn đề cập phương án khác. Khi triển khai, cần thống nhất lại với phạm vi inference-only và LLM zero-shot prior đã nêu trong kế hoạch.
+| [Kế hoạch chính](docs/plan/ke_hoach_4_tuan_va_nop_hoi_nghi.md) | Phân công 2 người, lịch 4 tuần và lộ trình nộp hội nghị |
+| [Báo cáo với giảng viên](docs/report/bao_cao_dinh_huong_va_mau_hang_tuan.md) | Khung báo cáo định hướng và mẫu cập nhật hằng tuần |
+| [Mô tả đề tài](docs/mo_ta_de_tai.md) | Tổng quan, phương pháp và phạm vi nghiên cứu |
+| [Danh mục papers](papers/link_papers.md) | Các paper tham khảo |
