@@ -1,0 +1,44 @@
+{
+  "endpoint_overlaps": {
+    "development/pool": 11,
+    "development/test": 7,
+    "development/validation": 8,
+    "pool/test": 18328,
+    "pool/validation": 18160,
+    "test/validation": 5185
+  },
+  "limitation": "No overlap under the declared exact/template rule; endpoint overlap and unrecognized semantic near-duplicates can remain.",
+  "overlaps": {
+    "development/pool": {
+      "exact_hash": 0,
+      "group_id": 0,
+      "request_id": 0
+    },
+    "development/test": {
+      "exact_hash": 0,
+      "group_id": 0,
+      "request_id": 0
+    },
+    "development/validation": {
+      "exact_hash": 0,
+      "group_id": 0,
+      "request_id": 0
+    },
+    "pool/test": {
+      "exact_hash": 0,
+      "group_id": 0,
+      "request_id": 0
+    },
+    "pool/validation": {
+      "exact_hash": 0,
+      "group_id": 0,
+      "request_id": 0
+    },
+    "test/validation": {
+      "exact_hash": 0,
+      "group_id": 0,
+      "request_id": 0
+    }
+  },
+  "passed": true
+}

@@ -10,6 +10,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from src.common.locking import directory_lock
+
 ROOT = Path(__file__).resolve().parents[2]
 LABELS = tuple(json.loads((ROOT / "src/configs/data.json").read_text())["labels"].values())
 DEFINITIONS = {
@@ -27,6 +29,7 @@ SYSTEM = (
     + "\n".join(f"{label}: {DEFINITIONS[label]}" for label in LABELS)
 )
 PROMPT_VERSION = "a0-zero-shot-v1"
+USER_AGENT = "label-aware-web-detection/0.2"
 
 
 def digest(value):
@@ -89,14 +92,32 @@ def load_config(path):
             raise ValueError(f"invalid {field}")
         if field != "timeout_seconds" and not isinstance(value, int):
             raise ValueError(f"{field} must be an integer")
+    waits = config.setdefault("max_rate_limit_waits", 0)
+    if isinstance(waits, bool) or not isinstance(waits, int) or not 0 <= waits <= 50:
+        raise ValueError("invalid max_rate_limit_waits")
+    if config.get("reasoning_effort") not in (None, "low", "medium", "high"):
+        raise ValueError("invalid reasoning_effort")
     temperature = config.setdefault("temperature", 0)
     if isinstance(temperature, bool) or not isinstance(temperature, (int, float)) or not 0 <= temperature <= 2:
         raise ValueError("invalid temperature")
     allowed = {"backend", "model", "base_url", "timeout_seconds", "max_retries", "max_request_chars",
-               "max_tokens", "temperature", "mock_responses"}
+               "max_tokens", "temperature", "mock_responses", "reasoning_effort", "max_rate_limit_waits"}
     if set(config) - allowed:
         raise ValueError("unknown config field; credentials belong in environment only")
     return config
+
+
+QUOTA_EXHAUSTED = "http_429_quota_exhausted"
+MAX_RATE_LIMIT_WAIT = 120.0
+
+
+def _retry_after(headers):
+    """Seconds to wait after HTTP 429, from the Retry-After header (default 10s)."""
+    try:
+        value = float((headers or {}).get("retry-after") or 10)
+    except (TypeError, ValueError):
+        value = 10.0
+    return max(value, 1.0)
 
 
 class ChatClient:
@@ -108,17 +129,25 @@ class ChatClient:
 
     def __call__(self, prompt):
         cfg = self.config
-        payload = json.dumps({"model": cfg["model"], "messages": prompt,
-                              "temperature": cfg["temperature"], "max_tokens": cfg["max_tokens"]}).encode()
+        body = {"model": cfg["model"], "messages": prompt,
+                "temperature": cfg["temperature"], "max_tokens": cfg["max_tokens"]}
+        if cfg.get("reasoning_effort"):
+            body["reasoning_effort"] = cfg["reasoning_effort"]  # reasoning models only (e.g. gpt-oss)
+        payload = json.dumps(body).encode()
         request = urllib.request.Request(cfg["base_url"] + "/chat/completions", payload,
                                          {"Authorization": "Bearer " + self.key,
-                                          "Content-Type": "application/json"})
+                                          "Content-Type": "application/json",
+                                          # Groq/Cloudflare rejects the default "Python-urllib"
+                                          # agent with HTTP 403 (error code 1010).
+                                          "User-Agent": USER_AGENT})
         # Redirects must not forward the Authorization header to another origin.
         class NoRedirect(urllib.request.HTTPRedirectHandler):
             def redirect_request(self, req, fp, code, msg, headers, newurl):
                 return None
         opener = urllib.request.build_opener(NoRedirect())
-        for attempt in range(1, cfg["max_retries"] + 2):
+        attempt = failures = rate_waits = 0
+        while True:
+            attempt += 1
             try:
                 with opener.open(request, timeout=cfg["timeout_seconds"]) as response:
                     obj = json.loads(response.read())
@@ -134,14 +163,24 @@ class ChatClient:
             except urllib.error.HTTPError as exc:
                 retry = exc.code == 429 or 500 <= exc.code <= 599
                 code = f"http_{exc.code}"
+                wait = _retry_after(exc.headers) if exc.code == 429 else None
                 exc.close()
+                # Rate limits (per-minute token quota) are waited out without using up max_retries.
+                if wait is not None and wait > MAX_RATE_LIMIT_WAIT and cfg.get("max_rate_limit_waits", 0):
+                    # A long Retry-After means a daily quota is used up: stop instead of waiting for hours.
+                    raise BackendError(QUOTA_EXHAUSTED, attempt)
+                if wait is not None and rate_waits < cfg.get("max_rate_limit_waits", 0):
+                    rate_waits += 1
+                    time.sleep(wait)
+                    continue
             except (urllib.error.URLError, TimeoutError, OSError):
                 retry, code = True, "transport_error"
             except (ValueError, KeyError, IndexError, TypeError):
                 retry, code = False, "malformed_backend_response"
-            if not retry or attempt > cfg["max_retries"]:
+            failures += 1
+            if not retry or failures > cfg["max_retries"]:
                 raise BackendError(code, attempt)
-            time.sleep(min(2 ** (attempt - 1), 4))
+            time.sleep(min(2 ** (failures - 1), 4))
 
 
 class MockClient:
@@ -268,13 +307,8 @@ def run(input_path, output_dir, config, limit=6, client=None):
     manifest = json.loads(json.dumps(manifest))  # Normalize tuples before comparing to persisted JSON.
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    # POSIX advisory lock is released automatically on process exit/interruption.
-    import fcntl
-    with (output_dir / ".run.lock").open("a") as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError as exc:
-            raise ValueError("another runner is using this output directory") from exc
+    # Cross-platform lock (fcntl on POSIX, msvcrt on Windows); released on process exit.
+    with directory_lock(output_dir):
         path = output_dir / "manifest.json"
         if path.exists():
             if json.loads(path.read_text()) != manifest:

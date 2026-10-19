@@ -1,0 +1,248 @@
+{
+  "n_queries": 200,
+  "k": 4,
+  "n_candidates": 30,
+  "lambda": 0.1,
+  "prior_k": 5,
+  "class_distribution": {
+    "CODE_INJECTION": 34,
+    "HTTP_RESPONSE_SPLITTING": 34,
+    "NORMAL": 33,
+    "OS_COMMAND_INJECTION": 33,
+    "PATH_TRAVERSAL": 33,
+    "SQL_INJECTION": 33
+  },
+  "rq1_top1_mismatch_rate": 0.23,
+  "rq1_top1_mismatch_by_class": {
+    "CODE_INJECTION": 0.11764705882352941,
+    "HTTP_RESPONSE_SPLITTING": 0.14705882352941177,
+    "NORMAL": 0.45454545454545453,
+    "OS_COMMAND_INJECTION": 0.06060606060606061,
+    "PATH_TRAVERSAL": 0.21212121212121213,
+    "SQL_INJECTION": 0.3939393939393939
+  },
+  "mean_top1_similarity": 0.9556503349999999,
+  "knn_vote": {
+    "k=1": {
+      "macro_f1": 0.7675788279686561,
+      "accuracy": 0.77,
+      "normal_fpr": 0.45454545454545453,
+      "per_class_f1": {
+        "NORMAL": 0.5373134328358209,
+        "SQL_INJECTION": 0.6557377049180327,
+        "PATH_TRAVERSAL": 0.7878787878787878,
+        "CODE_INJECTION": 0.9090909090909091,
+        "HTTP_RESPONSE_SPLITTING": 0.8169014084507041,
+        "OS_COMMAND_INJECTION": 0.8985507246376813
+      }
+    },
+    "k=3": {
+      "macro_f1": 0.8048597163186191,
+      "accuracy": 0.815,
+      "normal_fpr": 0.42424242424242425,
+      "per_class_f1": {
+        "NORMAL": 0.6666666666666667,
+        "SQL_INJECTION": 0.6428571428571429,
+        "PATH_TRAVERSAL": 0.8732394366197183,
+        "CODE_INJECTION": 0.955223880597015,
+        "HTTP_RESPONSE_SPLITTING": 0.8378378378378379,
+        "OS_COMMAND_INJECTION": 0.8533333333333334
+      }
+    },
+    "k=5": {
+      "macro_f1": 0.800494799274076,
+      "accuracy": 0.81,
+      "normal_fpr": 0.45454545454545453,
+      "per_class_f1": {
+        "NORMAL": 0.6206896551724138,
+        "SQL_INJECTION": 0.6909090909090909,
+        "PATH_TRAVERSAL": 0.8529411764705883,
+        "CODE_INJECTION": 0.9565217391304348,
+        "HTTP_RESPONSE_SPLITTING": 0.8767123287671232,
+        "OS_COMMAND_INJECTION": 0.8051948051948052
+      }
+    },
+    "k=7": {
+      "macro_f1": 0.8011710164720668,
+      "accuracy": 0.81,
+      "normal_fpr": 0.42424242424242425,
+      "per_class_f1": {
+        "NORMAL": 0.6551724137931034,
+        "SQL_INJECTION": 0.6785714285714286,
+        "PATH_TRAVERSAL": 0.8695652173913043,
+        "CODE_INJECTION": 0.9428571428571428,
+        "HTTP_RESPONSE_SPLITTING": 0.8450704225352113,
+        "OS_COMMAND_INJECTION": 0.8157894736842105
+      }
+    },
+    "k=10": {
+      "macro_f1": 0.8003357753357753,
+      "accuracy": 0.81,
+      "normal_fpr": 0.45454545454545453,
+      "per_class_f1": {
+        "NORMAL": 0.6428571428571429,
+        "SQL_INJECTION": 0.6785714285714286,
+        "PATH_TRAVERSAL": 0.8857142857142858,
+        "CODE_INJECTION": 0.9428571428571428,
+        "HTTP_RESPONSE_SPLITTING": 0.8571428571428571,
+        "OS_COMMAND_INJECTION": 0.7948717948717948
+      }
+    }
+  },
+  "knn_prior_accuracy": 0.81,
+  "knn_prior_confusion": {
+    "rows": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION"
+    ],
+    "columns": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION",
+      "__INVALID_OR_ERROR__"
+    ],
+    "counts": [
+      [
+        18,
+        2,
+        5,
+        0,
+        2,
+        6,
+        0
+      ],
+      [
+        3,
+        19,
+        1,
+        0,
+        4,
+        6,
+        0
+      ],
+      [
+        2,
+        0,
+        29,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        33,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        32,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        1,
+        31,
+        0
+      ]
+    ]
+  },
+  "lcr_at_k": {
+    "B_semantic": {
+      "mean": 0.72625,
+      "zero_match_rate": 0.07,
+      "by_class": {
+        "CODE_INJECTION": 0.8161764705882353,
+        "HTTP_RESPONSE_SPLITTING": 0.8088235294117647,
+        "NORMAL": 0.48484848484848486,
+        "OS_COMMAND_INJECTION": 0.8560606060606061,
+        "PATH_TRAVERSAL": 0.8333333333333334,
+        "SQL_INJECTION": 0.553030303030303
+      }
+    },
+    "BAL_class_balanced": {
+      "mean": 0.4,
+      "zero_match_rate": 0.0,
+      "by_class": {
+        "CODE_INJECTION": 0.5,
+        "HTTP_RESPONSE_SPLITTING": 0.4411764705882353,
+        "NORMAL": 0.2727272727272727,
+        "OS_COMMAND_INJECTION": 0.3106060606060606,
+        "PATH_TRAVERSAL": 0.48484848484848486,
+        "SQL_INJECTION": 0.38636363636363635
+      }
+    },
+    "C_knn_prior": {
+      "mean": 0.80875,
+      "zero_match_rate": 0.165,
+      "by_class": {
+        "CODE_INJECTION": 0.9779411764705882,
+        "HTTP_RESPONSE_SPLITTING": 0.9338235294117647,
+        "NORMAL": 0.5303030303030303,
+        "OS_COMMAND_INJECTION": 0.9318181818181818,
+        "PATH_TRAVERSAL": 0.9015151515151515,
+        "SQL_INJECTION": 0.5681818181818182
+      }
+    },
+    "C_oracle_prior (analysis only)": {
+      "mean": 0.9625,
+      "zero_match_rate": 0.0,
+      "by_class": {
+        "CODE_INJECTION": 1.0,
+        "HTTP_RESPONSE_SPLITTING": 0.9926470588235294,
+        "NORMAL": 0.8863636363636364,
+        "OS_COMMAND_INJECTION": 0.9924242424242424,
+        "PATH_TRAVERSAL": 0.9848484848484849,
+        "SQL_INJECTION": 0.9166666666666666
+      }
+    }
+  },
+  "lambda_sweep_knn_prior": {
+    "0.0": {
+      "lcr_mean": 0.72625,
+      "zero_match_rate": 0.07
+    },
+    "0.02": {
+      "lcr_mean": 0.77875,
+      "zero_match_rate": 0.105
+    },
+    "0.05": {
+      "lcr_mean": 0.795,
+      "zero_match_rate": 0.14
+    },
+    "0.1": {
+      "lcr_mean": 0.80875,
+      "zero_match_rate": 0.165
+    },
+    "0.25": {
+      "lcr_mean": 0.81375,
+      "zero_match_rate": 0.175
+    },
+    "0.5": {
+      "lcr_mean": 0.81375,
+      "zero_match_rate": 0.175
+    },
+    "1.0": {
+      "lcr_mean": 0.81375,
+      "zero_match_rate": 0.175
+    }
+  }
+}

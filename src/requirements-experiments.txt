@@ -1,0 +1,5 @@
+# Retrieval, kNN, experiment runner and analysis.
+# Python >= 3.10; validated on Python 3.11.9 (Windows 11, CPU).
+numpy>=1.26
+sentence-transformers==5.1.0
+matplotlib>=3.6

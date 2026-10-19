@@ -62,7 +62,7 @@ def survey(input_path, config, selection, processed):
     memberships = {}
     # Deliberately never open final-test request text for illustration selection.
     for split in ("development", "pool"):
-        manifest = json.loads((Path(processed) / f"{split}_manifest.json").read_text())
+        manifest = json.loads((Path(processed) / f"{split}_manifest.json").read_text(encoding="utf-8"))
         for record in manifest:
             if record["request_id"] in pair_ids:
                 memberships[record["request_id"]] = split
@@ -114,8 +114,8 @@ def main():
     parser.add_argument("--processed", default="src/data/processed/sr_bh_v1")
     parser.add_argument("--output", default="src/artifacts/data/sr_bh_survey")
     args = parser.parse_args()
-    config = json.loads(Path(args.config).read_text())
-    selection = json.loads(Path(args.selection).read_text())
+    config = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    selection = json.loads(Path(args.selection).read_text(encoding="utf-8"))
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
     stats, examples, pair = survey(args.input, config, selection, args.processed)

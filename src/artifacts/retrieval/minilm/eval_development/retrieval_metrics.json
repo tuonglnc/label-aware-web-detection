@@ -1,0 +1,248 @@
+{
+  "n_queries": 30,
+  "k": 4,
+  "n_candidates": 30,
+  "lambda": 0.1,
+  "prior_k": 5,
+  "class_distribution": {
+    "PATH_TRAVERSAL": 5,
+    "HTTP_RESPONSE_SPLITTING": 5,
+    "SQL_INJECTION": 5,
+    "NORMAL": 5,
+    "CODE_INJECTION": 5,
+    "OS_COMMAND_INJECTION": 5
+  },
+  "rq1_top1_mismatch_rate": 0.06666666666666667,
+  "rq1_top1_mismatch_by_class": {
+    "PATH_TRAVERSAL": 0.0,
+    "HTTP_RESPONSE_SPLITTING": 0.2,
+    "SQL_INJECTION": 0.0,
+    "NORMAL": 0.2,
+    "CODE_INJECTION": 0.0,
+    "OS_COMMAND_INJECTION": 0.0
+  },
+  "mean_top1_similarity": 0.9621701333333336,
+  "knn_vote": {
+    "k=1": {
+      "macro_f1": 0.932996632996633,
+      "accuracy": 0.9333333333333333,
+      "normal_fpr": 0.2,
+      "per_class_f1": {
+        "NORMAL": 0.8000000000000002,
+        "SQL_INJECTION": 1.0,
+        "PATH_TRAVERSAL": 0.9090909090909091,
+        "CODE_INJECTION": 1.0,
+        "HTTP_RESPONSE_SPLITTING": 0.888888888888889,
+        "OS_COMMAND_INJECTION": 1.0
+      }
+    },
+    "k=3": {
+      "macro_f1": 0.7645687645687645,
+      "accuracy": 0.8,
+      "normal_fpr": 0.4,
+      "per_class_f1": {
+        "NORMAL": 0.6666666666666665,
+        "SQL_INJECTION": 0.9090909090909091,
+        "PATH_TRAVERSAL": 0.7692307692307693,
+        "CODE_INJECTION": 1.0,
+        "HTTP_RESPONSE_SPLITTING": 0.33333333333333337,
+        "OS_COMMAND_INJECTION": 0.9090909090909091
+      }
+    },
+    "k=5": {
+      "macro_f1": 0.76010101010101,
+      "accuracy": 0.8,
+      "normal_fpr": 0.4,
+      "per_class_f1": {
+        "NORMAL": 0.6666666666666665,
+        "SQL_INJECTION": 0.9090909090909091,
+        "PATH_TRAVERSAL": 0.8333333333333333,
+        "CODE_INJECTION": 0.9090909090909091,
+        "HTTP_RESPONSE_SPLITTING": 0.33333333333333337,
+        "OS_COMMAND_INJECTION": 0.9090909090909091
+      }
+    },
+    "k=7": {
+      "macro_f1": 0.8946969696969697,
+      "accuracy": 0.9,
+      "normal_fpr": 0.2,
+      "per_class_f1": {
+        "NORMAL": 0.8000000000000002,
+        "SQL_INJECTION": 1.0,
+        "PATH_TRAVERSAL": 0.9090909090909091,
+        "CODE_INJECTION": 0.9090909090909091,
+        "HTTP_RESPONSE_SPLITTING": 0.7499999999999999,
+        "OS_COMMAND_INJECTION": 1.0
+      }
+    },
+    "k=10": {
+      "macro_f1": 0.8626262626262626,
+      "accuracy": 0.8666666666666667,
+      "normal_fpr": 0.2,
+      "per_class_f1": {
+        "NORMAL": 0.8000000000000002,
+        "SQL_INJECTION": 1.0,
+        "PATH_TRAVERSAL": 0.9090909090909091,
+        "CODE_INJECTION": 0.8000000000000002,
+        "HTTP_RESPONSE_SPLITTING": 0.6666666666666665,
+        "OS_COMMAND_INJECTION": 1.0
+      }
+    }
+  },
+  "knn_prior_accuracy": 0.8,
+  "knn_prior_confusion": {
+    "rows": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION"
+    ],
+    "columns": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION",
+      "__INVALID_OR_ERROR__"
+    ],
+    "counts": [
+      [
+        3,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0
+      ]
+    ]
+  },
+  "lcr_at_k": {
+    "B_semantic": {
+      "mean": 0.775,
+      "zero_match_rate": 0.03333333333333333,
+      "by_class": {
+        "PATH_TRAVERSAL": 1.0,
+        "HTTP_RESPONSE_SPLITTING": 0.4,
+        "SQL_INJECTION": 1.0,
+        "NORMAL": 0.55,
+        "CODE_INJECTION": 0.7,
+        "OS_COMMAND_INJECTION": 1.0
+      }
+    },
+    "BAL_class_balanced": {
+      "mean": 0.4583333333333333,
+      "zero_match_rate": 0.0,
+      "by_class": {
+        "PATH_TRAVERSAL": 0.75,
+        "HTTP_RESPONSE_SPLITTING": 0.45,
+        "SQL_INJECTION": 0.35,
+        "NORMAL": 0.45,
+        "CODE_INJECTION": 0.3,
+        "OS_COMMAND_INJECTION": 0.45
+      }
+    },
+    "C_knn_prior": {
+      "mean": 0.7833333333333333,
+      "zero_match_rate": 0.16666666666666666,
+      "by_class": {
+        "PATH_TRAVERSAL": 1.0,
+        "HTTP_RESPONSE_SPLITTING": 0.25,
+        "SQL_INJECTION": 1.0,
+        "NORMAL": 0.6,
+        "CODE_INJECTION": 0.85,
+        "OS_COMMAND_INJECTION": 1.0
+      }
+    },
+    "C_oracle_prior (analysis only)": {
+      "mean": 0.9583333333333334,
+      "zero_match_rate": 0.0,
+      "by_class": {
+        "PATH_TRAVERSAL": 1.0,
+        "HTTP_RESPONSE_SPLITTING": 1.0,
+        "SQL_INJECTION": 1.0,
+        "NORMAL": 0.9,
+        "CODE_INJECTION": 0.85,
+        "OS_COMMAND_INJECTION": 1.0
+      }
+    }
+  },
+  "lambda_sweep_knn_prior": {
+    "0.0": {
+      "lcr_mean": 0.775,
+      "zero_match_rate": 0.03333333333333333
+    },
+    "0.02": {
+      "lcr_mean": 0.8,
+      "zero_match_rate": 0.06666666666666667
+    },
+    "0.05": {
+      "lcr_mean": 0.7916666666666666,
+      "zero_match_rate": 0.1
+    },
+    "0.1": {
+      "lcr_mean": 0.7833333333333333,
+      "zero_match_rate": 0.16666666666666666
+    },
+    "0.25": {
+      "lcr_mean": 0.8,
+      "zero_match_rate": 0.2
+    },
+    "0.5": {
+      "lcr_mean": 0.8,
+      "zero_match_rate": 0.2
+    },
+    "1.0": {
+      "lcr_mean": 0.8,
+      "zero_match_rate": 0.2
+    }
+  }
+}

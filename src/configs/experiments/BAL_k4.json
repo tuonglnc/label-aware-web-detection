@@ -1,0 +1,1 @@
+{"name": "BAL_class_balanced_k4", "pipeline": "BAL", "k": 4, "n_candidates": 30, "max_demo_chars": 500, "retrieval_dir": "src/artifacts/retrieval/minilm"}
