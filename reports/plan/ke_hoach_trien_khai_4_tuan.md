@@ -1,5 +1,7 @@
 # Kế hoạch triển khai nghiên cứu trong 4 tuần cho 2 người
 
+**Lịch sử kế hoạch:** từ ngày 19/10/2026, dùng [phân công hôm nay và kế hoạch ba tuần 21/10–10/11](ke_hoach_2_nguoi_hom_nay_va_3_tuan.md) làm lịch thực thi hiện tại. Hiện trạng trong bản dưới đây là tại thời điểm lập, không phản ánh phần dữ liệu và A0 đã triển khai sau đó.
+
 **Ngày lập:** 16/10/2026.  
 **Giai đoạn triển khai chính:** 16/10–12/11/2026, gồm 4 tuần.  
 

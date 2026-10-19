@@ -1,5 +1,12 @@
 # Bắt đầu đọc repository từ đây
 
+**Cập nhật 19/10/2026 — tài liệu dùng cho báo cáo ngày mai:**
+
+- [Bản nháp report ngày 20/10, bảng bằng chứng và nội dung tám slide](progress/ban_nhap_bao_cao_2026_10_20.md).
+- [Chia việc hôm nay và kế hoạch ba tuần cho hai người, 21/10–10/11](plan/ke_hoach_2_nguoi_hom_nay_va_3_tuan.md): lịch thực thi hiện tại, thay lịch bốn tuần bên dưới.
+
+Các checklist/mốc cũ bên dưới giữ làm tham khảo lịch sử. Tiến độ hiện tại: dữ liệu/split v1 và A0 mock đã có; smoke API lưu lỗi HTTP 403; A1/B/C chưa triển khai. Dùng bản nháp mới và README gốc để đối chiếu trạng thái.
+
 **Pipeline A0:** [Bàn giao, cấu hình và lệnh chạy mock/API](docs/handoff/pipeline_a0_handoff.md).
 
 **Đọc lại công việc và setup:** [Hướng dẫn từ đầu, .venv, .env và API miễn phí để smoke test](reports/setup_va_doc_lai.md). Template công khai: [env.example](env.example); sao chép sang `.env` và chỉ điền key ở máy mình. CLI không tự nạp `.env`; hướng dẫn có lệnh nạp trước khi chạy.

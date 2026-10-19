@@ -4,6 +4,8 @@ Nghiên cứu phát hiện và phân loại tấn công web từ HTTP request b�
 
 Hướng triển khai là **inference-only**, không huấn luyện hoặc fine-tune model. Các kết luận về chất lượng phương pháp cần được kiểm chứng bằng thực nghiệm.
 
+**Chuẩn bị báo cáo 20/10/2026:** [Bản nháp report, evidence và nội dung 8 slide](reports/progress/ban_nhap_bao_cao_2026_10_20.md). **Kế hoạch hiện tại:** [Chia việc hôm nay và 3 tuần cho 2 người, 21/10–10/11](reports/plan/ke_hoach_2_nguoi_hom_nay_va_3_tuan.md); dùng lịch này thay lịch thực thi bốn tuần cũ.
+
 ## Các pipeline
 
 | Pipeline | Phương pháp | Trạng thái |
