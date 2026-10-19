@@ -1,0 +1,3 @@
+# Data preparation and unittest suite: no third-party dependencies.
+# Requires Python >= 3.10; validated with Python 3.12.3.
+# This file does not specify the later LLM/retrieval environment.

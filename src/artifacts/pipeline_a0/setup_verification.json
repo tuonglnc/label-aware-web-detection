@@ -1,0 +1,24 @@
+{
+  "public_template_has_empty_key": true,
+  "bash_template_syntax_and_env_config_loading": "pass",
+  "gitignore_env_and_venv": "pass",
+  "public_templates_not_ignored": true,
+  "env_not_tracked": true,
+  "local_links_checked": 36,
+  "broken_links": 0,
+  "core_unchanged_manifest_matches": true,
+  "mock_resume": {
+    "resumed": 6,
+    "processed_now": 0
+  },
+  "real_api_called": false,
+  "personal_env_created_or_read": false,
+  "venv_created": false,
+  "unit_tests": "Previous A0 milestone: 28/28 pass. Core and tests unchanged; not rerun for documentation/config additions.",
+  "sources_checked": [
+    "https://console.groq.com/docs/rate-limits",
+    "https://console.groq.com/docs/quickstart",
+    "https://console.groq.com/docs/openai",
+    "https://console.groq.com/docs/model/openai/gpt-oss-20b"
+  ]
+}

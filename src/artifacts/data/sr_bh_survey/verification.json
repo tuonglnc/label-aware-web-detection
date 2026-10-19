@@ -1,0 +1,18 @@
+{
+  "example_labels_verified": true,
+  "label_count_accounting_verified": true,
+  "pair_from_development_or_pool": true,
+  "pair_only_uri_differs": true,
+  "passed": true,
+  "records_scanned": 907815,
+  "selected_raw_records_retrieved": 3,
+  "selection_sha256": "d7ae97e8ff4cebcce1147d20bd7bedfd90e262bd88d6228d61fdc6ce5cd0a31b",
+  "source_md5_verified": true,
+  "survey_module_sha256": "8606ad0e256accfc5a9a1727195ef7c88167af7c0774e8d3672afcc78a926d60",
+  "report_covers_all_7_questions": true,
+  "report_contains_all_38_column_names": true,
+  "verbatim_example_uris_in_report": true,
+  "independent_preprocessing_counts_match": true,
+  "selected_pair_matches_search_result": true,
+  "local_report_links_valid": true
+}

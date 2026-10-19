@@ -1,171 +1,189 @@
-# Label-Aware Retrieval for LLM-Based Web Attack Detection
+# Label-Aware Web Attack Detection
 
-Dự án nghiên cứu việc sử dụng **Label-Aware Retrieval** để chọn **demonstrations** cho **Large Language Model (LLM)**, phục vụ phát hiện và phân loại **Web Attack** từ **HTTP request** thông qua **In-Context Learning (ICL)**.
+Nghiên cứu phát hiện và phân loại tấn công web từ HTTP request bằng Large Language Model (LLM). Dự án kiểm chứng việc dùng thông tin nhãn khi chọn ví dụ cho In-Context Learning có cải thiện kết quả so với chọn ví dụ chỉ theo độ tương đồng ngữ nghĩa hay không.
 
-**Câu hỏi nghiên cứu:** Việc kết hợp thông tin nhãn khi chọn demonstrations có cải thiện chất lượng phân loại so với **Standard Semantic Retrieval** chỉ dựa trên **embedding similarity** hay không?
+Hướng triển khai là **inference-only**, không huấn luyện hoặc fine-tune model. Các kết luận về chất lượng phương pháp cần được kiểm chứng bằng thực nghiệm.
 
-Đây là giả thuyết cần kiểm chứng bằng thực nghiệm. Repository hiện lưu mô tả đề tài, kế hoạch triển khai và các notebook **Exploratory Data Analysis (EDA)**; chưa có kết quả benchmark cho phương pháp đề xuất.
+## Các pipeline
 
-## Mục tiêu và phạm vi
-
-- So sánh LLM baseline, Standard Semantic Retrieval + LLM và Label-Aware Retrieval + LLM trên cùng dữ liệu đánh giá.
-- Phân tích ảnh hưởng của demonstration selection đến chất lượng phân loại, đặc biệt ở minority classes và các request dễ nhầm lẫn.
-- Đánh giá chất lượng retrieval bằng **Label Consistency Rate@k (LCR@k)**, kết hợp classification metrics và chi phí inference.
-- Thực hiện **ablation study** để xác định tác động của prior, reranking, số lượng demonstrations và kích thước retrieval pool.
-
-Hướng triển khai được chọn là **inference-only**, không train hoặc fine-tune model. Pipeline đề xuất dùng **LLM zero-shot prior** kết hợp **label-aware reranking**; các model và tham số cụ thể vẫn cần được chốt khi triển khai.
-
-## Ý tưởng phương pháp
-
-Các HTTP request có thể chia sẻ endpoint, cấu trúc và nhiều token nhưng mang nhãn khác nhau. Vì vậy, semantic similarity cao chưa đủ để xác định một demonstration có hữu ích cho việc phân loại request đang xét hay không.
-
-Thiết kế thực nghiệm gồm ba pipeline:
-
-| Pipeline | Cách hoạt động | Vai trò |
+| Pipeline | Phương pháp | Trạng thái |
 | --- | --- | --- |
-| **A — LLM baseline** | Phân loại bằng zero-shot hoặc fixed few-shot, không dùng retrieval | Đo năng lực ban đầu của LLM |
-| **B — Standard Semantic Retrieval** | Encode request, tìm top-k demonstrations theo similarity, đưa vào prompt cho LLM | Baseline có retrieval |
-| **C — Label-Aware Retrieval** | Retrieve top-N candidates, lấy zero-shot prior, rerank theo similarity và thông tin nhãn, chọn top-k cho LLM | Phương pháp đề xuất |
+| **A0** | LLM zero-shot, không có ví dụ trong prompt | Đã triển khai; chạy end-to-end bằng mock |
+| **A1** | LLM fixed few-shot | Chưa triển khai |
+| **B** | Semantic retrieval → top-k ví dụ → LLM | Chưa triển khai |
+| **C** | Semantic retrieval → rerank bằng zero-shot prior và thông tin nhãn → LLM | Chưa triển khai |
 
-Luồng xử lý dự kiến của Pipeline C:
+Luồng A0 hiện có:
 
 ```text
-HTTP request
-    ├── Embedding + Semantic Search ──> Top-N labeled candidates
-    └── LLM zero-shot ───────────────> Predicted prior label
-                                              │
-                    Candidates + Prior ───────┘
-                              │
-                    Label-Aware Reranking
-                              │
-                    Top-k demonstrations
-                              │
-                       Prompt + LLM
-                              │
-                       Predicted label
+Request JSONL → Prompt zero-shot → Backend → Parse JSON
+                                               │
+                         Predictions JSONL ←───┘
+                                │
+                      Metrics + Confusion matrix
 ```
 
-Nhãn của demonstrations có sẵn trong retrieval pool. Nhãn của request cần phân loại được ước lượng bằng zero-shot prior; **ground-truth test label chỉ dùng để đánh giá**, không dùng để chọn demonstrations. Các lựa chọn như contrastive examples, label diversity và trọng số reranking sẽ được kiểm chứng qua ablation study.
+A0 có kiểm tra nhãn đầu ra, timeout/retry giới hạn, lưu từng prediction và hỗ trợ resume. Ground truth chỉ dùng để đánh giá, không được đưa vào prompt.
 
-## Hiện trạng repository
+**Hiện trạng kiểm chứng:** bộ kiểm thử gần nhất đạt 28/28 test, trong đó 12 test cho A0. Mock có fixture riêng để kiểm tra cả output hợp lệ, output sai và lỗi backend. Artifact smoke Groq hiện có chứa một mẫu lỗi backend; chưa xác nhận smoke API thật thành công và chưa có kết quả benchmark. Không dùng số liệu mock để đánh giá năng lực LLM.
 
-| Thành phần | Hiện trạng |
-| --- | --- |
-| Mô tả và thiết kế nghiên cứu | Đã có mô tả đề tài và kế hoạch 4 tuần |
-| Literature review | Có danh mục papers; cần xác minh và tổng hợp khi triển khai |
-| Dataset EDA | Đã có notebook khảo sát dữ liệu CAPEC |
-| Dataset chính thức, preprocessing và data split | Cần hoàn thiện và chốt |
-| Pipeline A, B, C | Chưa có implementation trong repository |
-| Benchmark, ablation và báo cáo kết quả | Chưa có kết quả thực nghiệm pipeline |
-| Môi trường tái lập | Chưa có `requirements.txt` hoặc cấu hình đóng gói |
-
-Theo dõi [kế hoạch 4 tuần cho 2 người](docs/plan/ke_hoach_4_tuan_va_nop_hoi_nghi.md) để triển khai. Các mốc là mục tiêu dự kiến, không phải xác nhận công việc đã hoàn tất.
-
-## Dữ liệu khảo sát
-
-Dataset đang được khảo sát là **SR-BH 2020 / `data_capec_multilabel.csv`**, gồm HTTP logs với nhãn **CAPEC**. File CSV không được lưu trong repository hiện tại.
-
-Các thống kê đã được ghi nhận trong khảo sát trước đây gồm:
-
-| Thuộc tính | Giá trị đã ghi nhận |
-| --- | --- |
-| Số bản ghi | 907.815 |
-| Số cột | 38 |
-| Số cột nhãn | 13, gồm `000 - Normal` và các attack categories |
-| Định dạng nhãn | Multi-label binary |
-| Bản ghi có đúng một nhãn | 898.577, khoảng 99% |
-| Duplicate URL paths | 557.474, khoảng 61,4% |
-| `request_body` bị thiếu | Khoảng 97,1% |
-
-Các số liệu trên chưa được chạy kiểm chứng lại trong lần cập nhật README này. Dùng [notebook khảo sát](data_overview/sr_bh_2020_khao_sat.ipynb) để kiểm tra lại trên dataset thực tế.
-
-Những vấn đề cần xử lý trước thực nghiệm:
-
-- **Class imbalance:** Normal và SQL Injection chiếm tỷ trọng lớn; một số lớp có rất ít mẫu.
-- **Duplicates và data leakage:** cần kiểm tra exact duplicates và near-duplicates trước khi tách retrieval pool, validation set và test set.
-- **Multi-label và attack taxonomy:** cần thống nhất cách xử lý multi-label rows và tập nhãn dùng cho classification.
-- **Annotation quality và ngữ cảnh:** cùng URL path có thể có nhãn khác nhau do method, headers, body hoặc annotation noise; cần kiểm tra đầy đủ request trước khi kết luận.
-
-Các lớp đang được cân nhắc cho phạm vi ban đầu gồm **Normal/Benign, SQL Injection, Path Traversal, Code Injection, HTTP Response Splitting** và **OS Command Injection**. Dataset và taxonomy cuối cùng chưa được chốt.
-
-## Cấu trúc repository
+## Cấu trúc repo
 
 ```text
 .
 ├── README.md
-├── docs/
-│   ├── README.md                    # Bắt đầu tại đây: ưu tiên và các mốc chính
-│   ├── mo_ta_de_tai.md              # Mô tả đề tài để gửi lên hệ thống
-│   ├── plan/
-│   │   └── ke_hoach_4_tuan_va_nop_hoi_nghi.md
-│   └── report/
-│       └── bao_cao_dinh_huong_va_mau_hang_tuan.md
-├── data_overview/
-│   ├── sr_bh_2020_khao_sat.ipynb     # Notebook khảo sát SR-BH 2020
-│   ├── sr_bh_eda.ipynb              # Notebook EDA cơ bản
-│   └── examples/
-│       └── eda_dataset.py           # Script EDA mẫu cho schema request/label
-└── papers/                          # Paper PDF và danh mục tham khảo
+├── env.example                  # Template cấu hình công khai, key để trống
+├── src/
+│   ├── pipeline_a0/             # Prompt, client, parser, runner và metrics
+│   ├── preprocessing/           # Chuẩn bị dữ liệu và khảo sát dataset
+│   ├── configs/                 # Cấu hình JSON và thông tin nguồn dữ liệu
+│   ├── tests/                   # Unit tests và fixture tổng hợp
+│   ├── data/
+│   │   ├── raw/                 # Dữ liệu gốc, không track Git
+│   │   └── processed/           # Splits/manifests, không track Git
+│   ├── artifacts/              # Predictions, metrics, audit và logs
+│   ├── notebooks/              # Khảo sát dữ liệu
+│   └── requirements-*.txt
+└── reports/
+    ├── project_overview.md       # Thiết kế nghiên cứu
+    ├── surveys/                 # Khảo sát SR-BH và CSIC; hình minh họa
+    ├── protocol/                # Schema, chính sách nhãn và data split
+    ├── progress/                # Kết quả xử lý dữ liệu và báo cáo tiến độ
+    ├── plan/                    # Kế hoạch triển khai
+    └── references/              # Tài liệu tham khảo
 ```
 
-## Chạy notebook EDA
+Chạy các lệnh dưới đây từ thư mục gốc repo. Dữ liệu lớn và credential được giữ ở máy local.
 
-Các bước dưới đây dành cho notebook hiện có. Repository chưa có lệnh chạy pipeline end-to-end.
+## Bắt đầu bằng mock — không cần API key
 
-### 1. Chuẩn bị môi trường
-
-Kế hoạch dự án hướng đến **Python 3.10**. Tại thư mục gốc repository, tạo virtual environment và cài các thư viện dùng trong notebook:
+Yêu cầu **Python >=3.10 trên Linux/POSIX**; đã kiểm chứng với Python 3.12.3. A0 dùng thư viện chuẩn, không cần cài SDK hoặc package bên ngoài. Resume sử dụng `fcntl` nên chưa hỗ trợ Windows native; trên Windows có thể dùng WSL.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install pandas matplotlib seaborn jupyterlab
+python -m unittest discover -s src/tests -v
 ```
 
-Trên Windows PowerShell, thay lệnh kích hoạt bằng:
+Nếu đã có `.venv`, chỉ cần activate. Mỗi terminal mới cần chạy lại `source .venv/bin/activate`; thoát bằng `deactivate`. Dependency A0 được ghi tại [src/requirements-a0.txt](src/requirements-a0.txt). Các dependency tạo hình khảo sát được tách riêng, không cần cho mock A0.
 
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Danh sách trên chỉ phục vụ EDA, chưa phải dependency set được khóa phiên bản cho toàn bộ dự án.
-
-### 2. Chuẩn bị dataset
-
-Tự chuẩn bị file `data_capec_multilabel.csv`, sau đó sửa đường dẫn đọc dữ liệu trong notebook tương ứng:
-
-- [sr_bh_2020_khao_sat.ipynb](data_overview/sr_bh_2020_khao_sat.ipynb): sửa biến `DATA_PATH`; giá trị hiện tại là `../dataset/SR-BH 2020/data_capec_multilabel.csv`.
-- [data_overview/sr_bh_eda.ipynb](data_overview/sr_bh_eda.ipynb): sửa đường dẫn trong `pd.read_csv("data_capec_multilabel.csv")` theo vị trí file và working directory của kernel.
-
-### 3. Mở notebook
+Chạy sáu request tổng hợp:
 
 ```bash
-jupyter lab
+python -m src.pipeline_a0 \
+  --config src/configs/pipeline_a0_mock.json \
+  --input src/tests/fixtures/a0_requests.jsonl \
+  --output src/artifacts/pipeline_a0/mock_quickstart \
+  --limit 6
 ```
 
-Chọn kernel của virtual environment vừa tạo và chạy lần lượt các cell. Một số cell khảo sát truy cập mẫu cụ thể trong dataset, vì vậy cần kiểm tra lại điều kiện chọn mẫu nếu dùng dữ liệu khác.
+Lần đầu với thư mục output mới: `selected=6`, `processed_now=6`. Chạy lại nguyên lệnh: `resumed=6`, `processed_now=0`. Fixture cố ý có output lỗi và prediction sai để kiểm tra luồng đánh giá.
 
-Script [examples/eda_dataset.py](data_overview/examples/eda_dataset.py) là ví dụ cho file `dataset.csv` có hai cột `request` và `label`. Muốn dùng với CAPEC cần điều chỉnh đường dẫn và schema; script chưa đọc trực tiếp các cột multi-label của CAPEC.
+Xem kết quả:
 
-## Kế hoạch thực nghiệm
+```bash
+python -m json.tool src/artifacts/pipeline_a0/mock_quickstart/last_invocation.json
+python -m json.tool src/artifacts/pipeline_a0/mock_quickstart/metrics.json
+```
 
-1. Chốt dataset, attack taxonomy và protocol đánh giá.
-2. Hoàn thiện preprocessing, deduplication và data split; kiểm tra leakage giữa các tập.
-3. Xây dựng embedding module, FAISS index, LLM client, prompt builder và output parser; chạy Pipeline A và B.
-4. Đo chất lượng retrieval của Pipeline B, triển khai zero-shot prior và label-aware reranker cho Pipeline C.
-5. So sánh các pipeline trên cùng test set; thực hiện ablation và phân tích per-class, hard cases, latency và token usage.
+## Dữ liệu và taxonomy
 
-Các metrics dự kiến gồm **Accuracy, Macro-F1, Weighted-F1, Precision/Recall/F1 per class** và **LCR@k**. LCR@k đo tỷ lệ demonstrations có nhãn trùng với ground-truth query label khi đánh giá offline; cần đọc cùng classification metrics vì mức độ trùng nhãn không tự bảo đảm demonstrations hữu ích hơn.
+Đã khảo sát dữ liệu thật của hai nguồn:
 
-Các công nghệ trong thiết kế gồm **Sentence Transformers**, **FAISS** và LLM qua **Ollama** hoặc API. Đây là lựa chọn dự kiến; repository chưa tích hợp các thành phần này.
+| Dataset | Kết quả khảo sát | Vai trò hiện tại |
+| --- | --- | --- |
+| **SR-BH 2020 v1.2** | 907.815 bản ghi, 38 cột; Normal và 13 nhãn tấn công | Nguồn cho development pilot A0 |
+| **CSIC 2010** | 97.065 request trong ba file đã tải; nhãn nguồn Normal/Anomalous | Khảo sát độc lập, chưa thay nguồn A0 |
 
-## Tài liệu dự án
+Preprocessing SR-BH chỉ giữ request có đúng một nhãn hoạt động trong toàn bộ nhãn nguồn, sau đó chọn sáu lớp. Các request trùng nội dung nhưng mâu thuẫn nhãn được cách ly trước dedup và group split với seed 42. Không tự ép các mẫu multi-label thành single-label.
 
-Bắt đầu từ [trang hướng dẫn tập trung công việc](docs/README.md).
+Taxonomy hiện tại, theo [src/configs/data.json](src/configs/data.json):
+
+```text
+NORMAL
+SQL_INJECTION
+PATH_TRAVERSAL
+CODE_INJECTION
+HTTP_RESPONSE_SPLITTING
+OS_COMMAND_INJECTION
+```
+
+Schema tối thiểu của mỗi dòng JSONL gồm `request_id`, `request_text`, `label`. `request_text` là chuỗi JSON canonical chứa method, URI, protocol, headers và body; giữ nguyên encoding của payload. Nhãn nằm ngoài nội dung đưa vào model.
+
+Development hiện có tại `src/data/processed/sr_bh_v1/development.jsonl`: 30 mẫu, 5 mẫu mỗi lớp. File raw/processed không đi kèm bản clone Git. Nếu máy chưa có dữ liệu, xem [hướng dẫn tải, preprocessing và kiểm chứng](reports/protocol/README.md); nếu đã có split thì dùng lại, không ghi đè hoặc tạo lại để chạy smoke.
+
+Chất lượng annotation còn điểm cần làm rõ; dataset benchmark chưa được chốt. Xem [quyết định dataset và giới hạn](reports/protocol/dataset_decision.md). Giữ final test riêng, không dùng để sửa prompt hoặc chọn cấu hình.
+
+## Cấu hình API bằng .env
+
+Client hiện hỗ trợ endpoint **chat completions tương thích OpenAI**. Template [env.example](env.example) dùng Groq làm ví dụ cấu hình; đây chưa phải model được chốt cho benchmark. Kiểm tra quyền truy cập model và quota trong tài khoản của mình trước khi gọi.
+
+Tạo file local, giữ nguyên nếu đã có:
+
+```bash
+cp -n env.example .env
+chmod 600 .env
+```
+
+Mở `.env` bằng editor, điền `A0_API_KEY`. Không điền key thật vào `env.example`.
+
+| Biến | Ý nghĩa |
+| --- | --- |
+| `A0_API_KEY` | API key của backend đã chọn |
+| `A0_BASE_URL` | URL gốc API; ví dụ trong template là `https://api.groq.com/openai/v1` |
+| `A0_MODEL` | Model ID backend hỗ trợ; ví dụ trong template là `openai/gpt-oss-20b` |
+
+Runner tự nối `/chat/completions` vào base URL. CLI **không tự đọc `.env`**; nạp file do mình quản lý vào môi trường Bash trước khi chạy:
+
+```bash
+set -a
+source .env
+set +a
+```
+
+`.env`, `.env.*` và `.venv/` đã được Git bỏ qua; `env.example` công khai chỉ chứa cấu hình mẫu. Không đưa key vào code, log hay artifact. Không cần cài `python-dotenv`, SDK Groq hoặc SDK OpenAI cho cách chạy này.
+
+## Smoke API thật trên development
+
+Sau khi cấu hình env và có development file, thử **một mẫu** trước:
+
+```bash
+python -m src.pipeline_a0 \
+  --config src/configs/pipeline_a0_groq_smoke.json \
+  --input src/data/processed/sr_bh_v1/development.jsonl \
+  --output src/artifacts/pipeline_a0/groq_quickstart_01 \
+  --limit 1
+```
+
+Cấu hình Groq smoke dùng timeout 60 giây, không retry, output budget 2048 token và temperature 0. Config API chung ở `src/configs/pipeline_a0_api.json` có cấu hình khác: timeout 30 giây, tối đa 2 retries và output budget 128 token. Chọn config phù hợp với model, ghi nhận thay đổi và dùng run directory mới.
+
+Runner API thật chỉ nhận đúng file development hiện có, giới hạn 1–10 mẫu mỗi lệnh. Mẫu được chọn từ đầu file, không cân bằng lớp. Smoke nhỏ kiểm tra kết nối và luồng xử lý; chưa đủ để kết luận chất lượng phân loại. Giữ tổng ngân sách tối đa 10 mẫu cho một phiên smoke, tính cả các lần gọi lại ở run khác.
+
+**Kiểm tra `status_counts` trong `metrics.json` sau mỗi lần chạy.** Runner có thể kết thúc bình thường dù toàn bộ prediction là lỗi, vì lỗi cũng phải được lưu lại. Khi gặp 401/403, kiểm tra credential/quyền model; 429 là giới hạn quota; `invalid_output` là JSON hoặc nhãn không hợp lệ. Không tự đổi câu trả lời lỗi thành nhãn dự đoán.
+
+## Output và resume
+
+| File trong mỗi thư mục run | Nội dung |
+| --- | --- |
+| `manifest.json` | Cấu hình, model, prompt, taxonomy và hash để truy vết |
+| `predictions.jsonl` | Kết quả từng mẫu, status, raw output, latency, usage nếu có |
+| `metrics.json` | Macro-F1, Accuracy, Weighted-F1, per-class precision/recall/F1, confusion matrix, coverage và error rates |
+| `last_invocation.json` | Số mẫu chọn, số resume và số xử lý mới |
+
+Mỗi prediction được flush/fsync ngay sau xử lý. Resume giữ cả kết quả lỗi và không tự gọi lại chúng. Cache phân biệt model, endpoint, prompt/config và nội dung request. Khi đổi config, model, input, `--limit` hoặc implementation, dùng thư mục output mới; không sửa manifest để ép dùng cache cũ. Run mới có thể gọi lại các mẫu trước đó và tiêu thụ quota.
+
+Metrics tính mẫu lỗi là dự đoán sai, giữ chúng trong confusion matrix ở cột riêng. Token usage chỉ được ghi khi backend cung cấp; không thay dữ liệu thiếu bằng số đo giả. Latency lưu trong prediction là latency inference gốc, không phải thời gian cache hit.
+
+## Tài liệu đọc tiếp
 
 | Tài liệu | Nội dung |
 | --- | --- |
-| [Kế hoạch chính](docs/plan/ke_hoach_4_tuan_va_nop_hoi_nghi.md) | Phân công 2 người, lịch 4 tuần và lộ trình nộp hội nghị |
-| [Báo cáo với giảng viên](docs/report/bao_cao_dinh_huong_va_mau_hang_tuan.md) | Khung báo cáo định hướng và mẫu cập nhật hằng tuần |
-| [Mô tả đề tài](docs/mo_ta_de_tai.md) | Tổng quan, phương pháp và phạm vi nghiên cứu |
-| [Danh mục papers](papers/link_papers.md) | Các paper tham khảo |
+| [Tổng quan nghiên cứu](reports/project_overview.md) | Câu hỏi nghiên cứu và thiết kế A/B/C |
+| [Khảo sát SR-BH 2020](reports/surveys/khao_sat_sr_bh_2020.md) | Phân bố lớp, payload thật và cặp request minh họa |
+| [Khảo sát CSIC 2010](reports/surveys/khao_sat_csic_2010.md) | Schema, nhãn nguồn, split và các ví dụ thực tế |
+| [Protocol dữ liệu](reports/protocol/README.md) | Tải dữ liệu, representation, split và audit |
+| [Kết quả Task 1](reports/progress/task_1_dataset_va_protocol.md) | Các kiểm tra dữ liệu đã làm và vấn đề annotation |
+| [Kế hoạch triển khai](reports/plan/ke_hoach_trien_khai_4_tuan.md) | Phạm vi và các mốc thực nghiệm |
+| [Task 2](reports/plan/task_2_pipeline_a_va_kiem_thu.md) | Checklist tổng thể Pipeline A; A1 và validation vẫn là phần tiếp theo |
+
+Các tài liệu kế hoạch mô tả công việc dự kiến; dùng code, artifact và trạng thái ở README này để phân biệt phần đã chạy với phần chưa triển khai.

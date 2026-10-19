@@ -1,0 +1,13 @@
+test_audit_detects_shared_groups_even_with_distinct_ids (test_data.DataTests.test_audit_detects_shared_groups_even_with_distinct_ids) ... ok
+test_balanced_sampling_shortfall_is_explicit (test_data.DataTests.test_balanced_sampling_shortfall_is_explicit) ... ok
+test_full_taxonomy_filter_conflicts_duplicates_and_missing (test_data.DataTests.test_full_taxonomy_filter_conflicts_duplicates_and_missing) ... ok
+test_group_disjoint_reproducible_splits_and_review_not_test (test_data.DataTests.test_group_disjoint_reproducible_splits_and_review_not_test) ... ok
+test_grouping_numeric_variants_without_changing_model_input (test_data.DataTests.test_grouping_numeric_variants_without_changing_model_input) ... ok
+test_missing_schema_fails_and_checksum_mismatch_fails (test_data.DataTests.test_missing_schema_fails_and_checksum_mismatch_fails) ... ok
+test_oversize_is_excluded_without_truncation (test_data.DataTests.test_oversize_is_excluded_without_truncation) ... ok
+test_request_preserves_encoding_unicode_boundaries_and_empty (test_data.DataTests.test_request_preserves_encoding_unicode_boundaries_and_empty) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.442s
+
+OK

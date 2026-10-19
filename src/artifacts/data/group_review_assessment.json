@@ -1,0 +1,181 @@
+{
+  "reviewer": "Codex",
+  "human_adjudicated": false,
+  "reviewed_groups": 16,
+  "examples_per_group_max": 3,
+  "group_labels": {
+    "NORMAL": 8,
+    "PATH_TRAVERSAL": 2,
+    "SQL_INJECTION": 2,
+    "CODE_INJECTION": 2,
+    "HTTP_RESPONSE_SPLITTING": 2
+  },
+  "findings": [
+    "Largest Normal groups reviewed differ in browser/OS version numbers.",
+    "Attack groups reviewed preserve the visible payload while changing date components in URI/Referer.",
+    "No non-singleton OS_COMMAND_INJECTION group was available under this rule in development/pool.",
+    "Grouping can miss near-duplicates with different textual cookies, User-Agent or body parameters. This spot-check does not certify absence of semantic leakage."
+  ],
+  "entries": [
+    {
+      "group_id": "017dd2384b4a471168f805bded9a91dbd4fd68e4795124c9efb09c75d1861b7a",
+      "members": 117,
+      "sampled_request_ids": [
+        "01ef98ef211046d2ac55aee72f7f29e180269bd5d99030e56c358bc2eac5ef59",
+        "053dc6931e2cd2922f3efbb02cef439fa35798d848142b137043eafdfaa8fe3c",
+        "0685a47cbe646deeaf7b7aacbcd3d4498d56ff9be9bf350e3bc6f5cc7cb0a472"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "415fa15633a69ca10778f87b5fbb0e92153d1597cb2d6976d798b19da76ac1e0",
+      "members": 117,
+      "sampled_request_ids": [
+        "007309b739b2ef5b1280040c0f6fbdf1ba6b0b6551139dfb79230967ce3f2155",
+        "082c514ace42c89f1fd0314f71d74dca5ce467fb812789284d29329a798323df",
+        "09a03a7ff6227945e9402366862669a631f39489a05b3a54f743887737a6b744"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "a0d8dd38f778a7a107e1d15539d8f35d5fd2b8704bf0c0ce7ea438ba37dbac87",
+      "members": 117,
+      "sampled_request_ids": [
+        "0127b6d7d50bcadbb99a8488292fe8aa239ae64717eec992ef6f258ea20c143f",
+        "04a910dbb1c47ff07b5016a5704b0628a508b5f555fd64760ce6034479ac0837",
+        "084f80c8aaa909acee56d6537b2aacc6be050749c3d05b3e036ad631af526ca9"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "e14d1873afc595f204235264cbfcc0abf15734478b187761523ada0aa4e21df4",
+      "members": 116,
+      "sampled_request_ids": [
+        "028cdcfcf6f5dc4fe348d48273499cdfb626e8ba2431ddfdbc57c97eaec8b1cf",
+        "095f31f1b8c4d7103b9cc1ca096f4bff5305b89acf1242631bf957339805f291",
+        "0b68d5c628c60a06ecbe0a93eae1751ff1eef7818d3afffac0630cd0ebad9971"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "cb0b795fcad6e18c0a8ca0323d47d46a35de1c2b50d4bb086dc4bd78411552dc",
+      "members": 113,
+      "sampled_request_ids": [
+        "026ae2a456c38ece00cd588619c3c80fb5b6b82a9bb75200ccceb4983b0d8042",
+        "061dd410d9547859db006ace2b606f1b5a79b3c03ba710625b0f9b2149687547",
+        "0730801ec388ae407dc6b15b489663a2e6a030ea1171b2e7a64a96eee874ab7d"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "530e9d371a8a74483fd0789c986d243a767ebc4ca0700ac466e426c01a0131fa",
+      "members": 110,
+      "sampled_request_ids": [
+        "005b8421edab2c91fdd13c43515909944b716675fcf1038692fe904c893a78d5",
+        "0392a4c145a49751e954bb0ac96a40edaaa97b5182af04d88fe5243ffefb6134",
+        "05e82674cc821906a26dcb090a8019f23039a2ce26a66d55303643c042df5fd8"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "6dfd8a0bd1656fee50993480693bb3db8b13457330534bc424769f2360e8b855",
+      "members": 110,
+      "sampled_request_ids": [
+        "0087dc902883f770a254a6f631b858ffdabbb038a7b865e26030a134928fcb8d",
+        "02287f339570e2bc99e04fb68124368a7bfc2df8258da59a141d1b77415d1ece",
+        "02973e92a3830ba5ff41e6f78d88e8c2453281b62e859600cb9c241d8737966f"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "d0c285051a79fff7b92468a3772df1a127e1f84c1816d18c275dc54df027c765",
+      "members": 109,
+      "sampled_request_ids": [
+        "004f63c2d0ae9fadf8cac81ddde06168bd47f6e22b9be92f737760cd64dc0dba",
+        "00813beceb9cf3e168aa4dbb503f225a284a0bf6529533e02a4d638f9df370fc",
+        "07e7970843bc73fdb620a66967c4ca65f5c315b45770d0e63c038b778d666f6b"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "0007c16131086fe1cfc5f2a3c5bf5e737ca79febdee3c5957d515653ae89e970",
+      "members": 5,
+      "sampled_request_ids": [
+        "8b2c961ae7bb2b60cd0b43383f6bf011fd176b7be82d42f955124aa955ddea30",
+        "90c6864c098f4ff9b4cb24872b1bc79b7f6924892140d10d192d69a38444c1c6",
+        "b595c7c55c6867e8226538f4db503a7f6d26cad2feb47a53daed9ab4d546c4e3"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "035210545d2e72230e6f241773401679cb49e315a8bbe447923a77d1a76280d6",
+      "members": 5,
+      "sampled_request_ids": [
+        "24c6f59a16825fcb8488d9e11f2939ea2c3e6f6e2c51ee3603e5195c74803f8f",
+        "481f559a4f52d5dc6f39d85bdca101dd5e924012793f1b1e1fbba11f1d0741f7",
+        "6687c6962803b6a8466374ff2d3d7cc375153761a017a615c5bc46a6fcdfcb48"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "048c5ad66e97df8abd39fe6ea639fb8f15583eecadc1db8b2ac3947c78c6f662",
+      "members": 5,
+      "sampled_request_ids": [
+        "13661ac397400114276459281ec6fa58d7fbd27ab8f90c2a18673c0480d52614",
+        "508713774601b9978bba898f64de27cd8e62d7ba233f797f60d406177da21a2c",
+        "75944a8ad00a8c74e23eadd3b1400440294b7674efcea54ed198a998048e464c"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "06aa3874187fda06b912f0a124cc96eb2e7ee80a2c9331d86818cdf4971966f6",
+      "members": 5,
+      "sampled_request_ids": [
+        "11045db80711c3526c102deb31bfd5ccfd44d3038d2eeb232f5031a0de959d63",
+        "1178b832dd81cd3afbb4bf916d76fdec6d5f8b9959343ab56206e90e0a963b99",
+        "76d2a64acef0c14a88e137243b21930c3d74d7e91aaa1e921e526ffc169579df"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "39d60c5bcf9e8b6e29a3f81a291e86111fd7bc888b9dc90cf2776d83aff07419",
+      "members": 5,
+      "sampled_request_ids": [
+        "277633fc1591fe538e8f9809542f2d0d7fea8e3ecaec59fe2422a8c8311849a9",
+        "5e6be78030d1512cfa8499a5d45a4bc7e5334597f6b31de2bfddb07c234bf1e8",
+        "c5cb0e5a53b9aa06ab47a0c0487f19345f6b8e6c5cfbeb081999e341740e028b"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "476d969b3980985b7e6e6002158cd3f85163fd5ecb9e963e24d0573601cb512d",
+      "members": 5,
+      "sampled_request_ids": [
+        "7f10e67b2c538b776dc7f4bd12fd645ffc5e837f412289c29c9a6ff2f7ea7bb6",
+        "85b3bc61279ef56a9e058aa55bba05810b6f6e654884a9d03248806c622b35b7",
+        "8b667f4ef4f5b21a2204358bd609bfba655a80547aac54752fee6f8d39162bd4"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "ae115416960c4586bbadcf75bc9927bbce6e68df0d0368c6ef49fe2f5fc58bff",
+      "members": 5,
+      "sampled_request_ids": [
+        "0c59a48a2c794d1e9286a8c0a82045bf5a123fa7d31ad2cd2ef7846ca753cbc3",
+        "1ffc3ab09b7f404661dfddc96953ddda0db81c868d8d31d97bfde4efd62bbf5b",
+        "816ee0790eaa547acb7b5f61b4c9ab96666d029409d70711131a7cf890359f29"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    },
+    {
+      "group_id": "4022f0659d7b10cc0daa4561f700fe2c51110f1ddc8f3c8c275c65763291c210",
+      "members": 4,
+      "sampled_request_ids": [
+        "45685935252709bfbe68bb529f3a43beb7dd88aaba52d78281a4081f8b706742",
+        "6c506375c948e1e6d651f9c4f7f60e3cd0d4aa2614b89a7ed1434c4e40ebf199",
+        "eab02fbfa5b1863c899e368f6f466805c7078ae4b2607b41227497b78d125b83"
+      ],
+      "assessment": "compatible_with_declared_mask_rule_on_sample"
+    }
+  ]
+}

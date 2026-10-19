@@ -1,0 +1,21 @@
+test_bad_content_length_is_reported_not_silently_truncated (test_csic_2010.CsicTests.test_bad_content_length_is_reported_not_silently_truncated) ... ok
+test_crlf_and_duplicate_headers_preserved (test_csic_2010.CsicTests.test_crlf_and_duplicate_headers_preserved) ... ok
+test_get_post_boundaries_lengths_and_original_bytes (test_csic_2010.CsicTests.test_get_post_boundaries_lengths_and_original_bytes) ... ok
+test_pair_has_actual_parameter_change_and_discloses_cookie (test_csic_2010.CsicTests.test_pair_has_actual_parameter_change_and_discloses_cookie) ... ok
+test_screening_does_not_relabel_anomalous_as_sqli (test_csic_2010.CsicTests.test_screening_does_not_relabel_anomalous_as_sqli) ... ok
+test_audit_detects_shared_groups_even_with_distinct_ids (test_data.DataTests.test_audit_detects_shared_groups_even_with_distinct_ids) ... ok
+test_balanced_sampling_shortfall_is_explicit (test_data.DataTests.test_balanced_sampling_shortfall_is_explicit) ... ok
+test_full_taxonomy_filter_conflicts_duplicates_and_missing (test_data.DataTests.test_full_taxonomy_filter_conflicts_duplicates_and_missing) ... ok
+test_group_disjoint_reproducible_splits_and_review_not_test (test_data.DataTests.test_group_disjoint_reproducible_splits_and_review_not_test) ... ok
+test_grouping_numeric_variants_without_changing_model_input (test_data.DataTests.test_grouping_numeric_variants_without_changing_model_input) ... ok
+test_missing_schema_fails_and_checksum_mismatch_fails (test_data.DataTests.test_missing_schema_fails_and_checksum_mismatch_fails) ... ok
+test_oversize_is_excluded_without_truncation (test_data.DataTests.test_oversize_is_excluded_without_truncation) ... ok
+test_request_preserves_encoding_unicode_boundaries_and_empty (test_data.DataTests.test_request_preserves_encoding_unicode_boundaries_and_empty) ... ok
+test_cannot_relabel_xss_example_as_sqli (test_survey.SurveyTests.test_cannot_relabel_xss_example_as_sqli) ... ok
+test_counts_multilabel_and_original_payload_provenance (test_survey.SurveyTests.test_counts_multilabel_and_original_payload_provenance) ... ok
+test_pair_not_in_pool_or_development_is_rejected (test_survey.SurveyTests.test_pair_not_in_pool_or_development_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.414s
+
+OK

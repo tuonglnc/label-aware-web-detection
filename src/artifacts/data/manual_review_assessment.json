@@ -1,0 +1,438 @@
+{
+  "reviewer": "Codex",
+  "human_adjudicated": false,
+  "sampling": "Seeded balanced sample from development and pool only; 10/class",
+  "reviewed_requests": 60,
+  "counts": {
+    "compatible_visible_signal": 43,
+    "no_obvious_attack_signal": 5,
+    "suspected_annotation_issue": 5,
+    "needs_taxonomy_review": 7
+  },
+  "suspected_normal": 5,
+  "normal_reviewed": 10,
+  "source_labels_changed": false,
+  "decision": "Pending user decision: retain source-label pilot or investigate another dataset.",
+  "entries": [
+    {
+      "index": 0,
+      "request_id": "30294b5fa8ea7e1862abd4f39e106c580e151404ae165e1c5137d66063f917ca",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 1,
+      "request_id": "583dd91637527354625a97201ee8f25a573e7cdcef3644a516c742508951e452",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 2,
+      "request_id": "209b3c5be52983feeff35e4204d6dfcd28b690bc65271d602acd6c206a590e01",
+      "label": "NORMAL",
+      "assessment": "no_obvious_attack_signal",
+      "note": "Không thấy tín hiệu attack rõ trong mẫu; không chứng minh benign tuyệt đối."
+    },
+    {
+      "index": 3,
+      "request_id": "a4ebd81ee5e17d23e29c3999dfe72b2f0c63688269931bc319d818a73f979099",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 4,
+      "request_id": "618cdecbfa0d98a238862ff3ed61f2b18ae48885bcea4cdfdf995a75e5549a24",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 5,
+      "request_id": "03934f4b13951fd86b9d954ebdc09c6a93e23f23c6a8f4070e6c8e4c13ac6352",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 6,
+      "request_id": "0ad1c905b81030a67181b1184de779e51abf9d982044844c8f43e3313aa29e59",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 7,
+      "request_id": "422ba60f5098584ad39641d9f857eb246325f69eb34b1ce89bb5c24ae1adf133",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 8,
+      "request_id": "80a9a50896c433f2617778a3522b7c42f8171c29e1306391b86b68891e077929",
+      "label": "NORMAL",
+      "assessment": "suspected_annotation_issue",
+      "note": "Normal nhưng URI chứa payload encoded sleep(15)."
+    },
+    {
+      "index": 9,
+      "request_id": "72b98661b0e80f97fa3c8edfef8fa501c7134148e35867dd74bef49ddf7679e8",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "needs_taxonomy_review",
+      "note": "Biểu thức ${...} trong URI; cần phân biệt OS command với expression/code injection."
+    },
+    {
+      "index": 10,
+      "request_id": "0c23a5f08cd815080248dbfb122ed4b4be5e1e7e1f9cf93077bcd207f77dcce0",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 11,
+      "request_id": "4301873723169e098f6106a1e8a76ee7a7507fb53d49b05c9dad7e133c0c33aa",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 12,
+      "request_id": "77c40eaf9f776307744e302e677406830c2690c9f26ddacd4e6b39a4fee09054",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 13,
+      "request_id": "3887c6d843a83dc01c28d1ce1b98850dde7aac128861dd15ec1ed6ac7ca0b276",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 14,
+      "request_id": "88024eb119425aef91fa0cf7d1c2b090c108c637c5bfd4d3add793dc4eca2e28",
+      "label": "NORMAL",
+      "assessment": "suspected_annotation_issue",
+      "note": "Normal nhưng URI chứa cat /etc/passwd encoded và dấu phân tách shell."
+    },
+    {
+      "index": 15,
+      "request_id": "9ce1ab828a34f8fec6e7c2757bd9b8acc2bb7733b28ca5dd94d2824048fcfc06",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 16,
+      "request_id": "7283ef6df17f3afec8afaae78614d7dedf647ac58b4d3f2190b6b028c28da38c",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 17,
+      "request_id": "714c3bc2dd5d257f3dded824d157977e119fd2a3cf6466e97a4ab267e945de0c",
+      "label": "SQL_INJECTION",
+      "assessment": "needs_taxonomy_review",
+      "note": "Payload sleep encoded có thể phù hợp nhiều loại injection; chưa adjudicate."
+    },
+    {
+      "index": 18,
+      "request_id": "6b4cdebcb782d650715eb1d1d6459305ea64ff910f5dcbde08e564d67ce7aa4f",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 19,
+      "request_id": "e7dae5185f80d257367d93ca5e800b482ba55693084157657fed65ac49c47764",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "needs_taxonomy_review",
+      "note": "Newline encoded kèm sleep; cần phân biệt response splitting với command injection."
+    },
+    {
+      "index": 20,
+      "request_id": "7faf3f61aebfd44e50fd13e2fcf6603687cd77f56f8d48326cd68e9175900704",
+      "label": "NORMAL",
+      "assessment": "no_obvious_attack_signal",
+      "note": "Không thấy tín hiệu attack rõ trong mẫu; không chứng minh benign tuyệt đối."
+    },
+    {
+      "index": 21,
+      "request_id": "67c97c9552cc020508f9270f07e19b7579fd2168d99bc116a9894c9e47b35603",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 22,
+      "request_id": "6c49ffee8e12a26a32956b385ae841dc8b34f66c4afb3a001843d29cb0cb6e6f",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 23,
+      "request_id": "68299df30da5806590fd9e874f41f407cd962ecdb4469f07d04fd539e21d5143",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 24,
+      "request_id": "619e749471f74dade1eeecd137cdf484f33668578f8a8e858d24f16a9cc824fb",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 25,
+      "request_id": "97e08fba8c776e6f76b820afba7161b717813e3318a4301a3c0be6d2d4a2eed1",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 26,
+      "request_id": "516c9a079cfe786a5c05d26c8e97072eed14808a28b4f0c40b5fc78753f0fd7e",
+      "label": "NORMAL",
+      "assessment": "no_obvious_attack_signal",
+      "note": "Không thấy tín hiệu attack rõ trong mẫu; không chứng minh benign tuyệt đối."
+    },
+    {
+      "index": 27,
+      "request_id": "3d952a8b38a4820672e8e2705a3dd1f992fe4996e380ccc57b951951655dcc2d",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 28,
+      "request_id": "1521b6244da33a554b97def0542087ed93a613e20f4c1e35a0c20c700b160d4e",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 29,
+      "request_id": "d0af48cc145370bf53dfba8a13f5280d3c72f852f2c1bf4e287fdf5c80a2a1bf",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 30,
+      "request_id": "3c44811c0af093ebf28b4438c1df4f271a39acbcc6be19580c9a5b036952c108",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 31,
+      "request_id": "00a19f0da38223746b24002f0755bb07579e237f5f14f6926298461e1118d8f9",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 32,
+      "request_id": "c517eb4a7476c9be13871e8560a336f0821f64a3db9e37b95c279b07b4edcb12",
+      "label": "NORMAL",
+      "assessment": "no_obvious_attack_signal",
+      "note": "Không thấy tín hiệu attack rõ trong mẫu; không chứng minh benign tuyệt đối."
+    },
+    {
+      "index": 33,
+      "request_id": "4f407b3705e492324ecc7238377869c76f49455c0720994678dfbbc3111c482c",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 34,
+      "request_id": "241d030a4a2b6ab0ba7e1f423a4b61af8c4abb526d24ae310a5ac7dab361f30d",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 35,
+      "request_id": "bf44d2c9afba593d6d770f90bc206225617312bd1dde0393954a2b4182296517",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 36,
+      "request_id": "2c24c61eeb3e20dc023d3e20ba3cc00cd8f2171959c3ef6a1ae963829186a85e",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 37,
+      "request_id": "26912f82476f1dff7cf76ba1abeb40b08b1f8542727b31d9940dbd399f18fe79",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "needs_taxonomy_review",
+      "note": "Newline encoded kèm sleep; cần phân biệt response splitting với command injection."
+    },
+    {
+      "index": 38,
+      "request_id": "18fec0f1c92aebd3e00423c7f8b75fb08d2b3e196693cd7db0cd6a51d4180a10",
+      "label": "NORMAL",
+      "assessment": "suspected_annotation_issue",
+      "note": "Normal nhưng URI chứa payload encoded sleep(15)."
+    },
+    {
+      "index": 39,
+      "request_id": "eaefe06c6df9841a0aec1842a857c8188b1867c4568d30405b375b412d8e76e0",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 40,
+      "request_id": "2e6fbec1a66ae1623ae47a545d4941d8fa923a5340a3579e51617a5c8feb3148",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 41,
+      "request_id": "6c175e652950fa420fba17e8db886da71c1d3c8cdb52824537734b5d7077f2dc",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 42,
+      "request_id": "eed57264871e0a7d2f75d826e2cb0f000508321e05068ef72c147023e8d91c36",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 43,
+      "request_id": "aa432f3d9bd3fce4d0b4a79aed9ce1da2e0e0279a2e0b4cd38780a69b4b22879",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "needs_taxonomy_review",
+      "note": "Newline encoded kèm sleep trong URI; đã xét thêm body và headers."
+    },
+    {
+      "index": 44,
+      "request_id": "bb21159652aa31328551430c78214ff130dd336e117111232ce90d5ba7a8227e",
+      "label": "NORMAL",
+      "assessment": "suspected_annotation_issue",
+      "note": "Normal nhưng URI chứa cat /etc/passwd encoded và dấu phân tách shell."
+    },
+    {
+      "index": 45,
+      "request_id": "0a46f4ded804ae9cd93fd7f31e2de44728091c40df104d00892c068d091efa9c",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 46,
+      "request_id": "403b605a6263ba08367eabfde8e442f7891622836af1b15f8cfd6112d9dc3108",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 47,
+      "request_id": "227792f212d9b5f37d5bfbb3382a420bcc4667db9bb5f3a554f6acd08ee231a4",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 48,
+      "request_id": "25879eaf929220917246cf171e2e1f50ba0b04a1d48bd21ec13aa721c5270098",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 49,
+      "request_id": "6be5f6fcace8da32c608a5f6e7a942ca7b243416d6123fb4cfdb199502b254da",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "needs_taxonomy_review",
+      "note": "Newline encoded kèm sleep; cần phân biệt response splitting với command injection."
+    },
+    {
+      "index": 50,
+      "request_id": "d0a26b79f1b52068428c6a2dc6fdbdd7bf8818362040b85925d35e0397d1b931",
+      "label": "NORMAL",
+      "assessment": "suspected_annotation_issue",
+      "note": "Normal nhưng URI chứa script/alert encoded."
+    },
+    {
+      "index": 51,
+      "request_id": "d2a80e366a3114214684155b55f908b8381720c853acd77d26e70e132db58b49",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 52,
+      "request_id": "d905e80c1e25def3caf9bb83304891c462fb4dc07d3b918ab9eeacf71e1a814b",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "needs_taxonomy_review",
+      "note": "Truy cập .git/index; cần xác minh phạm vi CAPEC-126 thay vì suy ra từ path đơn lẻ."
+    },
+    {
+      "index": 53,
+      "request_id": "1e19fba6860f73e2dcb497941a98b2e752d9a4dbf28db30933254bfce44fb7f2",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 54,
+      "request_id": "b8260367881fc23dee832f0e2dab6babd8b4bd0aed62ca6bc4b224eb2869cd07",
+      "label": "CODE_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 55,
+      "request_id": "152be617112e73b9682b65257fddc900419587f3ba31b842b03d7d1759784d33",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 56,
+      "request_id": "268fc355d1bfcc85a5ca9f189635000e75c6c0469508a2fd09f4a277d76e6b2d",
+      "label": "NORMAL",
+      "assessment": "no_obvious_attack_signal",
+      "note": "Không thấy tín hiệu attack rõ trong mẫu; không chứng minh benign tuyệt đối."
+    },
+    {
+      "index": 57,
+      "request_id": "a7183372e19a0b4d04314d32513fac41a09f8e1525c78e9ce7e484aded20582e",
+      "label": "OS_COMMAND_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 58,
+      "request_id": "7f755bde2603933715b5eb5ab070c6da0731b96f6cf344f3f1e429e544962d79",
+      "label": "PATH_TRAVERSAL",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    },
+    {
+      "index": 59,
+      "request_id": "199ef5dfcaa2413b0aa50f5022eb8d4c9be981d9afa41a0748f2ff693f76282c",
+      "label": "SQL_INJECTION",
+      "assessment": "compatible_visible_signal",
+      "note": "Có dấu hiệu phù hợp nhãn nguồn khi xem toàn request; chưa được chuyên gia xác nhận."
+    }
+  ]
+}

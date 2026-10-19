@@ -1,0 +1,25 @@
+{
+  "attack_id": "17f06954139192efe06cbbeaf9e8b8303dcf0b68b59a6888b2c76ec1e8cb178d",
+  "attack_raw_index": 174425,
+  "different_request_fields": [
+    "uri"
+  ],
+  "establishes_retrieval_failure": false,
+  "memberships": {
+    "17f06954139192efe06cbbeaf9e8b8303dcf0b68b59a6888b2c76ec1e8cb178d": "pool",
+    "a1bee81b02e901fef38abc8f5c71fdbe405bce9248e4bf4b2701d34cabc095fe": "pool"
+  },
+  "metric": "SequenceMatcher character similarity, autojunk=False; not embedding similarity",
+  "normal_id": "a1bee81b02e901fef38abc8f5c71fdbe405bce9248e4bf4b2701d34cabc095fe",
+  "normal_raw_index": 175088,
+  "request_text_similarity": 0.9949698189134809,
+  "source_label_adjudicated_by_human": false,
+  "uri_changes": [
+    {
+      "attack": "+AND+1%3D1",
+      "normal": "",
+      "operation": "insert"
+    }
+  ],
+  "uri_similarity": 0.9683544303797469
+}

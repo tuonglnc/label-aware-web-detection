@@ -1,0 +1,38 @@
+{
+  "dataset": "HTTP Dataset CSIC 2010",
+  "primary_url": "http://www.isi.csic.es/dataset/",
+  "source_kind": "third-party raw HTTP mirror; official bytes not independently verified",
+  "mirror_commit": "424c6e1c1951570473d9d6c0227eaaac6fdd6d02",
+  "encoding": "UTF-8 (strict validation on all files)",
+  "source_labels": {
+    "normalTrafficTraining.txt": "NORMAL",
+    "normalTrafficTest.txt": "NORMAL",
+    "anomalousTrafficTest.txt": "ANOMALOUS"
+  },
+  "files": [
+    {
+      "filename": "anomalousTrafficTest.txt",
+      "url": "https://raw.githubusercontent.com/msudol/Web-Application-Attack-Datasets/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010/anomalousTrafficTest.txt",
+      "bytes": 15734523,
+      "sha256_observed": "12fa4f0d496ceb859bb2652abf7f0f0ed8c59e1d9ce501b8a9a0ef38a625c046"
+    },
+    {
+      "filename": "normalTrafficTest.txt",
+      "url": "https://raw.githubusercontent.com/msudol/Web-Application-Attack-Datasets/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010/normalTrafficTest.txt",
+      "bytes": 20151204,
+      "sha256_observed": "f05dfc312d5d14fd1ed8371de27a9e4deab3dc09265f5d7f9df2643df8385089"
+    },
+    {
+      "filename": "normalTrafficTraining.txt",
+      "url": "https://raw.githubusercontent.com/msudol/Web-Application-Attack-Datasets/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010/normalTrafficTraining.txt",
+      "bytes": 20148988,
+      "sha256_observed": "d51de812d9201ef2b173b6ae3e3e740c309047ac85545c06c51d6fb1ddbc1e63"
+    }
+  ],
+  "download_commands": [
+    "mkdir -p src/data/raw/csic_2010",
+    "curl -fL 'https://raw.githubusercontent.com/msudol/Web-Application-Attack-Datasets/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010/anomalousTrafficTest.txt' -o src/data/raw/csic_2010/anomalousTrafficTest.txt",
+    "curl -fL 'https://raw.githubusercontent.com/msudol/Web-Application-Attack-Datasets/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010/normalTrafficTest.txt' -o src/data/raw/csic_2010/normalTrafficTest.txt",
+    "curl -fL 'https://raw.githubusercontent.com/msudol/Web-Application-Attack-Datasets/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010/normalTrafficTraining.txt' -o src/data/raw/csic_2010/normalTrafficTraining.txt"
+  ]
+}

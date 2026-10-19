@@ -1,0 +1,133 @@
+{
+  "analyst_screening_is_ground_truth": false,
+  "class_counts": {
+    "ANOMALOUS": 25065,
+    "NORMAL": 72000
+  },
+  "exact_conflicting_requests": 0,
+  "existing_project_test_used_for_tuning": false,
+  "files": {
+    "anomalousTrafficTest.txt": {
+      "bytes": 15734523,
+      "content_length_issues": 0,
+      "empty_body": 15088,
+      "header_presence": {
+        "Accept": 25065,
+        "Accept-Charset": 25065,
+        "Accept-Encoding": 25065,
+        "Accept-Language": 25065,
+        "Cache-control": 25065,
+        "Connection": 25065,
+        "Content-Length": 9977,
+        "Content-Type": 9977,
+        "Cookie": 25065,
+        "Host": 25065,
+        "Pragma": 25065,
+        "User-Agent": 25065
+      },
+      "invalid_header_records": 0,
+      "label": "ANOMALOUS",
+      "md5": "c1510bbd807e9c8a0bb94457279e9318",
+      "methods": {
+        "GET": 15088,
+        "POST": 9580,
+        "PUT": 397
+      },
+      "records": 25065,
+      "screening_pattern_hits_not_subtype_labels": {
+        "sql_pattern": 628,
+        "xss_pattern": 736
+      },
+      "sha256": "12fa4f0d496ceb859bb2652abf7f0f0ed8c59e1d9ce501b8a9a0ef38a625c046",
+      "split": "source_test_anomalous"
+    },
+    "normalTrafficTest.txt": {
+      "bytes": 20151204,
+      "content_length_issues": 0,
+      "empty_body": 28000,
+      "header_presence": {
+        "Accept": 36000,
+        "Accept-Charset": 36000,
+        "Accept-Encoding": 36000,
+        "Accept-Language": 36000,
+        "Cache-control": 36000,
+        "Connection": 36000,
+        "Content-Length": 8000,
+        "Content-Type": 8000,
+        "Cookie": 36000,
+        "Host": 36000,
+        "Pragma": 36000,
+        "User-Agent": 36000
+      },
+      "invalid_header_records": 0,
+      "label": "NORMAL",
+      "md5": "8918fc158ba7d8eaa4445fddc1d9f60f",
+      "methods": {
+        "GET": 28000,
+        "POST": 8000
+      },
+      "records": 36000,
+      "screening_pattern_hits_not_subtype_labels": {},
+      "sha256": "f05dfc312d5d14fd1ed8371de27a9e4deab3dc09265f5d7f9df2643df8385089",
+      "split": "source_test_normal"
+    },
+    "normalTrafficTraining.txt": {
+      "bytes": 20148988,
+      "content_length_issues": 0,
+      "empty_body": 28000,
+      "header_presence": {
+        "Accept": 36000,
+        "Accept-Charset": 36000,
+        "Accept-Encoding": 36000,
+        "Accept-Language": 36000,
+        "Cache-control": 36000,
+        "Connection": 36000,
+        "Content-Length": 8000,
+        "Content-Type": 8000,
+        "Cookie": 36000,
+        "Host": 36000,
+        "Pragma": 36000,
+        "User-Agent": 36000
+      },
+      "invalid_header_records": 0,
+      "label": "NORMAL",
+      "md5": "b2075710920974e032ea95ae49a58ea2",
+      "methods": {
+        "GET": 28000,
+        "POST": 8000
+      },
+      "records": 36000,
+      "screening_pattern_hits_not_subtype_labels": {},
+      "sha256": "d51de812d9201ef2b173b6ae3e3e740c309047ac85545c06c51d6fb1ddbc1e63",
+      "split": "source_train"
+    }
+  },
+  "license_verified": false,
+  "mirror_commit": "424c6e1c1951570473d9d6c0227eaaac6fdd6d02",
+  "mirror_url": "https://github.com/msudol/Web-Application-Attack-Datasets/tree/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010",
+  "native_attack_subtype_labels_available": false,
+  "native_labels": [
+    "NORMAL",
+    "ANOMALOUS"
+  ],
+  "original_csic_test_inspected_for_eda": true,
+  "overlap": {
+    "source_test_normal/source_test_anomalous": {
+      "request_id": 0,
+      "without_cookie_hash": 0
+    },
+    "source_train/source_test_anomalous": {
+      "request_id": 0,
+      "without_cookie_hash": 0
+    },
+    "source_train/source_test_normal": {
+      "request_id": 0,
+      "without_cookie_hash": 626
+    }
+  },
+  "primary_download_accessible_in_session": false,
+  "primary_url": "http://www.isi.csic.es/dataset/",
+  "source_test_records": 61065,
+  "total_records": 97065,
+  "unique_exact_requests": 97065
+}

@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "root_content_directories": [
+    "src",
+    "reports"
+  ],
+  "unit_test_command": "python3 -m unittest discover -s src/tests -v",
+  "unit_tests_passed": 16,
+  "raw_files_sha256_preserved": 4,
+  "processed_files_and_manifests_sha256_preserved": 24,
+  "local_markdown_links_checked": 61,
+  "broken_local_markdown_links": 0,
+  "notebook_data_path_resolvers_verified": 2,
+  "report_generators_verified": [
+    "src.preprocessing.csic_report",
+    "src.preprocessing.survey_report"
+  ],
+  "module_entrypoints_verified": [
+    "src.preprocessing.prepare",
+    "src.preprocessing.csic_2010"
+  ],
+  "gitignore_verified_for_relocated_data": true,
+  "migration_log": "src/artifacts/layout_migration.json",
+  "reading_entrypoint": "reports/README.md"
+}

@@ -1,0 +1,18 @@
+{
+  "dataset": "src/data/processed/sr_bh_v1/development.jsonl",
+  "sha256": "206dbb551339e2a6f3c041875a6ceceafbcea683fe71496ccddf5af92f7cd1ac",
+  "n": 30,
+  "class_counts": {
+    "PATH_TRAVERSAL": 5,
+    "HTTP_RESPONSE_SPLITTING": 5,
+    "SQL_INJECTION": 5,
+    "NORMAL": 5,
+    "CODE_INJECTION": 5,
+    "OS_COMMAND_INJECTION": 5
+  },
+  "schema_valid": true,
+  "max_request_chars": 1164,
+  "backend_env_names_present": [],
+  "real_api_called": false,
+  "final_test_read": false
+}

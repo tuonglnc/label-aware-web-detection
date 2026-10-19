@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "independent_request_line_counts": {
+    "anomalousTrafficTest.txt": 25065,
+    "normalTrafficTest.txt": 36000,
+    "normalTrafficTraining.txt": 36000
+  },
+  "total": 97065,
+  "source_hashes_match_local_manifest": true,
+  "five_example_byte_intervals_verified": true,
+  "all_seven_survey_sections_present": true,
+  "verbatim_examples_present": true,
+  "report_links_valid": true,
+  "unit_tests_passed": 16,
+  "parser_sha256": "cdce4909de6f7d4ce120442e12c4dabccaa4987fbfe6c4fb36a07cc1304a3175",
+  "report_generator_sha256": "0dbad465a97c519ddb3a0c4aceb214c5b134a4a63539645e5fe090be8def5a48",
+  "native_subtype_labels_created": false,
+  "project_split_configs_changed": false
+}

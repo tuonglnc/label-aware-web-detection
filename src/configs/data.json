@@ -1,0 +1,40 @@
+{
+  "protocol_version": "sr-bh-single-label-v1",
+  "seed": 42,
+  "source": {
+    "doi": "10.7910/DVN/OGOIXX",
+    "version": "1.2",
+    "file_id": 6319496,
+    "url": "https://dataverse.harvard.edu/api/access/datafile/6319496",
+    "license": "CC0-1.0",
+    "expected_md5": "173ec515308bdce5aec19cfd5b792596"
+  },
+  "labels": {
+    "000 - Normal": "NORMAL",
+    "66 - SQL Injection": "SQL_INJECTION",
+    "126 - Path Traversal": "PATH_TRAVERSAL",
+    "242 - Code Injection": "CODE_INJECTION",
+    "34 - HTTP Response Splitting": "HTTP_RESPONSE_SPLITTING",
+    "88 - OS Command Injection": "OS_COMMAND_INJECTION"
+  },
+  "headers": {
+    "request_host": "Host",
+    "request_user_agent": "User-Agent",
+    "request_referer": "Referer",
+    "request_origin": "Origin",
+    "request_cookie": "Cookie",
+    "request_content_type": "Content-Type",
+    "request_accept": "Accept",
+    "request_accept_language": "Accept-Language",
+    "request_accept_encoding": "Accept-Encoding",
+    "request_do_not_track": "DNT",
+    "request_connection": "Connection"
+  },
+  "max_request_chars": 32768,
+  "grouping": "full-request-mask-decimal-and-long-hex-v1",
+  "split_ratios": {"pool": 0.7, "validation": 0.15, "test": 0.15},
+  "development_per_class": 5,
+  "subset_sizes": {"pool": 3000, "validation": 200, "test": 600},
+  "min_groups_per_class": 20,
+  "review_per_class": 10
+}

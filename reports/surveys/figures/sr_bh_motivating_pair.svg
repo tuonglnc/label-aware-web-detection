@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="792pt" height="432pt" viewBox="0 0 792 432" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-19T08:39:57.195498</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.6.3, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 432 
+L 792 432 
+L 792 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="patch_2">
+   <path d="M 35.64 199.584 
+L 756.36 199.584 
+Q 765.864 199.584 765.864 194.4 
+L 765.864 77.76 
+Q 765.864 72.576 756.36 72.576 
+L 35.64 72.576 
+Q 26.136 72.576 26.136 77.76 
+L 26.136 194.4 
+Q 26.136 199.584 35.64 199.584 
+z
+" style="fill: #f5f7fa; stroke: #147d64; stroke-width: 1.3; stroke-linejoin: miter"/>
+  </g>
+  <g id="patch_3">
+   <path d="M 35.64 342.144 
+L 756.36 342.144 
+Q 765.864 342.144 765.864 336.96 
+L 765.864 220.32 
+Q 765.864 215.136 756.36 215.136 
+L 35.64 215.136 
+Q 26.136 215.136 26.136 220.32 
+L 26.136 336.96 
+Q 26.136 342.144 35.64 342.144 
+z
+" style="fill: #f5f7fa; stroke: #a4332a; stroke-width: 1.3; stroke-linejoin: miter"/>
+  </g>
+  <g id="text_1">
+   <text style="font: 700 17px 'DejaVu Sans'; text-anchor: start" x="39.6" y="25.92" transform="rotate(-0 39.6 25.92)">Nearly identical requests, different source labels</text>
+  </g>
+  <g id="text_2">
+   <text style="fill: #147d64; font: 700 13px 'DejaVu Sans'; text-anchor: start" x="51.48" y="101.52" transform="rotate(-0 51.48 101.52)">Normal — source label 000</text>
+  </g>
+  <g id="text_3">
+   <text style="fill: #435366; font: 10px 'DejaVu Sans'; text-anchor: start" x="530.64" y="100.224" transform="rotate(-0 530.64 100.224)">CSV index 175088 | pool</text>
+  </g>
+  <g id="text_4">
+   <text style="fill: #147d64; font: 9.4px 'DejaVu Sans Mono'" transform="translate(51.48 130.312469)">GET /blog/index.php/wp-json/oembed/1.0/embed?format=xml&amp;url=http%3A%2F%2Ftest-site.com%2Fblog%2Findex.php%2Fv</text>
+   <text style="fill: #147d64; font: 9.4px 'DejaVu Sans Mono'" transform="translate(51.48 140.962962)">itae-dolores-quidem-possimus-aut-voluptatibus%2F</text>
+   <text style="fill: #147d64; font: 9.4px 'DejaVu Sans Mono'" transform="translate(51.48 151.567925)">HTTP/1.1</text>
+  </g>
+  <g id="text_5">
+   <text style="fill: #a4332a; font: 700 13px 'DejaVu Sans'; text-anchor: start" x="51.48" y="244.08" transform="rotate(-0 51.48 244.08)">SQL Injection — CAPEC-66</text>
+  </g>
+  <g id="text_6">
+   <text style="fill: #435366; font: 10px 'DejaVu Sans'; text-anchor: start" x="530.64" y="242.784" transform="rotate(-0 530.64 242.784)">CSV index 174425 | pool</text>
+  </g>
+  <g id="text_7">
+   <text style="fill: #a4332a; font: 9.4px 'DejaVu Sans Mono'" transform="translate(51.48 272.872469)">GET /blog/index.php/wp-json/oembed/1.0/embed?format=xml+AND+1%3D1&amp;url=http%3A%2F%2Ftest-site.com%2Fblog%2Find</text>
+   <text style="fill: #a4332a; font: 9.4px 'DejaVu Sans Mono'" transform="translate(51.48 283.522963)">ex.php%2Fvitae-dolores-quidem-possimus-aut-voluptatibus%2F</text>
+   <text style="fill: #a4332a; font: 9.4px 'DejaVu Sans Mono'" transform="translate(51.48 294.127925)">HTTP/1.1</text>
+  </g>
+  <g id="text_8">
+   <text style="fill: #a4332a; font: 700 12px 'DejaVu Sans'; text-anchor: start" x="51.48" y="362.88" transform="rotate(-0 51.48 362.88)">Only request-target differs:  format=xml  →  format=xml+AND+1%3D1</text>
+  </g>
+  <g id="text_9">
+   <text style="font: 11px 'DejaVu Sans'; text-anchor: start" x="51.48" y="384.48" transform="rotate(-0 51.48 384.48)">URI character similarity: 96.84% | Same method, protocol, headers and empty body</text>
+  </g>
+  <g id="text_10">
+   <text style="fill: #435366; font: 9px 'DejaVu Sans'; text-anchor: start" x="51.48" y="403.92" transform="rotate(-0 51.48 403.92)">Display wraps URI lines. Full original field values are in the report and evidence JSON.</text>
+  </g>
+  <g id="text_11">
+   <text style="fill: #435366; font: 9px 'DejaVu Sans'; text-anchor: start" x="51.48" y="416.88" transform="rotate(-0 51.48 416.88)">Motivating illustration; embedding similarity and retrieval errors have not been measured.</text>
+  </g>
+ </g>
+</svg>

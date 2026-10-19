@@ -1,0 +1,7 @@
+{
+  "benign": 175088,
+  "sqli": 174425,
+  "xss": 7195,
+  "pair_normal": 175088,
+  "pair_attack": 174425
+}

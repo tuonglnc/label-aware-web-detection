@@ -1,0 +1,8 @@
+{
+  "checked_files": 12,
+  "different_files": [],
+  "first_output": "src/data/processed/sr_bh_v1",
+  "passed": true,
+  "policy": "Same raw file/config/seed; data and manifest byte-level SHA-256 equality across two full runs.",
+  "second_output": "src/data/processed/sr_bh_reproduce"
+}

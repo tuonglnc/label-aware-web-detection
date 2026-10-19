@@ -1,0 +1,8 @@
+{
+  "GET /catalog HTTP/1.1": {"raw_output": "{\"label\":\"NORMAL\"}"},
+  "GET /items?id=1%20OR%201=1 HTTP/1.1": {"raw_output": "{\"label\":\"SQL_INJECTION\"}"},
+  "GET /../../etc/passwd HTTP/1.1": {"raw_output": "{\"label\":\"PATH_TRAVERSAL\"}"},
+  "POST /eval HTTP/1.1\n\n<?php echo 1; ?>": {"raw_output": "{\"label\":\"NORMAL\"}"},
+  "GET /?q=%0d%0aX-Test:1 HTTP/1.1": {"raw_output": "```json\n{\"label\":\"HTTP_RESPONSE_SPLITTING\"}\n```"},
+  "GET /ping?host=localhost;id HTTP/1.1": {"error": "synthetic_transport_error"}
+}

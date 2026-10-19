@@ -1,0 +1,139 @@
+{
+  "files": {
+    "normalTrafficTraining.txt": {
+      "records": 36000,
+      "label": "NORMAL",
+      "split": "source_train",
+      "bytes": 20148988,
+      "sha256": "d51de812d9201ef2b173b6ae3e3e740c309047ac85545c06c51d6fb1ddbc1e63",
+      "md5": "b2075710920974e032ea95ae49a58ea2",
+      "methods": {
+        "GET": 28000,
+        "POST": 8000
+      },
+      "header_presence": {
+        "Cookie": 36000,
+        "Accept": 36000,
+        "Cache-control": 36000,
+        "Pragma": 36000,
+        "Accept-Encoding": 36000,
+        "Accept-Charset": 36000,
+        "Connection": 36000,
+        "Host": 36000,
+        "User-Agent": 36000,
+        "Accept-Language": 36000,
+        "Content-Type": 8000,
+        "Content-Length": 8000
+      },
+      "empty_body": 28000,
+      "content_length_issues": 0,
+      "invalid_header_records": 0,
+      "screening_pattern_hits_not_subtype_labels": {}
+    },
+    "normalTrafficTest.txt": {
+      "records": 36000,
+      "label": "NORMAL",
+      "split": "source_test_normal",
+      "bytes": 20151204,
+      "sha256": "f05dfc312d5d14fd1ed8371de27a9e4deab3dc09265f5d7f9df2643df8385089",
+      "md5": "8918fc158ba7d8eaa4445fddc1d9f60f",
+      "methods": {
+        "GET": 28000,
+        "POST": 8000
+      },
+      "header_presence": {
+        "Cookie": 36000,
+        "Accept": 36000,
+        "Cache-control": 36000,
+        "Pragma": 36000,
+        "Accept-Encoding": 36000,
+        "Accept-Charset": 36000,
+        "Connection": 36000,
+        "Host": 36000,
+        "User-Agent": 36000,
+        "Accept-Language": 36000,
+        "Content-Type": 8000,
+        "Content-Length": 8000
+      },
+      "empty_body": 28000,
+      "content_length_issues": 0,
+      "invalid_header_records": 0,
+      "screening_pattern_hits_not_subtype_labels": {}
+    },
+    "anomalousTrafficTest.txt": {
+      "records": 25065,
+      "label": "ANOMALOUS",
+      "split": "source_test_anomalous",
+      "bytes": 15734523,
+      "sha256": "12fa4f0d496ceb859bb2652abf7f0f0ed8c59e1d9ce501b8a9a0ef38a625c046",
+      "md5": "c1510bbd807e9c8a0bb94457279e9318",
+      "methods": {
+        "GET": 15088,
+        "POST": 9580,
+        "PUT": 397
+      },
+      "header_presence": {
+        "Cookie": 25065,
+        "Accept": 25065,
+        "Cache-control": 25065,
+        "Pragma": 25065,
+        "Accept-Encoding": 25065,
+        "Accept-Charset": 25065,
+        "Connection": 25065,
+        "Host": 25065,
+        "User-Agent": 25065,
+        "Accept-Language": 25065,
+        "Content-Type": 9977,
+        "Content-Length": 9977
+      },
+      "empty_body": 15088,
+      "content_length_issues": 0,
+      "invalid_header_records": 0,
+      "screening_pattern_hits_not_subtype_labels": {
+        "sql_pattern": 628,
+        "xss_pattern": 736
+      }
+    }
+  },
+  "total_records": 97065,
+  "class_counts": {
+    "NORMAL": 72000,
+    "ANOMALOUS": 25065
+  },
+  "source_test_records": 61065,
+  "native_labels": [
+    "NORMAL",
+    "ANOMALOUS"
+  ],
+  "native_attack_subtype_labels_available": false,
+  "overlap": {
+    "source_train/source_test_normal": {
+      "request_id": 0,
+      "without_cookie_hash": 626
+    },
+    "source_train/source_test_anomalous": {
+      "request_id": 0,
+      "without_cookie_hash": 0
+    },
+    "source_test_normal/source_test_anomalous": {
+      "request_id": 0,
+      "without_cookie_hash": 0
+    }
+  },
+  "unique_exact_requests": 97065,
+  "exact_conflicting_requests": 0,
+  "analyst_screening_is_ground_truth": false,
+  "license_verified": false,
+  "mirror_commit": "424c6e1c1951570473d9d6c0227eaaac6fdd6d02",
+  "primary_url": "http://www.isi.csic.es/dataset/",
+  "primary_download_accessible_in_session": false,
+  "mirror_url": "https://github.com/msudol/Web-Application-Attack-Datasets/tree/424c6e1c1951570473d9d6c0227eaaac6fdd6d02/OriginalDataSets/csic_2010",
+  "existing_project_test_used_for_tuning": false,
+  "original_csic_test_inspected_for_eda": true
+}
+{
+  "normal_index": 1333,
+  "anomalous_index": 12266,
+  "parameter": "cantidad",
+  "payload_similarity": 0.9370629370629371
+}

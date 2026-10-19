@@ -1,0 +1,29 @@
+{
+  "annotation_review": {
+    "human_adjudicated": false,
+    "normal_reviewed": 10,
+    "requests": 60,
+    "reviewer": "Codex",
+    "suspected_normal": 5
+  },
+  "benchmark_dataset_finalized": false,
+  "config": "src/configs/data.json",
+  "config_sha256": "2eb5370a0b9b44e87ccebe2a3ed6c45fc23cdb42055cbae5d85044e818f3173f",
+  "data_export": "src/data/processed/sr_bh_v1",
+  "final_test_used_for_tuning": false,
+  "input_sha256": "9c73c90ce6564ae48b14f7179cd864d037a6a130ef69c68c1626ec5d7ce4a910",
+  "pilot_dataset_decision": "pending_user_choice",
+  "remaining": [
+    "Resolve dataset/annotation policy before finalizing benchmark; survey and seven faculty answers are complete."
+  ],
+  "report": "reports/progress/task_1_dataset_va_protocol.md",
+  "source_annotations_changed": false,
+  "survey_evidence": "src/artifacts/data/sr_bh_survey",
+  "task": "Task 1 — Dataset and protocol",
+  "task_2_started": false,
+  "teacher_questions_answered": 7,
+  "teacher_questions_received": true,
+  "teacher_report": "reports/surveys/khao_sat_sr_bh_2020.md",
+  "technical_checks_passed": true,
+  "unit_tests_passed": 11
+}

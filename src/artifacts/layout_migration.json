@@ -1,0 +1,94 @@
+{
+  "moves": [
+    {
+      "from": "README.md",
+      "to": "reports/project_overview.md"
+    },
+    {
+      "from": "docs/README.md",
+      "to": "reports/README.md"
+    },
+    {
+      "from": "docs/mo_ta_de_tai.md",
+      "to": "reports/mo_ta_de_tai.md"
+    },
+    {
+      "from": "docs/data",
+      "to": "reports/protocol"
+    },
+    {
+      "from": "docs/plan",
+      "to": "reports/plan"
+    },
+    {
+      "from": "docs/report/bao_cao_dinh_huong_va_mau_hang_tuan.md",
+      "to": "reports/progress/bao_cao_dinh_huong_va_mau_hang_tuan.md"
+    },
+    {
+      "from": "docs/report/task_1_dataset_va_protocol.md",
+      "to": "reports/progress/task_1_dataset_va_protocol.md"
+    },
+    {
+      "from": "docs/report",
+      "to": "reports/surveys"
+    },
+    {
+      "from": "papers",
+      "to": "reports/references"
+    },
+    {
+      "from": "requirements-data.txt",
+      "to": "src/requirements-data.txt"
+    },
+    {
+      "from": "requirements-survey.txt",
+      "to": "src/requirements-survey.txt"
+    },
+    {
+      "from": "data_overview",
+      "to": "src/notebooks"
+    },
+    {
+      "from": "configs",
+      "to": "src/configs"
+    },
+    {
+      "from": "tests",
+      "to": "src/tests"
+    },
+    {
+      "from": "src/data",
+      "to": "src/preprocessing"
+    },
+    {
+      "from": "data",
+      "to": "src/data"
+    },
+    {
+      "from": "artifacts",
+      "to": "src/artifacts"
+    }
+  ],
+  "raw_data_sha256_preserved": true,
+  "raw_data": {
+    "src/data/raw/data_capec_multilabel.csv": "9c73c90ce6564ae48b14f7179cd864d037a6a130ef69c68c1626ec5d7ce4a910",
+    "src/data/raw/csic_2010/normalTrafficTraining.txt": "d51de812d9201ef2b173b6ae3e3e740c309047ac85545c06c51d6fb1ddbc1e63",
+    "src/data/raw/csic_2010/normalTrafficTest.txt": "f05dfc312d5d14fd1ed8371de27a9e4deab3dc09265f5d7f9df2643df8385089",
+    "src/data/raw/csic_2010/anomalousTrafficTest.txt": "12fa4f0d496ceb859bb2652abf7f0f0ed8c59e1d9ce501b8a9a0ef38a625c046"
+  },
+  "metadata_paths_updated": [
+    "src/artifacts/data/reproducibility.json",
+    "src/artifacts/data/handoff.json",
+    "src/artifacts/data/summary.json",
+    "src/artifacts/data/reproduce/summary.json",
+    "src/artifacts/data/sr_bh_survey/stats.json"
+  ],
+  "preserved": [
+    "raw HTTP/CSV bytes",
+    "processed JSONL",
+    "split manifests",
+    "config snapshots",
+    "historical execution hashes"
+  ],
+  "note": "Historical code hashes describe the original runs, before module/file relocation; they are not hashes of the relocated source."
+}

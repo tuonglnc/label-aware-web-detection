@@ -1,0 +1,191 @@
+{
+  "normal": {
+    "byte_end": 493,
+    "byte_start": 0,
+    "content_length_issue": false,
+    "invalid_header_lines": [],
+    "label": "NORMAL",
+    "raw_http": "GET http://localhost:8080/tienda1/index.jsp HTTP/1.1\nUser-Agent: Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)\nPragma: no-cache\nCache-control: no-cache\nAccept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\nAccept-Encoding: x-gzip, x-deflate, gzip, deflate\nAccept-Charset: utf-8, utf-8;q=0.5, *;q=0.5\nAccept-Language: en\nHost: localhost:8080\nCookie: JSESSIONID=1F767F17239C9B670A39E9B10C3825F4\nConnection: close\n\n\n",
+    "raw_sha256": "faf410c1f2742d9e6f3f95ce9719b05455ee9b6e59f5adf9b3225448de9b7abc",
+    "request": {
+      "body": "",
+      "headers": [
+        [
+          "User-Agent",
+          "Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)"
+        ],
+        [
+          "Pragma",
+          "no-cache"
+        ],
+        [
+          "Cache-control",
+          "no-cache"
+        ],
+        [
+          "Accept",
+          "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+        ],
+        [
+          "Accept-Encoding",
+          "x-gzip, x-deflate, gzip, deflate"
+        ],
+        [
+          "Accept-Charset",
+          "utf-8, utf-8;q=0.5, *;q=0.5"
+        ],
+        [
+          "Accept-Language",
+          "en"
+        ],
+        [
+          "Host",
+          "localhost:8080"
+        ],
+        [
+          "Cookie",
+          "JSESSIONID=1F767F17239C9B670A39E9B10C3825F4"
+        ],
+        [
+          "Connection",
+          "close"
+        ]
+      ],
+      "method": "GET",
+      "protocol": "HTTP/1.1",
+      "uri": "http://localhost:8080/tienda1/index.jsp"
+    },
+    "request_id": "f40e9a14bb55ddb89525ff0a5ee527b5104c0f7ac133fef8668ff13e46b44d44",
+    "source_file": "normalTrafficTraining.txt",
+    "source_index": 0,
+    "source_line": 1,
+    "source_split": "source_train",
+    "without_cookie_hash": "d6fa658b5218dd01cd4c359a5464dd2c163cf45d071e138b1c8d487f649f10a0"
+  },
+  "sqli_payload": {
+    "byte_end": 649,
+    "byte_start": 0,
+    "content_length_issue": false,
+    "invalid_header_lines": [],
+    "label": "ANOMALOUS",
+    "raw_http": "GET http://localhost:8080/tienda1/publico/anadir.jsp?id=2&nombre=Jam%F3n+Ib%E9rico&precio=85&cantidad=%27%3B+DROP+TABLE+usuarios%3B+SELECT+*+FROM+datos+WHERE+nombre+LIKE+%27%25&B1=A%F1adir+al+carrito HTTP/1.1\nUser-Agent: Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)\nPragma: no-cache\nCache-control: no-cache\nAccept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\nAccept-Encoding: x-gzip, x-deflate, gzip, deflate\nAccept-Charset: utf-8, utf-8;q=0.5, *;q=0.5\nAccept-Language: en\nHost: localhost:8080\nCookie: JSESSIONID=B92A8B48B9008CD29F622A994E0F650D\nConnection: close\n\n\n",
+    "raw_sha256": "2397dfac905b451284f661a59a19f06a42431cb15cd34c29afcb86e49b2c654b",
+    "request": {
+      "body": "",
+      "headers": [
+        [
+          "User-Agent",
+          "Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)"
+        ],
+        [
+          "Pragma",
+          "no-cache"
+        ],
+        [
+          "Cache-control",
+          "no-cache"
+        ],
+        [
+          "Accept",
+          "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+        ],
+        [
+          "Accept-Encoding",
+          "x-gzip, x-deflate, gzip, deflate"
+        ],
+        [
+          "Accept-Charset",
+          "utf-8, utf-8;q=0.5, *;q=0.5"
+        ],
+        [
+          "Accept-Language",
+          "en"
+        ],
+        [
+          "Host",
+          "localhost:8080"
+        ],
+        [
+          "Cookie",
+          "JSESSIONID=B92A8B48B9008CD29F622A994E0F650D"
+        ],
+        [
+          "Connection",
+          "close"
+        ]
+      ],
+      "method": "GET",
+      "protocol": "HTTP/1.1",
+      "uri": "http://localhost:8080/tienda1/publico/anadir.jsp?id=2&nombre=Jam%F3n+Ib%E9rico&precio=85&cantidad=%27%3B+DROP+TABLE+usuarios%3B+SELECT+*+FROM+datos+WHERE+nombre+LIKE+%27%25&B1=A%F1adir+al+carrito"
+    },
+    "request_id": "c696d783ecad3c90cb3cb6f4dc29067237ae9220a49a1a3367ad90e5ed8d69cb",
+    "source_file": "anomalousTrafficTest.txt",
+    "source_index": 0,
+    "source_line": 1,
+    "source_split": "source_test_anomalous",
+    "without_cookie_hash": "aa8f70a3c0180e82786cbafe374f1df969a37d2e7a539b4a1ff7f9beb9fb47fc"
+  },
+  "xss_payload": {
+    "byte_end": 3714,
+    "byte_start": 3089,
+    "content_length_issue": false,
+    "invalid_header_lines": [],
+    "label": "ANOMALOUS",
+    "raw_http": "GET http://localhost:8080/tienda1/publico/autenticar.jsp?modo=entrar&login=bob%40%3CSCRipt%3Ealert%28Paros%29%3C%2FscrIPT%3E.parosproxy.org&pwd=84m3ri156&remember=on&B1=Entrar HTTP/1.1\nUser-Agent: Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)\nPragma: no-cache\nCache-control: no-cache\nAccept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\nAccept-Encoding: x-gzip, x-deflate, gzip, deflate\nAccept-Charset: utf-8, utf-8;q=0.5, *;q=0.5\nAccept-Language: en\nHost: localhost:8080\nCookie: JSESSIONID=AC0EEEDD09663CB36C67DD1B787B0CF5\nConnection: close\n\n\n",
+    "raw_sha256": "66421c15d73e52fed68f95bd90fe5dfe6ceacc0d04322106b19c8d26a53ed101",
+    "request": {
+      "body": "",
+      "headers": [
+        [
+          "User-Agent",
+          "Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)"
+        ],
+        [
+          "Pragma",
+          "no-cache"
+        ],
+        [
+          "Cache-control",
+          "no-cache"
+        ],
+        [
+          "Accept",
+          "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+        ],
+        [
+          "Accept-Encoding",
+          "x-gzip, x-deflate, gzip, deflate"
+        ],
+        [
+          "Accept-Charset",
+          "utf-8, utf-8;q=0.5, *;q=0.5"
+        ],
+        [
+          "Accept-Language",
+          "en"
+        ],
+        [
+          "Host",
+          "localhost:8080"
+        ],
+        [
+          "Cookie",
+          "JSESSIONID=AC0EEEDD09663CB36C67DD1B787B0CF5"
+        ],
+        [
+          "Connection",
+          "close"
+        ]
+      ],
+      "method": "GET",
+      "protocol": "HTTP/1.1",
+      "uri": "http://localhost:8080/tienda1/publico/autenticar.jsp?modo=entrar&login=bob%40%3CSCRipt%3Ealert%28Paros%29%3C%2FscrIPT%3E.parosproxy.org&pwd=84m3ri156&remember=on&B1=Entrar"
+    },
+    "request_id": "c6ecef56ff22e0d5cd4b729f2760777f0d5dfd9d2153fb61ef01751d153729f8",
+    "source_file": "anomalousTrafficTest.txt",
+    "source_index": 5,
+    "source_line": 72,
+    "source_split": "source_test_anomalous",
+    "without_cookie_hash": "078a18ed3d5185917b1a7ae5882135316f1e19c6119292976b529c1cea7940bc"
+  }
+}

@@ -1,0 +1,2 @@
+# A0 and its tests use Python standard library only.
+# Python >= 3.10 on POSIX (fcntl advisory lock); validated on Python 3.12.3/Linux.

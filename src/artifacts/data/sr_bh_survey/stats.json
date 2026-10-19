@@ -1,0 +1,232 @@
+{
+  "attack_class_count": 13,
+  "class_distribution": [
+    {
+      "label": "000 - Normal",
+      "percent_of_records": 57.85264618892616,
+      "samples": 525195
+    },
+    {
+      "label": "272 - Protocol Manipulation",
+      "percent_of_records": 1.0082450719584939,
+      "samples": 9153
+    },
+    {
+      "label": "242 - Code Injection",
+      "percent_of_records": 1.743416885598938,
+      "samples": 15827
+    },
+    {
+      "label": "88 - OS Command Injection",
+      "percent_of_records": 0.824176732043423,
+      "samples": 7482
+    },
+    {
+      "label": "126 - Path Traversal",
+      "percent_of_records": 2.3123654048457007,
+      "samples": 20992
+    },
+    {
+      "label": "66 - SQL Injection",
+      "percent_of_records": 27.57290857718808,
+      "samples": 250311
+    },
+    {
+      "label": "16 - Dictionary-based Password Attack",
+      "percent_of_records": 0.20345554986423445,
+      "samples": 1847
+    },
+    {
+      "label": "310 - Scanning for Vulnerable Software",
+      "percent_of_records": 0.29940020819219776,
+      "samples": 2718
+    },
+    {
+      "label": "153 - Input Data Manipulation",
+      "percent_of_records": 0.2502712557073853,
+      "samples": 2272
+    },
+    {
+      "label": "248 - Command Injection",
+      "percent_of_records": 0.00011015460198388437,
+      "samples": 1
+    },
+    {
+      "label": "274 - HTTP Verb Tampering",
+      "percent_of_records": 0.5989105709863795,
+      "samples": 5437
+    },
+    {
+      "label": "194 - Fake the Source of Data",
+      "percent_of_records": 6.184630128385189,
+      "samples": 56145
+    },
+    {
+      "label": "34 - HTTP Response Splitting",
+      "percent_of_records": 2.1742315339579097,
+      "samples": 19738
+    },
+    {
+      "label": "33 - HTTP Request Smuggling",
+      "percent_of_records": 0.11665372350093356,
+      "samples": 1059
+    }
+  ],
+  "columns": [
+    "timestamp",
+    "src_ip",
+    "src_port",
+    "dst_ip",
+    "dst_port",
+    "request_http_method",
+    "request_http_request",
+    "request_http_protocol",
+    "request_user_agent",
+    "request_referer",
+    "request_host",
+    "request_origin",
+    "request_cookie",
+    "request_content_type",
+    "request_accept",
+    "request_accept_language",
+    "request_accept_encoding",
+    "request_do_not_track",
+    "request_connection",
+    "request_body",
+    "response_http_protocol",
+    "response_http_status_code",
+    "response_http_status_message",
+    "response_content_length",
+    "000 - Normal",
+    "272 - Protocol Manipulation",
+    "242 - Code Injection",
+    "88 - OS Command Injection",
+    "126 - Path Traversal",
+    "66 - SQL Injection",
+    "16 - Dictionary-based Password Attack",
+    "310 - Scanning for Vulnerable Software",
+    "153 - Input Data Manipulation",
+    "248 - Command Injection",
+    "274 - HTTP Verb Tampering",
+    "194 - Fake the Source of Data",
+    "34 - HTTP Response Splitting",
+    "33 - HTTP Request Smuggling"
+  ],
+  "empty_fields": {
+    "000 - Normal": 0,
+    "126 - Path Traversal": 0,
+    "153 - Input Data Manipulation": 0,
+    "16 - Dictionary-based Password Attack": 0,
+    "194 - Fake the Source of Data": 0,
+    "242 - Code Injection": 0,
+    "248 - Command Injection": 0,
+    "272 - Protocol Manipulation": 0,
+    "274 - HTTP Verb Tampering": 0,
+    "310 - Scanning for Vulnerable Software": 0,
+    "33 - HTTP Request Smuggling": 0,
+    "34 - HTTP Response Splitting": 0,
+    "66 - SQL Injection": 0,
+    "88 - OS Command Injection": 0,
+    "dst_ip": 2,
+    "dst_port": 2,
+    "request_accept": 526032,
+    "request_accept_encoding": 541515,
+    "request_accept_language": 891955,
+    "request_body": 881072,
+    "request_connection": 424955,
+    "request_content_type": 879271,
+    "request_cookie": 462553,
+    "request_do_not_track": 907110,
+    "request_host": 34,
+    "request_http_method": 2,
+    "request_http_protocol": 2,
+    "request_http_request": 2,
+    "request_origin": 906206,
+    "request_referer": 616421,
+    "request_user_agent": 3834,
+    "response_content_length": 3292,
+    "response_http_protocol": 2,
+    "response_http_status_code": 2,
+    "response_http_status_message": 2,
+    "src_ip": 2,
+    "src_port": 2,
+    "timestamp": 2
+  },
+  "imbalance": {
+    "attack_max_min_ratio": 250311.0,
+    "attack_ratio_excluding_singletons": 236.3654390934844,
+    "binary_normal_attack_ratio": 1.3726281950760546,
+    "including_normal_max_min_ratio": 525195.0,
+    "largest_attack_class": "66 - SQL Injection",
+    "ratio_scope": "Observed classes with positive support; zero-support columns listed separately",
+    "smallest_attack_class": "248 - Command Injection",
+    "zero_support_attack_columns": []
+  },
+  "input": {
+    "bytes": 436437661,
+    "md5": "173ec515308bdce5aec19cfd5b792596",
+    "path": "src/data/raw/data_capec_multilabel.csv",
+    "sha256": "9c73c90ce6564ae48b14f7179cd864d037a6a130ef69c68c1626ec5d7ce4a910"
+  },
+  "label_cardinality": {
+    "1": 898577,
+    "2": 8132,
+    "3": 1088,
+    "4": 18
+  },
+  "label_columns": [
+    "000 - Normal",
+    "272 - Protocol Manipulation",
+    "242 - Code Injection",
+    "88 - OS Command Injection",
+    "126 - Path Traversal",
+    "66 - SQL Injection",
+    "16 - Dictionary-based Password Attack",
+    "310 - Scanning for Vulnerable Software",
+    "153 - Input Data Manipulation",
+    "248 - Command Injection",
+    "274 - HTTP Verb Tampering",
+    "194 - Fake the Source of Data",
+    "34 - HTTP Response Splitting",
+    "33 - HTTP Request Smuggling"
+  ],
+  "methods": {
+    "": 2,
+    "CONNECT": 453,
+    "COPY": 453,
+    "GET": 869268,
+    "HEAD": 1103,
+    "LOCK": 453,
+    "MKCOL": 453,
+    "MOVE": 453,
+    "OPTIONS": 1284,
+    "PATCH": 453,
+    "POST": 28381,
+    "PROPFIND": 453,
+    "PROPPATCH": 453,
+    "PUT": 453,
+    "THBQ": 1,
+    "TRACE": 2340,
+    "TRACK": 906,
+    "UNLOCK": 453
+  },
+  "missing_method_or_uri_indices": [
+    14410,
+    163884
+  ],
+  "predefined_split_columns": [],
+  "source": {
+    "doi": "10.7910/DVN/OGOIXX",
+    "expected_md5": "173ec515308bdce5aec19cfd5b792596",
+    "file_id": 6319496,
+    "license": "CC0-1.0",
+    "url": "https://dataverse.harvard.edu/api/access/datafile/6319496",
+    "version": "1.2"
+  },
+  "totals": {
+    "attack_records": 382620,
+    "normal_and_attack_records": 0,
+    "normal_records": 525195,
+    "records": 907815
+  }
+}

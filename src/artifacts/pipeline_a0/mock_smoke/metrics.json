@@ -1,0 +1,147 @@
+{
+  "n": 6,
+  "taxonomy": [
+    "NORMAL",
+    "SQL_INJECTION",
+    "PATH_TRAVERSAL",
+    "CODE_INJECTION",
+    "HTTP_RESPONSE_SPLITTING",
+    "OS_COMMAND_INJECTION"
+  ],
+  "per_class": {
+    "NORMAL": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "support": 1
+    },
+    "SQL_INJECTION": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 1
+    },
+    "PATH_TRAVERSAL": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 1
+    },
+    "CODE_INJECTION": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 1
+    },
+    "HTTP_RESPONSE_SPLITTING": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 1
+    },
+    "OS_COMMAND_INJECTION": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 1
+    }
+  },
+  "macro_f1": 0.4444444444444444,
+  "weighted_f1": 0.4444444444444444,
+  "accuracy": 0.5,
+  "coverage": 0.6666666666666666,
+  "invalid_output_rate": 0.16666666666666666,
+  "backend_error_rate": 0.16666666666666666,
+  "status_counts": {
+    "ok": 4,
+    "invalid_output": 1,
+    "backend_error": 1
+  },
+  "confusion_matrix": {
+    "rows": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION"
+    ],
+    "columns": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION",
+      "__INVALID_OR_ERROR__"
+    ],
+    "counts": [
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    ]
+  },
+  "latency_seconds": {
+    "scope": "persisted original inference including retries; excludes resume lookup",
+    "mean": 6.308166651554832e-05,
+    "p50": 5.6612999287608545e-05,
+    "p95": 8.285699914267752e-05
+  },
+  "retries": 0,
+  "usage_samples": 0,
+  "token_usage_known_totals": null,
+  "usage_note": "Only reported successful-response usage; failed attempts may have unreported billable tokens.",
+  "experiment_kind": "synthetic_mock",
+  "run_key": "cef97a11c6a41e31fd5708b34089d262e71aa4124b8ea6325d39bbbb1b3fe62e"
+}

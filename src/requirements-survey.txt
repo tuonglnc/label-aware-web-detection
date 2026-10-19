@@ -1,0 +1,2 @@
+# Only for rendering the survey figures; CSV analysis uses the standard library.
+matplotlib==3.6.3

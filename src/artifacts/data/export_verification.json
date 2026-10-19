@@ -1,0 +1,50 @@
+{
+  "checked_files": 12,
+  "class_distribution": {
+    "development": {
+      "CODE_INJECTION": 5,
+      "HTTP_RESPONSE_SPLITTING": 5,
+      "NORMAL": 5,
+      "OS_COMMAND_INJECTION": 5,
+      "PATH_TRAVERSAL": 5,
+      "SQL_INJECTION": 5
+    },
+    "pool": {
+      "CODE_INJECTION": 9604,
+      "HTTP_RESPONSE_SPLITTING": 13386,
+      "NORMAL": 120184,
+      "OS_COMMAND_INJECTION": 2147,
+      "PATH_TRAVERSAL": 10868,
+      "SQL_INJECTION": 170406
+    },
+    "test": {
+      "CODE_INJECTION": 2054,
+      "HTTP_RESPONSE_SPLITTING": 2869,
+      "NORMAL": 25459,
+      "OS_COMMAND_INJECTION": 461,
+      "PATH_TRAVERSAL": 2352,
+      "SQL_INJECTION": 36497
+    },
+    "validation": {
+      "CODE_INJECTION": 2057,
+      "HTTP_RESPONSE_SPLITTING": 2870,
+      "NORMAL": 25700,
+      "OS_COMMAND_INJECTION": 461,
+      "PATH_TRAVERSAL": 2349,
+      "SQL_INJECTION": 36513
+    }
+  },
+  "config_sha256": "2eb5370a0b9b44e87ccebe2a3ed6c45fc23cdb42055cbae5d85044e818f3173f",
+  "input_hashes": {
+    "md5": "173ec515308bdce5aec19cfd5b792596",
+    "sha256": "9c73c90ce6564ae48b14f7179cd864d037a6a130ef69c68c1626ec5d7ce4a910"
+  },
+  "passed": true,
+  "split_sizes": {
+    "development": 30,
+    "pool": 326595,
+    "test": 69692,
+    "validation": 69950
+  },
+  "unique_groups": 447049
+}

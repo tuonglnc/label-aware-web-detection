@@ -1,2 +1,16 @@
+src/data/raw/
+src/data/processed/
+src/notebooks/data_capec_multilabel.csv
+src/artifacts/data/manual_review.jsonl
+src/artifacts/data/group_review.jsonl
+src/artifacts/data/quarantine.jsonl
+src/artifacts/data/reproduce/
+__pycache__/
+.venv/
 
-data_overview/data_capec_multilabel.csv
+# Local credentials; publish only templates with empty keys.
+.env
+.env.*
+!.env.example
+setup_va_doc_lai.md
+/docs

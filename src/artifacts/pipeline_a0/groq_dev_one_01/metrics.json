@@ -1,0 +1,145 @@
+{
+  "n": 1,
+  "taxonomy": [
+    "NORMAL",
+    "SQL_INJECTION",
+    "PATH_TRAVERSAL",
+    "CODE_INJECTION",
+    "HTTP_RESPONSE_SPLITTING",
+    "OS_COMMAND_INJECTION"
+  ],
+  "per_class": {
+    "NORMAL": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "SQL_INJECTION": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "PATH_TRAVERSAL": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 1
+    },
+    "CODE_INJECTION": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "HTTP_RESPONSE_SPLITTING": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "OS_COMMAND_INJECTION": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    }
+  },
+  "macro_f1": 0.0,
+  "weighted_f1": 0.0,
+  "accuracy": 0.0,
+  "coverage": 0.0,
+  "invalid_output_rate": 0.0,
+  "backend_error_rate": 1.0,
+  "status_counts": {
+    "backend_error": 1
+  },
+  "confusion_matrix": {
+    "rows": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION"
+    ],
+    "columns": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION",
+      "__INVALID_OR_ERROR__"
+    ],
+    "counts": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "latency_seconds": {
+    "scope": "persisted original inference including retries; excludes resume lookup",
+    "mean": 0.15927621999981056,
+    "p50": 0.15927621999981056,
+    "p95": 0.15927621999981056
+  },
+  "retries": 0,
+  "usage_samples": 0,
+  "token_usage_known_totals": null,
+  "usage_note": "Only reported successful-response usage; failed attempts may have unreported billable tokens.",
+  "experiment_kind": "development_smoke",
+  "run_key": "6b806319bf983bf9998673b39b2b0807965750b8e46887073b30af6e705e8023"
+}

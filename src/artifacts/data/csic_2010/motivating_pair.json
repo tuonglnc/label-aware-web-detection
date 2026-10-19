@@ -1,0 +1,149 @@
+{
+  "anomalous": {
+    "byte_end": 7692385,
+    "byte_start": 7691807,
+    "content_length_issue": false,
+    "invalid_header_lines": [],
+    "label": "ANOMALOUS",
+    "raw_http": "GET http://localhost:8080/tienda1/publico/anadir.jsp?id=3&nombre=Vino+Rioja&precio=100&cantidad=AND+1%3D1&B1=A%F1adir+al+carrito HTTP/1.1\nUser-Agent: Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)\nPragma: no-cache\nCache-control: no-cache\nAccept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\nAccept-Encoding: x-gzip, x-deflate, gzip, deflate\nAccept-Charset: utf-8, utf-8;q=0.5, *;q=0.5\nAccept-Language: en\nHost: localhost:8080\nCookie: JSESSIONID=3D8E431F782EA2779E18B9A1C4B23147\nConnection: close\n\n\n",
+    "raw_sha256": "10310cfb68c376e193a88a9468e1c018872f5823499786175d2df649c412cd6d",
+    "request": {
+      "body": "",
+      "headers": [
+        [
+          "User-Agent",
+          "Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)"
+        ],
+        [
+          "Pragma",
+          "no-cache"
+        ],
+        [
+          "Cache-control",
+          "no-cache"
+        ],
+        [
+          "Accept",
+          "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+        ],
+        [
+          "Accept-Encoding",
+          "x-gzip, x-deflate, gzip, deflate"
+        ],
+        [
+          "Accept-Charset",
+          "utf-8, utf-8;q=0.5, *;q=0.5"
+        ],
+        [
+          "Accept-Language",
+          "en"
+        ],
+        [
+          "Host",
+          "localhost:8080"
+        ],
+        [
+          "Cookie",
+          "JSESSIONID=3D8E431F782EA2779E18B9A1C4B23147"
+        ],
+        [
+          "Connection",
+          "close"
+        ]
+      ],
+      "method": "GET",
+      "protocol": "HTTP/1.1",
+      "uri": "http://localhost:8080/tienda1/publico/anadir.jsp?id=3&nombre=Vino+Rioja&precio=100&cantidad=AND+1%3D1&B1=A%F1adir+al+carrito"
+    },
+    "request_id": "03dc772a5501571406851867d834f1f682ff89c46ef14eccc60728b40c78be96",
+    "source_file": "anomalousTrafficTest.txt",
+    "source_index": 12266,
+    "source_line": 174102,
+    "source_split": "source_test_anomalous",
+    "without_cookie_hash": "154187d9e8c98e1400340a70751d49b4bb51d0be72a1d1c3be33ce52f46e1a75"
+  },
+  "changed_parameter": "cantidad",
+  "embedding_similarity_measured": false,
+  "header_differences": [
+    [
+      [
+        "Cookie",
+        "JSESSIONID=7EC588B61041FFA0154C9AB9A7B8B537"
+      ],
+      [
+        "Cookie",
+        "JSESSIONID=3D8E431F782EA2779E18B9A1C4B23147"
+      ]
+    ]
+  ],
+  "normal": {
+    "byte_end": 746406,
+    "byte_start": 745835,
+    "content_length_issue": false,
+    "invalid_header_lines": [],
+    "label": "NORMAL",
+    "raw_http": "GET http://localhost:8080/tienda1/publico/anadir.jsp?id=3&nombre=Vino+Rioja&precio=100&cantidad=17&B1=A%F1adir+al+carrito HTTP/1.1\nUser-Agent: Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)\nPragma: no-cache\nCache-control: no-cache\nAccept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\nAccept-Encoding: x-gzip, x-deflate, gzip, deflate\nAccept-Charset: utf-8, utf-8;q=0.5, *;q=0.5\nAccept-Language: en\nHost: localhost:8080\nCookie: JSESSIONID=7EC588B61041FFA0154C9AB9A7B8B537\nConnection: close\n\n\n",
+    "raw_sha256": "c1cd52f44029ca9ce1a9c3ae15d17e1e75006a16805ddd327167782bafa8f31f",
+    "request": {
+      "body": "",
+      "headers": [
+        [
+          "User-Agent",
+          "Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.8 (like Gecko)"
+        ],
+        [
+          "Pragma",
+          "no-cache"
+        ],
+        [
+          "Cache-control",
+          "no-cache"
+        ],
+        [
+          "Accept",
+          "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+        ],
+        [
+          "Accept-Encoding",
+          "x-gzip, x-deflate, gzip, deflate"
+        ],
+        [
+          "Accept-Charset",
+          "utf-8, utf-8;q=0.5, *;q=0.5"
+        ],
+        [
+          "Accept-Language",
+          "en"
+        ],
+        [
+          "Host",
+          "localhost:8080"
+        ],
+        [
+          "Cookie",
+          "JSESSIONID=7EC588B61041FFA0154C9AB9A7B8B537"
+        ],
+        [
+          "Connection",
+          "close"
+        ]
+      ],
+      "method": "GET",
+      "protocol": "HTTP/1.1",
+      "uri": "http://localhost:8080/tienda1/publico/anadir.jsp?id=3&nombre=Vino+Rioja&precio=100&cantidad=17&B1=A%F1adir+al+carrito"
+    },
+    "request_id": "a27038b58deee823f69cca6076a1bb5cb2d42f0311baf11cfdd823f1081547e8",
+    "source_file": "normalTrafficTraining.txt",
+    "source_index": 1333,
+    "source_line": 18218,
+    "source_split": "source_train",
+    "without_cookie_hash": "5d2333c87716fc89caa8bf841c09318c9cabcdb5444063a942967eb3add39f3f"
+  },
+  "pairs_compared": 3512,
+  "payload_similarity": 0.9370629370629371,
+  "scope": "One raw query/form parameter changed; same endpoint/method/protocol; headers compared ignoring Cookie and Content-Length. Bounded search, not exhaustive.",
+  "screening_flags": {
+    "sql_pattern": true,
+    "xss_pattern": false
+  }
+}

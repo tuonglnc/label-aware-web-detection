@@ -1,0 +1,5 @@
+first_run
+{'selected': 6, 'resumed': 0, 'processed_now': 6}
+
+resume
+{'selected': 6, 'resumed': 6, 'processed_now': 0}

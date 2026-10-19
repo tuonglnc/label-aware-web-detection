@@ -1,0 +1,6 @@
+{"request_id":"synthetic-normal","request_text":"GET /catalog HTTP/1.1","label":"NORMAL","private_metadata":"GROUND_TRUTH_CANARY"}
+{"request_id":"synthetic-sqli","request_text":"GET /items?id=1%20OR%201=1 HTTP/1.1","label":"SQL_INJECTION"}
+{"request_id":"synthetic-path","request_text":"GET /../../etc/passwd HTTP/1.1","label":"PATH_TRAVERSAL"}
+{"request_id":"synthetic-code","request_text":"POST /eval HTTP/1.1\n\n<?php echo 1; ?>","label":"CODE_INJECTION"}
+{"request_id":"synthetic-split","request_text":"GET /?q=%0d%0aX-Test:1 HTTP/1.1","label":"HTTP_RESPONSE_SPLITTING"}
+{"request_id":"synthetic-shell","request_text":"GET /ping?host=localhost;id HTTP/1.1","label":"OS_COMMAND_INJECTION"}

@@ -1,0 +1,10 @@
+{
+  "backend": "mock",
+  "model": "synthetic-fixture-v1",
+  "mock_responses": "src/tests/fixtures/a0_responses.json",
+  "timeout_seconds": 30,
+  "max_retries": 2,
+  "max_request_chars": 32768,
+  "temperature": 0,
+  "max_tokens": 128
+}
