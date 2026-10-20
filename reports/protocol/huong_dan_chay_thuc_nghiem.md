@@ -104,18 +104,19 @@ LLM giả (`DemoMajorityMock`) trả nhãn chiếm đa số trong các ví dụ.
 
 ### 5.3. Chạy thật cả bộ
 
-Cấu hình đã chốt cho gói Groq miễn phí: **k = 4**, ví dụ cắt ở **500 ký tự**, **λ = 0,1**. Bộ chính gồm A0, B, BAL, C (prior kNN), C (prior LLM). Key của hai thành viên để ở `.env` và `.env.tv2`. Chạy trong Git Bash:
+Cấu hình đã chốt: **k = 4**, ví dụ cắt ở **500 ký tự**, **λ = 0,1**. Bộ chính gồm A0, B, BAL, C (prior kNN), C (prior LLM). Dùng **một** key trong `.env` (một tài khoản Groq gói trả theo mức dùng; điều khoản của Groq không cho dùng nhiều tài khoản để vượt giới hạn). Chạy trong Git Bash:
 
 ```bash
 bash src/experiments/run_suite.sh validation
 ```
 
-- Hết quota thì script tự dừng gọn; **hôm sau chạy lại đúng lệnh** để tiếp tục.
-- Thêm C-oracle và A1 nếu còn quota: `EXTRA=1 bash src/experiments/run_suite.sh validation`.
+- Gặp giới hạn thì script tự dừng gọn; **chạy lại đúng lệnh** để tiếp tục.
+- Có chốt ngân sách 4,5 USD (giá gấp đôi giá tham khảo) trong `src/configs/llm/budget.json`: script dừng **trước khi** chi phí ước tính có thể vượt ngưỡng; tổng đã dùng ở `src/artifacts/api_spend_ledger.json`.
+- Sau bộ chính, chạy thêm C-oracle và A1: `EXTRA=1 bash src/experiments/run_suite.sh validation`.
 - Muốn chạy riêng một pipeline (dùng được cả trong PowerShell):
 
 ```bash
-python -m src.experiments.run_llm --config src/configs/experiments/B_k4.json --llm src/configs/llm/groq.json --env-file .env --split validation --output src/artifacts/runs/validation/B_k4 --sleep 1 --retry-errors
+python -m src.experiments.run_llm --config src/configs/experiments/B_k4.json --llm src/configs/llm/groq.json --env-file .env --split validation --output src/artifacts/runs/validation/B_k4 --retry-errors
 ```
 
 **Code liên quan:**

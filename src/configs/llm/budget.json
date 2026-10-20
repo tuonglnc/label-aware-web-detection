@@ -1,0 +1,7 @@
+{
+  "_comment": "Chốt ngân sách cho tài khoản Groq trả theo mức dùng. Giá đặt GẤP ĐÔI giá tham khảo của openai/gpt-oss-20b (0,075 / 0,30 USD mỗi 1 triệu token) để có khoảng an toàn. Runner dừng trước khi chi phí ước tính có thể vượt limit_usd.",
+  "limit_usd": 4.5,
+  "price_input_per_million": 0.15,
+  "price_output_per_million": 0.6,
+  "ledger": "src/artifacts/api_spend_ledger.json"
+}

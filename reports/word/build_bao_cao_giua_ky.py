@@ -482,7 +482,7 @@ table("issues", "Sự cố kỹ thuật và cách xử lý", ["Sự cố", "Nguy
     ["Không chạy được trên Windows", "Dùng fcntl chỉ có trên Linux; file SQLite tạm chưa đóng khi lỗi; đọc file "
      "không chỉ định UTF-8", "Khóa thư mục đa nền tảng (msvcrt), đóng file trước khi dọn, thêm encoding UTF-8"],
     ["Giới hạn quota API miễn phí", "Khoảng 8.000 token/phút và 200.000 token/ngày cho mỗi khóa",
-     "Tự chờ theo retry-after; hết quota ngày thì dừng gọn, chạy tiếp hôm sau; luân phiên khóa của hai thành viên"]],
+     "Tự chờ theo retry-after; hết quota thì dừng gọn và chạy tiếp sau; từ 20/10 dùng một tài khoản gói trả theo mức dùng, có chốt ngân sách"]],
       [3.5, 7.5, 4.5], 10.5)
 
 # ======================= CHƯƠNG 6 =======================
@@ -619,10 +619,12 @@ p("Khi chạy thật, nhóm đo được giới hạn của gói Groq miễn ph�
 R.bullets(["k = 4 ví dụ, mỗi ví dụ cắt ở 500 ký tự: khoảng 1.300 token mỗi request (A0 không bị ảnh hưởng vì không "
            "có ví dụ).",
            "Chỉ chạy bộ chính A0, B, BAL, C prior kNN, C prior LLM với λ = 0,1 cố định; ảnh hưởng của λ được phân "
-           "tích bằng bảng quét λ ở Mục 6.3; C-oracle và A1 chỉ chạy nếu còn quota.",
-           "Dùng khóa API của cả hai thành viên, luân phiên tự động khi một khóa hết quota ngày.",
+           "tích bằng bảng quét λ ở Mục 6.3; C-oracle và A1 chạy thêm sau bộ chính.",
            "Tập test dùng 300 request đầu của tập con test (50 mỗi lớp), cố định trước khi xem kết quả."])
-p("Với hai khóa, bộ chính trên validation cần khoảng 3 ngày quota và tập test khoảng 4,5 ngày.")
+p("Để hoàn thành đúng hạn và tuân thủ điều khoản sử dụng của Groq (không dùng nhiều tài khoản để vượt giới hạn), từ "
+  "20/10 nhóm chạy phần còn lại bằng một tài khoản gói trả theo mức dùng, với chốt ngân sách trong code để tổng chi "
+  "phí không vượt 5 USD. Cấu hình thí nghiệm giữ nguyên như trên, nên các run đã chạy trên gói miễn phí vẫn so sánh "
+  "được với các run sau. Phần còn lại cần khoảng 3,3 triệu token, chi phí ước tính dưới 1 USD.")
 
 # ======================= CHƯƠNG 7 =======================
 R.h1("KẾT LUẬN GIỮA KỲ VÀ KẾ HOẠCH")
@@ -643,18 +645,19 @@ R.bullets([
     "Có endpoint chung giữa pool và tập đánh giá; chưa đo khả năng tổng quát sang endpoint mới.",
     "Tập con cân bằng lớp, không phản ánh tỷ lệ traffic thật; tập validation chỉ 200 request.",
     "Mỗi request tốn một đến hai lượt gọi LLM, chỉ phù hợp phân tích log offline.",
-    "B và BAL mới có kết quả tạm, C chưa có kết quả; quy mô thí nghiệm bị giới hạn bởi quota API miễn phí (k = 4, "
-    "test 300 request)."])
+    "B và BAL mới có kết quả tạm, C chưa có kết quả; quy mô thí nghiệm (k = 4, test 300 request) được chốt khi còn "
+    "dùng gói API miễn phí."])
 R.h2("Kế hoạch giai đoạn cuối kỳ")
 table("plan", "Kế hoạch đến khi nộp báo cáo cuối kỳ", ["Thời gian", "Công việc"], [
-    ["20–22/10", "Chạy B, BAL, C prior kNN, C prior LLM trên validation bằng hai khóa API"],
-    ["22–25/10", "Hai thành viên đọc lại độc lập 60 mẫu nhãn; chạy C-oracle nếu còn quota"],
+    ["20–21/10", "Chạy nốt B, BAL và chạy C prior kNN, C prior LLM, C-oracle, A1 trên validation"],
+    ["22–25/10", "Hai thành viên đọc lại độc lập các mẫu nhãn và các request Normal bị đoán sai"],
     ["26–27/10", "So sánh, bootstrap, McNemar, bảng prior đúng/sai trên validation"],
     ["28/10", "Khóa cấu hình (ghi commit, config, model)"],
-    ["29/10–04/11", "Chạy tập test 300 request một lần cho bộ chính; phân tích lỗi theo lớp"],
+    ["29–31/10", "Chạy tập test 300 request một lần cho bộ chính"],
+    ["01–08/11", "Phân tích lỗi theo lớp, prior sai, nhãn nhiễu"],
     ["09–14/11", "Hoàn thiện báo cáo cuối kỳ, kiểm tra tái lập, nộp"]], [3.0, 12.5])
-p("Ngân sách ước tính khoảng 2,9 triệu token cho bộ chính (validation và test), tương đương khoảng 7,5 ngày quota của "
-  "hai khóa. Nếu C không tốt hơn B, đó vẫn là kết quả có giá trị: nhóm sẽ dùng bảng prior đúng/sai, bảng quét λ và "
+p("Phần còn lại cần khoảng 3,3 triệu token (validation và test), chạy bằng một tài khoản gói trả theo mức dùng. Nếu C "
+  "không tốt hơn B, đó vẫn là kết quả có giá trị: nhóm sẽ dùng bảng prior đúng/sai, bảng quét λ và "
   "C-oracle (nếu có) để giải thích nguyên nhân.")
 
 # ======================= TÀI LIỆU THAM KHẢO =======================
@@ -700,7 +703,7 @@ R.code("pip install -r src/requirements-experiments.txt\n"
        "python -m src.preprocessing.prepare --config src/configs/data.json\n"
        "python -m src.experiments.build_retrieval --output src/artifacts/retrieval/minilm\n"
        "python -m src.experiments.eval_retrieval --retrieval src/artifacts/retrieval/minilm --split validation\n"
-       "bash src/experiments/run_suite.sh validation   # A0, B, BAL, C; khóa trong .env, .env.tv2\n"
+       "bash src/experiments/run_suite.sh validation   # A0, B, BAL, C; khóa API trong .env\n"
        "python -m src.experiments.run_llm --config src/configs/experiments/B_k4.json \\\n"
        "    --llm src/configs/llm/groq.json --env-file .env --split validation \\\n"
        "    --output src/artifacts/runs/validation/B_k4\n"

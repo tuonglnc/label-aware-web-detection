@@ -14,10 +14,10 @@ Mọi pipeline dùng chung một LLM (Groq `openai/gpt-oss-20b`, temperature 0, 
 | --- | --- | --- | --- |
 | **kNN vote** | Không gọi LLM: đếm nhãn của 5 hàng xóm gần nhất | Baseline không LLM; nguồn prior rẻ cho C | Xong: Macro-F1 0,800 |
 | **A0** | Không có ví dụ (zero-shot) | Năng lực ban đầu của LLM; nguồn prior cho C | Xong: Macro-F1 0,835 |
-| **B** | Top-4 giống nhất theo embedding | Baseline retrieval chính | Chờ quota |
-| **BAL** | Từ top-30, lấy luân phiên theo lớp | Kiểm tra lợi ích của cân bằng nhãn | Chờ quota |
-| **C** | Từ top-30, xếp lại: `similarity + 0,1·1[nhãn = prior]` | Phương pháp đề xuất (prior từ kNN hoặc A0) | Chờ quota |
-| C-oracle, A1 | Prior = nhãn thật / bộ ví dụ cố định | Chạy thêm nếu còn quota (`EXTRA=1`) | Tùy chọn |
+| **B** | Top-4 giống nhất theo embedding | Baseline retrieval chính | Tạm: 157/200 |
+| **BAL** | Từ top-30, lấy luân phiên theo lớp | Kiểm tra lợi ích của cân bằng nhãn | Tạm: 149/200 |
+| **C** | Từ top-30, xếp lại: `similarity + 0,1·1[nhãn = prior]` | Phương pháp đề xuất (prior từ kNN hoặc A0) | Chưa chạy |
+| C-oracle, A1 | Prior = nhãn thật / bộ ví dụ cố định | Chạy thêm sau bộ chính (`EXTRA=1`) | Chưa chạy |
 
 ```text
 HTTP request ──► embedding ──► top-N ứng viên từ pool (kèm nhãn của ứng viên)
@@ -27,7 +27,7 @@ HTTP request ──► embedding ──► top-N ứng viên từ pool (kèm nh�
                                      prompt (ví dụ + request) ──► LLM ──► nhãn
 ```
 
-**Chạy toàn bộ phần LLM** (Git Bash). Script luân phiên key `.env` và `.env.tv2` của hai thành viên. Khi mọi key hết quota ngày (gói miễn phí khoảng 200.000 token/ngày/key), script tự dừng; hôm sau chạy lại đúng lệnh để tiếp tục:
+**Chạy toàn bộ phần LLM** (Git Bash). Script dùng **một** key trong `.env` (một tài khoản Groq; điều khoản của Groq không cho dùng nhiều tài khoản để vượt giới hạn). Nếu gặp giới hạn, script tự dừng gọn; chạy lại đúng lệnh để tiếp tục:
 
 ```bash
 bash src/experiments/run_suite.sh validation

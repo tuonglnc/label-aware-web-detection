@@ -154,7 +154,10 @@ $k = ((Get-Content .env | Select-String '^A0_API_KEY=') -replace "^A0_API_KEY=|'
 set -a; source .env; set +a; curl -s https://api.groq.com/openai/v1/models -H "Authorization: Bearer $A0_API_KEY" | python -c "import sys,json; d=json.load(sys.stdin); print('\n'.join(sorted(m['id'] for m in d['data'])) if 'data' in d else d)"
 ```
 
-4. **Key của thành viên thứ hai.** Gói miễn phí chỉ có khoảng 200.000 token/ngày cho mỗi key, nên nhóm dùng key của cả hai người. Thành viên thứ hai tự tạo key trên tài khoản của mình, rồi lưu vào file `.env.tv2` (cùng dạng `.env`) trên máy dùng để chạy. Script `run_suite.sh` tự dùng `.env` trước, hết quota thì chuyển sang `.env.tv2`. File `.env.*` cũng nằm trong `.gitignore`.
+4. **Chỉ dùng một tài khoản.** Điều khoản sử dụng của Groq cấm vượt giới hạn bằng cách đăng ký nhiều tài khoản hoặc điều phối việc dùng giữa nhiều tổ chức. Vì vậy nhóm dùng **một** tài khoản đã nâng lên gói trả theo mức dùng (Developer tier); không dùng key của người khác. Toàn bộ phần còn lại ước tính dưới 1 USD.
+5. **Hai lớp chốt ngân sách (tổng không vượt 5 USD):**
+   - **Trên console Groq:** đặt giới hạn chi tiêu (spend limit) trong phần Billing ở mức 5 USD hoặc thấp hơn, nếu tài khoản có tùy chọn này.
+   - **Trong code:** `src/configs/llm/budget.json` đặt ngưỡng 4,5 USD, tính với giá **gấp đôi** giá tham khảo. Trước mỗi request, runner ước tính chi phí xấu nhất; nếu có thể vượt ngưỡng thì **dừng, không gọi API**. Tổng đã dùng được ghi trong `src/artifacts/api_spend_ledger.json` (con số này cao hơn chi phí thật vì dùng giá gấp đôi). Không xóa file này, vì xóa là mất số đã cộng dồn.
 
 > Các lệnh `run_llm` đều có `--env-file`, nên runner tự đọc key; không cần nạp `.env` vào terminal trước.
 
@@ -215,9 +218,9 @@ bash src/experiments/run_suite.sh validation
 
 Script làm những việc sau:
 - Chạy lần lượt A0, B_k4, BAL_k4, C_knn_k4, C_llm_k4. A0 chạy trước vì C_llm dùng dự đoán của A0 làm prior.
-- Dùng key trong `.env`; khi key đó hết quota ngày thì tự chuyển sang `.env.tv2`.
-- Khi mọi key đều hết thì in `Mọi key đã hết quota trong ngày` và dừng. **Hôm sau chạy lại đúng lệnh đó**: run đã xong được bỏ qua, run dở chạy tiếp, lỗi API lẻ được gọi lại.
-- Muốn chạy thêm C-oracle và A1 khi còn quota:
+- Dùng đúng một key trong `.env` (muốn dùng file khác: `ENV_FILE=duong_dan bash ...`).
+- Bị giới hạn theo phút thì runner tự chờ rồi chạy tiếp. Nếu gặp giới hạn dài, script in `Hết quota/giới hạn: dừng` và dừng gọn. **Chạy lại đúng lệnh đó** để tiếp tục: run đã xong được bỏ qua, run dở chạy tiếp, lỗi API lẻ được gọi lại.
+- Sau bộ chính, chạy thêm C-oracle và A1:
 
 ```bash
 EXTRA=1 bash src/experiments/run_suite.sh validation
@@ -226,14 +229,14 @@ EXTRA=1 bash src/experiments/run_suite.sh validation
 Nếu dùng PowerShell, hoặc muốn chạy riêng một pipeline, gọi trực tiếp `run_llm` (ví dụ B):
 
 ```bash
-python -m src.experiments.run_llm --config src/configs/experiments/B_k4.json --llm src/configs/llm/groq.json --env-file .env --split validation --output src/artifacts/runs/validation/B_k4 --sleep 1 --retry-errors
+python -m src.experiments.run_llm --config src/configs/experiments/B_k4.json --llm src/configs/llm/groq.json --env-file .env --split validation --output src/artifacts/runs/validation/B_k4 --retry-errors
 ```
 
 Sau mỗi lần chạy, mở `metrics.json` trong thư mục output và xem hai mục:
 - `complete`: `true` nghĩa là đã đủ mọi query; `false` nghĩa là đang dở vì hết quota.
 - `status_counts`: toàn `ok` là tốt; `invalid_output` là LLM trả sai định dạng (vẫn được tính là sai).
 
-Tham khảo tốc độ: A0 khoảng 15 request/phút; pipeline có ví dụ khoảng 5–6 request/phút (do giới hạn 8.000 token/phút).
+Tham khảo tốc độ: trên gói miễn phí, pipeline có ví dụ chỉ chạy khoảng 5–6 request/phút (giới hạn 8.000 token/phút); gói trả theo mức dùng có giới hạn cao hơn nhiều nên nhanh hơn rõ rệt.
 
 ### Bước 5. So sánh và xuất bảng
 
@@ -402,10 +405,12 @@ python -c "import json; r=[json.loads(l) for l in open('src/artifacts/retrieval/
 | --- | --- | --- |
 | `status_counts` có `backend_error`, `error: http_401` | Key sai hoặc chưa nạp `.env` | Kiểm tra `.env` và thêm `--env-file .env` |
 | `http_403` | Thường do quyền với model; lỗi Cloudflare cũ đã được sửa | Đổi `A0_MODEL` sang model mà tài khoản được dùng |
-| `http_429` | Vượt giới hạn tốc độ hoặc quota | Tăng `--sleep`, chờ rồi chạy lại cùng lệnh |
+| `http_429` | Vượt giới hạn tốc độ | Runner tự chờ; nếu vẫn lỗi, thêm `--sleep 1` hoặc chờ rồi chạy lại cùng lệnh |
 | `manifest/config/data/code changed` | Chạy lại vào thư mục cũ sau khi đổi cấu hình hoặc code | Dùng `--output` mới |
 | `test split is locked` | Chạy test khi chưa khóa cấu hình | Sau ngày khóa (28/10): `bash src/experiments/run_suite.sh test --locked` |
-| `Mọi key đã hết quota trong ngày` / `stopped: quota_exhausted` | Hết 200.000 token/ngày của các key | Bình thường; hôm sau chạy lại đúng lệnh |
+| `Hết quota/giới hạn: dừng` / `stopped: quota_exhausted` | Gặp giới hạn dài (hết quota ngày hoặc chạm giới hạn chi tiêu) | Kiểm tra trang Usage/Billing trên console Groq; chạy lại đúng lệnh khi giới hạn đã hồi |
+| `ĐÃ CHẠM NGÂN SÁCH` / `stopped: budget_exhausted` | Tổng chi phí ước tính sắp vượt ngưỡng trong `budget.json` | Dừng lại, báo nhóm. Chỉ tăng `limit_usd` khi chắc chắn đủ tiền, và không vượt giới hạn chi tiêu trên console |
+| `Không tìm thấy key trong .env` | Chưa tạo `.env` hoặc chưa điền key | Tạo từ `env.example` (mục 1.3) |
 | `... is not finished yet` (compare) | Có run chưa chạy xong | Chạy tiếp run đó, hoặc bỏ thư mục run khỏi `--runs` |
 | `A0 prior run lacks ... queries` / không tìm thấy `manifest.json` của A0 | Chạy C prior LLM trước khi chạy A0 cùng split | Chạy A0 trên split đó trước |
 | `queries have no neighbors` | Chưa dựng retrieval cho split đó | `build_retrieval` (thêm `--include-test` cho test) |
