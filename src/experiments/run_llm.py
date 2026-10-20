@@ -90,7 +90,14 @@ def load_llm(path):
         return {"backend": "mock_demo_majority", "model": DemoMajorityMock.model, "max_request_chars": 32768}
     if raw.get("backend") != "chat_completions":
         raise ValueError("llm backend must be chat_completions or mock_demo_majority")
-    return core.load_config(path)
+    config = core.load_config(path)
+    # Model và base_url GHI TRONG FILE cấu hình thắng biến môi trường (A0_MODEL trong .env),
+    # để chạy groq_120b.json không bị .env âm thầm đổi về model 20b.
+    if raw.get("model"):
+        config["model"] = raw["model"]
+    if raw.get("base_url"):
+        config["base_url"] = raw["base_url"].rstrip("/")
+    return config
 
 
 def load_env_file(path):

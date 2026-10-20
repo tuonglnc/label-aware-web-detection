@@ -1,0 +1,7 @@
+{
+  "_comment": "Chốt ngân sách RIÊNG cho thí nghiệm bổ sung với openai/gpt-oss-120b. Giá đặt GẤP ĐÔI mức cao nhất tìm được (0,15 USD đầu vào; 0,60–0,75 USD đầu ra mỗi 1 triệu token). Ngưỡng 3,0 USD cộng với ~0,7 USD (ước tính giá gấp đôi) đã dùng cho 20b vẫn dưới trần 5 USD.",
+  "limit_usd": 3.0,
+  "price_input_per_million": 0.3,
+  "price_output_per_million": 1.5,
+  "ledger": "src/artifacts/api_spend_ledger_120b.json"
+}
