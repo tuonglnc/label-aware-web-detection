@@ -251,6 +251,27 @@ class EndToEndTests(unittest.TestCase):
         again = SpendLedger(self.root / "ledger.json", 0.004, 1.0, 1.0)
         self.assertAlmostEqual(again.spent_usd, ledger.spent_usd)
 
+    def test_llm_config_model_wins_over_env(self):
+        import os
+        from unittest.mock import patch
+        from src.experiments.run_llm import load_llm
+        root = Path(__file__).resolve().parents[2]
+        with patch.dict(os.environ, {"A0_MODEL": "openai/gpt-oss-20b", "A0_BASE_URL": "https://other.example/v1"}):
+            cfg = load_llm(root / "src/configs/llm/groq_120b.json")
+            self.assertEqual(cfg["model"], "openai/gpt-oss-120b")
+            self.assertEqual(cfg["base_url"], "https://api.groq.com/openai/v1")
+            self.assertEqual(load_llm(root / "src/configs/llm/groq.json")["model"], "openai/gpt-oss-20b")
+
+    def test_120b_experiment_configs_match_20b_except_name_and_prior_run(self):
+        root = Path(__file__).resolve().parents[2]
+        for f in (root / "src/configs/experiments_120b").glob("*.json"):
+            a = json.loads((root / "src/configs/experiments" / f.name).read_text(encoding="utf-8"))
+            b = json.loads(f.read_text(encoding="utf-8"))
+            diff = {k for k in set(a) | set(b) if a.get(k) != b.get(k)}
+            self.assertTrue(diff <= {"name", "prior_run"}, (f.name, diff))
+            if "prior_run" in diff:
+                self.assertIn("runs_120b", b["prior_run"])
+
     def test_invalid_configs_rejected(self):
         for bad in ({"pipeline": "Z"}, {"pipeline": "C", "prior_source": "truth", "lambda": 1},
                     {"pipeline": "C", "prior_source": "llm", "lambda": 1}, {"pipeline": "B", "k": 40}):
