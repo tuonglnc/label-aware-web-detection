@@ -1,10 +1,10 @@
 {
-  "input_tokens": 1291064,
-  "output_tokens": 36919,
-  "calls": 894,
+  "input_tokens": 4050261,
+  "output_tokens": 127083,
+  "calls": 2994,
   "estimated_calls": 0,
-  "max_tokens_per_char": 0.39482961222091656,
-  "spent_usd_estimate": 0.215811,
+  "max_tokens_per_char": 0.5312925170068027,
+  "spent_usd_estimate": 0.683789,
   "limit_usd": 4.5,
   "note": "Estimated with the (deliberately high) prices in the budget config; real cost is lower."
 }
