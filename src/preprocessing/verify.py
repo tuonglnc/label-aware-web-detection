@@ -10,8 +10,8 @@ from .prepare import canonical, digest, endpoint_key, file_hashes, group_key, wr
 
 def verify(output, input_path=None):
     output = Path(output)
-    config = json.loads((output / "config_snapshot.json").read_text())
-    expected = json.loads((output / "checksums.json").read_text())
+    config = json.loads((output / "config_snapshot.json").read_text(encoding="utf-8"))
+    expected = json.loads((output / "checksums.json").read_text(encoding="utf-8"))
     actual_names = {p.name for p in output.iterdir() if p.is_file()} - {"checksums.json"}
     if actual_names != set(expected):
         raise ValueError("Exported file list differs from checksum manifest")
@@ -21,12 +21,12 @@ def verify(output, input_path=None):
     id_splits, group_splits = {}, {}
     sizes, supports = {}, {}
     for split in ("pool", "development", "validation", "test"):
-        manifest = json.loads((output / f"{split}_manifest.json").read_text())
+        manifest = json.loads((output / f"{split}_manifest.json").read_text(encoding="utf-8"))
         manifest_index = {r["request_id"]: r for r in manifest}
         if len(manifest) != len(manifest_index):
             raise ValueError(f"Duplicate ID in {split} manifest")
         counts, ids = Counter(), set()
-        with (output / f"{split}.jsonl").open() as f:
+        with (output / f"{split}.jsonl").open(encoding="utf-8") as f:
             for line in f:
                 r = json.loads(line)
                 rid, gid = r["request_id"], r["group_id"]
@@ -50,7 +50,7 @@ def verify(output, input_path=None):
         sizes[split], supports[split] = len(ids), dict(counts)
         if split in config["subset_sizes"]:
             subset_ids = set()
-            with (output / f"{split}_subset.jsonl").open() as f:
+            with (output / f"{split}_subset.jsonl").open(encoding="utf-8") as f:
                 for line in f:
                     r = json.loads(line)
                     rid = r["request_id"]

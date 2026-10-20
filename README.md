@@ -4,54 +4,64 @@ Nghiên cứu phát hiện và phân loại tấn công web từ HTTP request b�
 
 Hướng triển khai là **inference-only**, không huấn luyện hoặc fine-tune model. Các kết luận về chất lượng phương pháp cần được kiểm chứng bằng thực nghiệm.
 
-**Chuẩn bị báo cáo 20/10/2026:** [Bản nháp report, evidence và nội dung 8 slide](reports/progress/ban_nhap_bao_cao_2026_10_20.md). **Kế hoạch hiện tại:** [Chia việc hôm nay và 3 tuần cho 2 người, 21/10–10/11](reports/plan/ke_hoach_2_nguoi_hom_nay_va_3_tuan.md); dùng lịch này thay lịch thực thi bốn tuần cũ.
+**Kế hoạch hiện tại:** [Kế hoạch 2 người 11/10–14/11](reports/plan/ke_hoach_2_nguoi_11_10_den_14_11.md). **Báo cáo giữa kỳ:** [bản tạm](reports/progress/bao_cao_giua_ky.md). **Hướng dẫn đọc và chạy code:** [bắt đầu từ đây](reports/protocol/huong_dan_doc_va_chay_code.md).
 
 ## Các pipeline
 
-| Pipeline | Phương pháp | Trạng thái |
-| --- | --- | --- |
-| **A0** | LLM zero-shot, không có ví dụ trong prompt | Đã triển khai; chạy end-to-end bằng mock |
-| **A1** | LLM fixed few-shot | Chưa triển khai |
-| **B** | Semantic retrieval → top-k ví dụ → LLM | Chưa triển khai |
-| **C** | Semantic retrieval → rerank bằng zero-shot prior và thông tin nhãn → LLM | Chưa triển khai |
+Mọi pipeline dùng chung một LLM (Groq `openai/gpt-oss-20b`, temperature 0, `reasoning_effort` low), một khung prompt và cùng **k = 4** ví dụ (mỗi ví dụ cắt ở 500 ký tự); chỉ khác **cách chọn ví dụ**.
 
-Luồng A0 hiện có:
+| Pipeline | Cách chọn ví dụ | Vai trò | Trạng thái (validation 200) |
+| --- | --- | --- | --- |
+| **kNN vote** | Không gọi LLM: đếm nhãn của 5 hàng xóm gần nhất | Baseline không LLM; nguồn prior rẻ cho C | Xong: Macro-F1 0,800 |
+| **A0** | Không có ví dụ (zero-shot) | Năng lực ban đầu của LLM; nguồn prior cho C | Xong: Macro-F1 0,835 |
+| **B** | Top-4 giống nhất theo embedding | Baseline retrieval chính | Chờ quota |
+| **BAL** | Từ top-30, lấy luân phiên theo lớp | Kiểm tra lợi ích của cân bằng nhãn | Chờ quota |
+| **C** | Từ top-30, xếp lại: `similarity + 0,1·1[nhãn = prior]` | Phương pháp đề xuất (prior từ kNN hoặc A0) | Chờ quota |
+| C-oracle, A1 | Prior = nhãn thật / bộ ví dụ cố định | Chạy thêm nếu còn quota (`EXTRA=1`) | Tùy chọn |
 
 ```text
-Request JSONL → Prompt zero-shot → Backend → Parse JSON
-                                               │
-                         Predictions JSONL ←───┘
-                                │
-                      Metrics + Confusion matrix
+HTTP request ──► embedding ──► top-N ứng viên từ pool (kèm nhãn của ứng viên)
+     │                                   │
+     └──► prior (A0 zero-shot / kNN) ────┴──► chọn k ví dụ (B / BAL / C)
+                                                      │
+                                     prompt (ví dụ + request) ──► LLM ──► nhãn
 ```
 
-A0 có kiểm tra nhãn đầu ra, timeout/retry giới hạn, lưu từng prediction và hỗ trợ resume. Ground truth chỉ dùng để đánh giá, không được đưa vào prompt.
+**Chạy toàn bộ phần LLM** (Git Bash). Script luân phiên key `.env` và `.env.tv2` của hai thành viên. Khi mọi key hết quota ngày (gói miễn phí khoảng 200.000 token/ngày/key), script tự dừng; hôm sau chạy lại đúng lệnh để tiếp tục:
 
-**Hiện trạng kiểm chứng:** bộ kiểm thử gần nhất đạt 28/28 test, trong đó 12 test cho A0. Mock có fixture riêng để kiểm tra cả output hợp lệ, output sai và lỗi backend. Artifact smoke Groq hiện có chứa một mẫu lỗi backend; chưa xác nhận smoke API thật thành công và chưa có kết quả benchmark. Không dùng số liệu mock để đánh giá năng lực LLM.
+```bash
+bash src/experiments/run_suite.sh validation
+```
+
+**Hiện trạng (19/10/2026):** 55/55 test đạt trên Windows 11 (Python 3.11.9). Retrieval và kNN đã chạy trên dữ liệu thật; A0 đã chạy thật trên 200 request validation. Lỗi 403 trước đây do Cloudflare của Groq chặn User-Agent mặc định của Python (`error code: 1010`), đã sửa.
 
 ## Cấu trúc repo
 
 ```text
 .
 ├── README.md
-├── env.example                  # Template cấu hình công khai, key để trống
+├── env.example                  # Template cấu hình API, key để trống
 ├── src/
-│   ├── pipeline_a0/             # Prompt, client, parser, runner và metrics
-│   ├── preprocessing/           # Chuẩn bị dữ liệu và khảo sát dataset
-│   ├── configs/                 # Cấu hình JSON và thông tin nguồn dữ liệu
-│   ├── tests/                   # Unit tests và fixture tổng hợp
-│   ├── data/
-│   │   ├── raw/                 # Dữ liệu gốc, không track Git
-│   │   └── processed/           # Splits/manifests, không track Git
-│   ├── artifacts/              # Predictions, metrics, audit và logs
-│   ├── notebooks/              # Khảo sát dữ liệu
+│   ├── preprocessing/           # Chuẩn bị dữ liệu, chia tập, khảo sát
+│   ├── pipeline_a0/             # Client API, parser, A0 smoke runner (giữ từ bản đầu)
+│   ├── retrieval/               # views, embedding, index, kNN, chiến lược chọn ví dụ
+│   ├── experiments/             # build_retrieval, eval_retrieval, run_llm, prompting
+│   ├── analysis/                # metrics, bootstrap, McNemar, so sánh và hình
+│   ├── common/                  # khóa thư mục chạy được trên Windows/Linux
+│   ├── configs/
+│   │   ├── data.json            # seed, nhãn, ngân sách subset
+│   │   ├── llm/                 # mock.json, groq.json
+│   │   └── experiments/         # A0, B_k4, BAL_k4, C_knn_k4, C_llm_k4 (+ C_oracle_k4, A1_k4)
+│   ├── tests/                   # Unit test + end-to-end test với dữ liệu giả
+│   ├── data/                    # raw/ và processed/, không track Git
+│   ├── artifacts/               # retrieval/, runs/, reports/, data audit
 │   └── requirements-*.txt
 └── reports/
-    ├── project_overview.md       # Thiết kế nghiên cứu
-    ├── surveys/                 # Khảo sát SR-BH và CSIC; hình minh họa
-    ├── protocol/                # Schema, chính sách nhãn và data split
-    ├── progress/                # Kết quả xử lý dữ liệu và báo cáo tiến độ
-    ├── plan/                    # Kế hoạch triển khai
+    ├── project_overview.md      # Thiết kế nghiên cứu
+    ├── surveys/                 # Khảo sát SR-BH, CSIC; hình minh họa
+    ├── protocol/                # Dữ liệu, hướng dẫn chạy thực nghiệm
+    ├── progress/                # Báo cáo tiến độ, báo cáo giữa kỳ
+    ├── plan/                    # Kế hoạch
     └── references/              # Tài liệu tham khảo
 ```
 
@@ -59,7 +69,7 @@ Chạy các lệnh dưới đây từ thư mục gốc repo. Dữ liệu lớn v
 
 ## Bắt đầu bằng mock — không cần API key
 
-Yêu cầu **Python >=3.10 trên Linux/POSIX**; đã kiểm chứng với Python 3.12.3. A0 dùng thư viện chuẩn, không cần cài SDK hoặc package bên ngoài. Resume sử dụng `fcntl` nên chưa hỗ trợ Windows native; trên Windows có thể dùng WSL.
+Yêu cầu **Python >=3.10**; đã kiểm chứng với Python 3.12.3 (Linux) và 3.11.9 (Windows 11). A0 dùng thư viện chuẩn. Khóa thư mục output dùng `fcntl` trên Linux/macOS và `msvcrt` trên Windows, nên chạy native được trên cả hai.
 
 ```bash
 python3 -m venv .venv

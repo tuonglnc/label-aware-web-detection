@@ -1,0 +1,24 @@
+{
+  "encoder": {
+    "encoder": "sentence-transformers",
+    "model": "sentence-transformers/all-MiniLM-L6-v2",
+    "max_seq_length": 256,
+    "view": "embedding_view-v1"
+  },
+  "n_candidates": 50,
+  "pool_size": 3000,
+  "query_sizes": {
+    "development": 30,
+    "validation": 200
+  },
+  "timings": {
+    "pool_encode_seconds": 335.98,
+    "development_seconds": 2.88,
+    "validation_seconds": 18.02
+  },
+  "inputs_sha256": {
+    "pool": "6dd9ad930e6286bc4cdaece1737833e643e289afe3506f1d1642bdf77c672d38",
+    "development": "76de5dcfb55d146fe7b014696e7465aa0b12c04b33fd596de94b3bd9457e95dc",
+    "validation": "41e7d77616290a7c54a06ea19550b30505eca72575db404422340eeb4d75ef35"
+  }
+}

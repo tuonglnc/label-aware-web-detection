@@ -143,6 +143,22 @@ class A0Tests(unittest.TestCase):
         self.assertEqual(opener.open.call_args.kwargs["timeout"], 30)
         self.assertEqual(sleep.call_count, 1)
 
+    def test_rate_limit_waits_follow_retry_after_without_using_retries(self):
+        opener = Mock()
+        success = Mock()
+        success.__enter__ = Mock(return_value=success)
+        success.__exit__ = Mock(return_value=False)
+        success.read.return_value = json.dumps({"choices": [{"message": {"content": '{"label":"NORMAL"}'}}]}).encode()
+        limited = lambda: urllib.error.HTTPError("safe", 429, "rate limit", {"retry-after": "7"}, io.BytesIO())
+        opener.open.side_effect = [limited(), limited(), success]
+        config = dict(self.api_config(), max_retries=0, max_rate_limit_waits=5, reasoning_effort="low")
+        with patch.dict("os.environ", {"A0_API_KEY": "synthetic-key-not-real"}), \
+                patch("urllib.request.build_opener", return_value=opener), patch("time.sleep") as sleep:
+            result = core.ChatClient(config)(core.messages("GET /"))
+        self.assertEqual(result["attempts"], 3)
+        self.assertEqual([c.args[0] for c in sleep.call_args_list], [7.0, 7.0])
+        self.assertEqual(json.loads(opener.open.call_args.args[0].data)["reasoning_effort"], "low")
+
     def test_transport_retry_bound_and_nonretryable_http(self):
         for error, count, code in ((TimeoutError(), 3, "transport_error"),
                                    (urllib.error.HTTPError("safe", 401, "unauthorized", {}, None), 1, "http_401")):

@@ -1,0 +1,1 @@
+{"name": "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY", "pipeline": "C", "k": 4, "n_candidates": 30, "lambda": 0.1, "prior_source": "oracle", "max_demo_chars": 500, "retrieval_dir": "src/artifacts/retrieval/minilm"}

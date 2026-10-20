@@ -232,7 +232,12 @@ def prepare(input_path, config, output, artifacts):
     artifacts.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="sr-bh-") as tmp:
         db = sqlite3.connect(str(Path(tmp) / "requests.sqlite"))
-        counts, raw_classes, fields, label_columns = scan_csv(input_path, config, db)
+        try:
+            counts, raw_classes, fields, label_columns = scan_csv(input_path, config, db)
+        except Exception:
+            # Windows cannot delete the temp directory while the DB file is open.
+            db.close()
+            raise
         records, quarantine = [], []
         for rid, text, signature, conflict, label, source_row, occurrences in db.execute("SELECT * FROM requests ORDER BY id"):
             if conflict:

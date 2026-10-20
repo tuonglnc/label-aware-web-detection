@@ -1,0 +1,141 @@
+{
+  "n": 34,
+  "accuracy": 0.7647058823529411,
+  "macro_f1": 0.7614607614607615,
+  "weighted_f1": 0.7599067599067598,
+  "coverage": 1.0,
+  "per_class": {
+    "NORMAL": {
+      "precision": 0.6,
+      "recall": 0.5,
+      "f1": 0.5454545454545454,
+      "support": 6
+    },
+    "SQL_INJECTION": {
+      "precision": 0.75,
+      "recall": 0.6,
+      "f1": 0.6666666666666665,
+      "support": 5
+    },
+    "PATH_TRAVERSAL": {
+      "precision": 0.8333333333333334,
+      "recall": 1.0,
+      "f1": 0.9090909090909091,
+      "support": 5
+    },
+    "CODE_INJECTION": {
+      "precision": 0.8571428571428571,
+      "recall": 1.0,
+      "f1": 0.923076923076923,
+      "support": 6
+    },
+    "HTTP_RESPONSE_SPLITTING": {
+      "precision": 1.0,
+      "recall": 0.8333333333333334,
+      "f1": 0.9090909090909091,
+      "support": 6
+    },
+    "OS_COMMAND_INJECTION": {
+      "precision": 0.5714285714285714,
+      "recall": 0.6666666666666666,
+      "f1": 0.6153846153846153,
+      "support": 6
+    }
+  },
+  "confusion_matrix": {
+    "rows": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION"
+    ],
+    "columns": [
+      "NORMAL",
+      "SQL_INJECTION",
+      "PATH_TRAVERSAL",
+      "CODE_INJECTION",
+      "HTTP_RESPONSE_SPLITTING",
+      "OS_COMMAND_INJECTION",
+      "__INVALID_OR_ERROR__"
+    ],
+    "counts": [
+      [
+        3,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        3,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        5,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        0,
+        4,
+        0
+      ]
+    ]
+  },
+  "normal_false_positive_rate": 0.5,
+  "status_counts": {
+    "ok": 34
+  },
+  "invalid_output_rate": 0.0,
+  "backend_error_rate": 0.0,
+  "lcr_at_k": 0.6323529411764705,
+  "cost": {
+    "llm_calls_per_query": 1,
+    "mean_total_tokens": 2585.9117647058824,
+    "mean_prior_tokens": null,
+    "token_samples": 34,
+    "mean_latency_seconds": 18.133632352941177,
+    "p95_latency_seconds": 24.3624
+  },
+  "experiment_kind": "llm",
+  "run_key": "21298c3353366f390557ba21259b4b71f6792150803f1b565761c893068de71a",
+  "pipeline": "B",
+  "split": "validation",
+  "complete": false,
+  "n_selected": 200
+}

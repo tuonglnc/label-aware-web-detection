@@ -1,5 +1,13 @@
 # Bắt đầu đọc repository từ đây
 
+**Cập nhật mới nhất — 19/10/2026 (tối):**
+
+- [Kế hoạch 2 người 11/10–14/11](plan/ke_hoach_2_nguoi_11_10_den_14_11.md): lịch thực thi hiện tại, thay các bản trước.
+- [Báo cáo giữa kỳ (bản tạm)](progress/bao_cao_giua_ky.md): có số liệu thật cho retrieval và kNN.
+- [Hướng dẫn đọc code và chạy code](protocol/huong_dan_doc_va_chay_code.md): thứ tự đọc từng file, theo dấu một request thật, lỗi thường gặp, bài tập tự kiểm tra. **Bắt đầu từ đây.**
+- [Hướng dẫn chạy thực nghiệm](protocol/huong_dan_chay_thuc_nghiem.md): bản ngắn gọn các lệnh, từ dữ liệu gốc đến bảng kết quả.
+- Code mới: `src/retrieval/`, `src/experiments/`, `src/analysis/`. Đã sửa lỗi 403 (User-Agent) và lỗi chạy trên Windows.
+
 **Cập nhật 19/10/2026 — tài liệu dùng cho báo cáo ngày mai:**
 
 - [Bản nháp report ngày 20/10, bảng bằng chứng và nội dung tám slide](progress/ban_nhap_bao_cao_2026_10_20.md).

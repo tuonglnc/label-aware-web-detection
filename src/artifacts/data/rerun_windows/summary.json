@@ -1,0 +1,197 @@
+{
+  "class_distribution": {
+    "development": {
+      "CODE_INJECTION": 5,
+      "HTTP_RESPONSE_SPLITTING": 5,
+      "NORMAL": 5,
+      "OS_COMMAND_INJECTION": 5,
+      "PATH_TRAVERSAL": 5,
+      "SQL_INJECTION": 5
+    },
+    "pool": {
+      "CODE_INJECTION": 9604,
+      "HTTP_RESPONSE_SPLITTING": 13386,
+      "NORMAL": 120184,
+      "OS_COMMAND_INJECTION": 2147,
+      "PATH_TRAVERSAL": 10868,
+      "SQL_INJECTION": 170406
+    },
+    "test": {
+      "CODE_INJECTION": 2054,
+      "HTTP_RESPONSE_SPLITTING": 2869,
+      "NORMAL": 25459,
+      "OS_COMMAND_INJECTION": 461,
+      "PATH_TRAVERSAL": 2352,
+      "SQL_INJECTION": 36497
+    },
+    "validation": {
+      "CODE_INJECTION": 2057,
+      "HTTP_RESPONSE_SPLITTING": 2870,
+      "NORMAL": 25700,
+      "OS_COMMAND_INJECTION": 461,
+      "PATH_TRAVERSAL": 2349,
+      "SQL_INJECTION": 36513
+    }
+  },
+  "columns": [
+    "timestamp",
+    "src_ip",
+    "src_port",
+    "dst_ip",
+    "dst_port",
+    "request_http_method",
+    "request_http_request",
+    "request_http_protocol",
+    "request_user_agent",
+    "request_referer",
+    "request_host",
+    "request_origin",
+    "request_cookie",
+    "request_content_type",
+    "request_accept",
+    "request_accept_language",
+    "request_accept_encoding",
+    "request_do_not_track",
+    "request_connection",
+    "request_body",
+    "response_http_protocol",
+    "response_http_status_code",
+    "response_http_status_message",
+    "response_content_length",
+    "000 - Normal",
+    "272 - Protocol Manipulation",
+    "242 - Code Injection",
+    "88 - OS Command Injection",
+    "126 - Path Traversal",
+    "66 - SQL Injection",
+    "16 - Dictionary-based Password Attack",
+    "310 - Scanning for Vulnerable Software",
+    "153 - Input Data Manipulation",
+    "248 - Command Injection",
+    "274 - HTTP Verb Tampering",
+    "194 - Fake the Source of Data",
+    "34 - HTTP Response Splitting",
+    "33 - HTTP Request Smuggling"
+  ],
+  "config_sha256": "2eb5370a0b9b44e87ccebe2a3ed6c45fc23cdb42055cbae5d85044e818f3173f",
+  "counts": {
+    "conflict_rows": 2331,
+    "conflict_unique_requests": 288,
+    "duplicate_rows_removed": 358720,
+    "eligible_single_label": 826884,
+    "invalid_label": 0,
+    "malformed_row": 0,
+    "missing_essential": 2,
+    "multi_label": 9238,
+    "out_of_scope": 71693,
+    "oversize_rows": 0,
+    "oversize_unique_requests": 0,
+    "retained_source_rows": 824987,
+    "retained_unique_requests": 466267,
+    "total_rows": 907815,
+    "zero_label": 0
+  },
+  "group_review_status": "pending",
+  "group_support": {
+    "CODE_INJECTION": 13664,
+    "HTTP_RESPONSE_SPLITTING": 19112,
+    "NORMAL": 155443,
+    "OS_COMMAND_INJECTION": 3074,
+    "PATH_TRAVERSAL": 15167,
+    "SQL_INJECTION": 240589
+  },
+  "input": {
+    "bytes": 436437661,
+    "md5": "173ec515308bdce5aec19cfd5b792596",
+    "path": "src\\data\\raw\\data_capec_multilabel.csv",
+    "sha256": "9c73c90ce6564ae48b14f7179cd864d037a6a130ef69c68c1626ec5d7ce4a910"
+  },
+  "label_columns": [
+    "000 - Normal",
+    "272 - Protocol Manipulation",
+    "242 - Code Injection",
+    "88 - OS Command Injection",
+    "126 - Path Traversal",
+    "66 - SQL Injection",
+    "16 - Dictionary-based Password Attack",
+    "310 - Scanning for Vulnerable Software",
+    "153 - Input Data Manipulation",
+    "248 - Command Injection",
+    "274 - HTTP Verb Tampering",
+    "194 - Fake the Source of Data",
+    "34 - HTTP Response Splitting",
+    "33 - HTTP Request Smuggling"
+  ],
+  "manual_review_status": "pending",
+  "protocol_version": "sr-bh-single-label-v1",
+  "raw_class_counts": {
+    "000 - Normal": 525195,
+    "126 - Path Traversal": 20992,
+    "153 - Input Data Manipulation": 2272,
+    "16 - Dictionary-based Password Attack": 1847,
+    "194 - Fake the Source of Data": 56145,
+    "242 - Code Injection": 15827,
+    "248 - Command Injection": 1,
+    "272 - Protocol Manipulation": 9153,
+    "274 - HTTP Verb Tampering": 5437,
+    "310 - Scanning for Vulnerable Software": 2718,
+    "33 - HTTP Request Smuggling": 1059,
+    "34 - HTTP Response Splitting": 19738,
+    "66 - SQL Injection": 250311,
+    "88 - OS Command Injection": 7482
+  },
+  "readiness_note": "Require manual annotation/group review and explicit taxonomy decision, even if automated checks pass.",
+  "ready_for_task_2": false,
+  "runtime": {
+    "dependencies": "standard-library only",
+    "prepare_module_sha256": "04f0b9cf4259a07ce878c791d113185347631a83c6808314fb5c371833b27a81",
+    "python": "3.11.9"
+  },
+  "source": {
+    "doi": "10.7910/DVN/OGOIXX",
+    "expected_md5": "173ec515308bdce5aec19cfd5b792596",
+    "file_id": 6319496,
+    "license": "CC0-1.0",
+    "url": "https://dataverse.harvard.edu/api/access/datafile/6319496",
+    "version": "1.2"
+  },
+  "split_groups": {
+    "development": 30,
+    "pool": 312909,
+    "test": 67055,
+    "validation": 67055
+  },
+  "split_sizes": {
+    "development": 30,
+    "pool": 326595,
+    "test": 69692,
+    "validation": 69950
+  },
+  "subset_distribution": {
+    "pool": {
+      "CODE_INJECTION": 500,
+      "HTTP_RESPONSE_SPLITTING": 500,
+      "NORMAL": 500,
+      "OS_COMMAND_INJECTION": 500,
+      "PATH_TRAVERSAL": 500,
+      "SQL_INJECTION": 500
+    },
+    "test": {
+      "CODE_INJECTION": 100,
+      "HTTP_RESPONSE_SPLITTING": 100,
+      "NORMAL": 100,
+      "OS_COMMAND_INJECTION": 100,
+      "PATH_TRAVERSAL": 100,
+      "SQL_INJECTION": 100
+    },
+    "validation": {
+      "CODE_INJECTION": 34,
+      "HTTP_RESPONSE_SPLITTING": 34,
+      "NORMAL": 33,
+      "OS_COMMAND_INJECTION": 33,
+      "PATH_TRAVERSAL": 33,
+      "SQL_INJECTION": 33
+    }
+  },
+  "warnings": []
+}

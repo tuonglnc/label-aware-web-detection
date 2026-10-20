@@ -7,10 +7,21 @@ src/artifacts/data/quarantine.jsonl
 src/artifacts/data/reproduce/
 __pycache__/
 .venv/
-
 # Local credentials; publish only templates with empty keys.
 .env
 .env.*
 !.env.example
 setup_va_doc_lai.md
 /docs
+
+# Generated / temporary files (do not push)
+src/artifacts/retrieval/*/pool_vectors.npy
+src/artifacts/data/*/manual_review.jsonl
+src/artifacts/data/*/group_review.jsonl
+src/artifacts/data/*/quarantine.jsonl
+src/artifacts/runs_mock/
+src/artifacts/reports_mock/
+src/artifacts/runs_*_log.txt
+.run.lock
+*.tmp
+~$*
