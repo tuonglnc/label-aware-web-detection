@@ -81,6 +81,19 @@ class EndToEndTests(unittest.TestCase):
         exp = self.experiment(name=name, **overrides)
         return out, run_experiment(exp, MOCK, split, out, data_dir=self.data)
 
+    def test_add_split_reuses_pool_and_keeps_existing_neighbors(self):
+        from src.experiments.build_retrieval import add_split
+        out = self.root / "retrieval_dev_val"
+        build(HashingEncoder(), str(out), ["development", "validation"], 20, data_dir=self.data)
+        before = (out / "neighbors_validation.jsonl").read_bytes()
+        manifest = add_split(HashingEncoder(), out, "test", data_dir=self.data)
+        self.assertEqual(manifest["query_sizes"]["test"], 12)
+        self.assertEqual((out / "neighbors_validation.jsonl").read_bytes(), before)
+        self.assertEqual(load_jsonl(out / "neighbors_test.jsonl")[0]["candidates"][0].keys(),
+                         {"request_id", "label", "similarity", "rank"})
+        with self.assertRaises(ValueError):
+            add_split(HashingEncoder(), out, "test", data_dir=self.data)  # không ghi đè
+
     def test_neighbors_never_contain_query_labels_and_come_from_pool(self):
         pool_ids = {r["request_id"] for r in load_split("pool", self.data)}
         rows = load_jsonl(self.retrieval / "neighbors_validation.jsonl")

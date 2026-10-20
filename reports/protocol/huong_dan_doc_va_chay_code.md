@@ -413,7 +413,7 @@ python -c "import json; r=[json.loads(l) for l in open('src/artifacts/retrieval/
 | `Không tìm thấy key trong .env` | Chưa tạo `.env` hoặc chưa điền key | Tạo từ `env.example` (mục 1.3) |
 | `... is not finished yet` (compare) | Có run chưa chạy xong | Chạy tiếp run đó, hoặc bỏ thư mục run khỏi `--runs` |
 | `A0 prior run lacks ... queries` / không tìm thấy `manifest.json` của A0 | Chạy C prior LLM trước khi chạy A0 cùng split | Chạy A0 trên split đó trước |
-| `queries have no neighbors` | Chưa dựng retrieval cho split đó | `build_retrieval` (thêm `--include-test` cho test) |
+| `queries have no neighbors` | Chưa dựng retrieval cho split đó | `build_retrieval` (thêm split mới: `--add-split test`) |
 | `command not found` / `is not recognized` | Gõ lệnh PowerShell trong Git Bash hoặc ngược lại | Xem mục 1.0, dùng khối lệnh đúng terminal |
 | Lệnh `python` chạy nhưng thiếu thư viện (`No module named ...`) | Chưa kích hoạt venv trong terminal mới | Kích hoạt lại venv (mục 1.1) |
 | `UnicodeEncodeError` khi in ra màn hình | Terminal Windows không ở UTF-8 | PowerShell: `$env:PYTHONIOENCODING="utf-8"`; Git Bash: `export PYTHONIOENCODING=utf-8`; rồi chạy lại |

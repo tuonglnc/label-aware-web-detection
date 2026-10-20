@@ -159,7 +159,7 @@ Chỉ so sánh các run đã chạy xong. `comparison.md` gồm:
 ## 7. Chạy test (sau khi khóa cấu hình ngày 28/10)
 
 1. Ghi cấu hình và commit hash vào `reports/protocol/cau_hinh_khoa.md`.
-2. Dựng neighbors cho test: `python -m src.experiments.build_retrieval --output src/artifacts/retrieval/minilm --include-test`.
+2. Dựng neighbors cho test (đã làm ngày 20/10): `python -m src.experiments.build_retrieval --output src/artifacts/retrieval/minilm --add-split test`. Lệnh này dùng lại pool đã mã hóa và không đổi neighbors của validation.
 3. Chạy bộ chính trên **300 mẫu đầu** của `test_subset.jsonl` (50/lớp), mỗi ngày đến khi xong:
 
 ```bash
