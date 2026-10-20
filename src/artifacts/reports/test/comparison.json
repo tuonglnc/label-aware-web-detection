@@ -1,0 +1,339 @@
+{
+  "split": "test",
+  "reference": "B_semantic_k4",
+  "n_queries": 300,
+  "runs": [
+    {
+      "name": "A0_zero_shot",
+      "pipeline": "A0",
+      "kind": "llm",
+      "n": 300,
+      "macro_f1": 0.8337398910984367,
+      "accuracy": 0.8333333333333334,
+      "normal_fpr": 0.34,
+      "coverage": 1.0,
+      "lcr_at_k": null,
+      "cost": {
+        "llm_calls_per_query": 1,
+        "mean_total_tokens": 629.8666666666667,
+        "mean_prior_tokens": null,
+        "token_samples": 300,
+        "mean_latency_seconds": 0.6834650000000001,
+        "p95_latency_seconds": 1.0514
+      },
+      "per_class_f1": {
+        "NORMAL": 0.7333333333333334,
+        "SQL_INJECTION": 0.9278350515463918,
+        "PATH_TRAVERSAL": 0.9056603773584904,
+        "CODE_INJECTION": 0.9433962264150945,
+        "HTTP_RESPONSE_SPLITTING": 0.813953488372093,
+        "OS_COMMAND_INJECTION": 0.6782608695652174
+      },
+      "vs_reference": {
+        "bootstrap": {
+          "observed_diff": -0.047313556850791305,
+          "ci95": [
+            -0.08116105378972127,
+            -0.015898177553071657
+          ],
+          "p_diff_le_0": 0.998,
+          "n_resamples": 2000,
+          "unit": "query"
+        },
+        "mcnemar": {
+          "a_only_correct": 5,
+          "b_only_correct": 19,
+          "p_value": 0.006610751152038574
+        }
+      }
+    },
+    {
+      "name": "A1_fixed_k4",
+      "pipeline": "A1",
+      "kind": "llm",
+      "n": 300,
+      "macro_f1": 0.7971477120021925,
+      "accuracy": 0.7966666666666666,
+      "normal_fpr": 0.4,
+      "coverage": 1.0,
+      "lcr_at_k": 0.16666666666666666,
+      "cost": {
+        "llm_calls_per_query": 1,
+        "mean_total_tokens": 1430.6,
+        "mean_prior_tokens": null,
+        "token_samples": 300,
+        "mean_latency_seconds": 0.8448556666666668,
+        "p95_latency_seconds": 1.3457
+      },
+      "per_class_f1": {
+        "NORMAL": 0.6122448979591836,
+        "SQL_INJECTION": 0.924731182795699,
+        "PATH_TRAVERSAL": 0.8648648648648649,
+        "CODE_INJECTION": 0.8867924528301886,
+        "HTTP_RESPONSE_SPLITTING": 0.8275862068965518,
+        "OS_COMMAND_INJECTION": 0.6666666666666666
+      },
+      "vs_reference": {
+        "bootstrap": {
+          "observed_diff": -0.08390573594703554,
+          "ci95": [
+            -0.11848640228032914,
+            -0.050806111864862724
+          ],
+          "p_diff_le_0": 1.0,
+          "n_resamples": 2000,
+          "unit": "query"
+        },
+        "mcnemar": {
+          "a_only_correct": 2,
+          "b_only_correct": 27,
+          "p_value": 1.6242265701293945e-06
+        }
+      }
+    },
+    {
+      "name": "BAL_class_balanced_k4",
+      "pipeline": "BAL",
+      "kind": "llm",
+      "n": 300,
+      "macro_f1": 0.8649454660461217,
+      "accuracy": 0.8633333333333333,
+      "normal_fpr": 0.28,
+      "coverage": 1.0,
+      "lcr_at_k": 0.41583333333333333,
+      "cost": {
+        "llm_calls_per_query": 1,
+        "mean_total_tokens": 1485.99,
+        "mean_prior_tokens": null,
+        "token_samples": 300,
+        "mean_latency_seconds": 0.807591,
+        "p95_latency_seconds": 1.302
+      },
+      "per_class_f1": {
+        "NORMAL": 0.7578947368421052,
+        "SQL_INJECTION": 0.9166666666666666,
+        "PATH_TRAVERSAL": 0.9411764705882353,
+        "CODE_INJECTION": 0.9215686274509804,
+        "HTTP_RESPONSE_SPLITTING": 0.8913043478260869,
+        "OS_COMMAND_INJECTION": 0.7610619469026547
+      },
+      "vs_reference": {
+        "bootstrap": {
+          "observed_diff": -0.01610798190310636,
+          "ci95": [
+            -0.04140512445256439,
+            0.0076231949237463015
+          ],
+          "p_diff_le_0": 0.9025,
+          "n_resamples": 2000,
+          "unit": "query"
+        },
+        "mcnemar": {
+          "a_only_correct": 5,
+          "b_only_correct": 10,
+          "p_value": 0.3017578125
+        }
+      }
+    },
+    {
+      "name": "B_semantic_k4",
+      "pipeline": "B",
+      "kind": "llm",
+      "n": 300,
+      "macro_f1": 0.881053447949228,
+      "accuracy": 0.88,
+      "normal_fpr": 0.3,
+      "coverage": 1.0,
+      "lcr_at_k": 0.6916666666666667,
+      "cost": {
+        "llm_calls_per_query": 1,
+        "mean_total_tokens": 1486.8933333333334,
+        "mean_prior_tokens": null,
+        "token_samples": 300,
+        "mean_latency_seconds": 0.8170160000000002,
+        "p95_latency_seconds": 1.3479
+      },
+      "per_class_f1": {
+        "NORMAL": 0.7692307692307692,
+        "SQL_INJECTION": 0.9375,
+        "PATH_TRAVERSAL": 0.9411764705882353,
+        "CODE_INJECTION": 0.9607843137254902,
+        "HTTP_RESPONSE_SPLITTING": 0.8913043478260869,
+        "OS_COMMAND_INJECTION": 0.7863247863247863
+      }
+    },
+    {
+      "name": "C_knn_prior_k4_lambda0.1",
+      "pipeline": "C",
+      "kind": "llm",
+      "n": 300,
+      "macro_f1": 0.8615975762668437,
+      "accuracy": 0.86,
+      "normal_fpr": 0.32,
+      "coverage": 1.0,
+      "lcr_at_k": 0.745,
+      "cost": {
+        "llm_calls_per_query": 1,
+        "mean_total_tokens": 1487.8266666666666,
+        "mean_prior_tokens": null,
+        "token_samples": 300,
+        "mean_latency_seconds": 0.8333063333333333,
+        "p95_latency_seconds": 1.1846
+      },
+      "per_class_f1": {
+        "NORMAL": 0.7311827956989247,
+        "SQL_INJECTION": 0.9278350515463918,
+        "PATH_TRAVERSAL": 0.9142857142857144,
+        "CODE_INJECTION": 0.9375,
+        "HTTP_RESPONSE_SPLITTING": 0.8791208791208791,
+        "OS_COMMAND_INJECTION": 0.7796610169491526
+      },
+      "vs_reference": {
+        "bootstrap": {
+          "observed_diff": -0.019455871682384274,
+          "ci95": [
+            -0.04743536761911693,
+            0.007692143285635167
+          ],
+          "p_diff_le_0": 0.918,
+          "n_resamples": 2000,
+          "unit": "query"
+        },
+        "mcnemar": {
+          "a_only_correct": 7,
+          "b_only_correct": 13,
+          "p_value": 0.26317596435546875
+        }
+      },
+      "prior_breakdown_vs_reference": {
+        "prior_correct": {
+          "fixed": 5,
+          "broken": 2,
+          "both_correct": 209,
+          "both_wrong": 8,
+          "n": 224
+        },
+        "prior_wrong": {
+          "fixed": 2,
+          "broken": 11,
+          "both_correct": 42,
+          "both_wrong": 21,
+          "n": 76
+        }
+      }
+    },
+    {
+      "name": "C_llm_prior_k4_lambda0.1",
+      "pipeline": "C",
+      "kind": "llm",
+      "n": 300,
+      "macro_f1": 0.8607439093036425,
+      "accuracy": 0.86,
+      "normal_fpr": 0.32,
+      "coverage": 1.0,
+      "lcr_at_k": 0.845,
+      "cost": {
+        "llm_calls_per_query": 2,
+        "mean_total_tokens": 1489.5666666666666,
+        "mean_prior_tokens": 629.8666666666667,
+        "token_samples": 300,
+        "mean_latency_seconds": 0.920075333333333,
+        "p95_latency_seconds": 1.2987
+      },
+      "per_class_f1": {
+        "NORMAL": 0.7555555555555556,
+        "SQL_INJECTION": 0.9278350515463918,
+        "PATH_TRAVERSAL": 0.923076923076923,
+        "CODE_INJECTION": 0.9607843137254902,
+        "HTTP_RESPONSE_SPLITTING": 0.8409090909090909,
+        "OS_COMMAND_INJECTION": 0.7563025210084033
+      },
+      "vs_reference": {
+        "bootstrap": {
+          "observed_diff": -0.02030953864558549,
+          "ci95": [
+            -0.04191525947077779,
+            -0.0019712648598279037
+          ],
+          "p_diff_le_0": 0.986,
+          "n_resamples": 2000,
+          "unit": "query"
+        },
+        "mcnemar": {
+          "a_only_correct": 2,
+          "b_only_correct": 8,
+          "p_value": 0.109375
+        }
+      },
+      "prior_breakdown_vs_reference": {
+        "prior_correct": {
+          "fixed": 1,
+          "broken": 1,
+          "both_correct": 244,
+          "both_wrong": 4,
+          "n": 250
+        },
+        "prior_wrong": {
+          "fixed": 1,
+          "broken": 7,
+          "both_correct": 12,
+          "both_wrong": 30,
+          "n": 50
+        }
+      }
+    },
+    {
+      "name": "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY",
+      "pipeline": "C",
+      "kind": "llm_oracle_analysis",
+      "n": 300,
+      "macro_f1": 0.9001567671705043,
+      "accuracy": 0.9,
+      "normal_fpr": 0.28,
+      "coverage": 1.0,
+      "lcr_at_k": 0.9425,
+      "cost": {
+        "llm_calls_per_query": 1,
+        "mean_total_tokens": 1487.1266666666668,
+        "mean_prior_tokens": null,
+        "token_samples": 300,
+        "mean_latency_seconds": 0.888711666666667,
+        "p95_latency_seconds": 1.5767
+      },
+      "per_class_f1": {
+        "NORMAL": 0.782608695652174,
+        "SQL_INJECTION": 0.9583333333333334,
+        "PATH_TRAVERSAL": 0.9411764705882353,
+        "CODE_INJECTION": 0.9702970297029702,
+        "HTTP_RESPONSE_SPLITTING": 0.9166666666666666,
+        "OS_COMMAND_INJECTION": 0.831858407079646
+      },
+      "vs_reference": {
+        "bootstrap": {
+          "observed_diff": 0.019103319221276283,
+          "ci95": [
+            -0.0027977380164880827,
+            0.04264817089479778
+          ],
+          "p_diff_le_0": 0.0475,
+          "n_resamples": 2000,
+          "unit": "query"
+        },
+        "mcnemar": {
+          "a_only_correct": 10,
+          "b_only_correct": 4,
+          "p_value": 0.1795654296875
+        }
+      },
+      "prior_breakdown_vs_reference": {
+        "prior_correct": {
+          "fixed": 10,
+          "broken": 4,
+          "both_correct": 260,
+          "both_wrong": 26,
+          "n": 300
+        }
+      }
+    }
+  ]
+}
