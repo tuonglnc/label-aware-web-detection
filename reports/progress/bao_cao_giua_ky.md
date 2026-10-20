@@ -310,7 +310,33 @@ Quét λ offline (không gọi LLM) cho C với prior kNN:
 - A0 hơn kNN 0,035 Macro-F1, nhưng khoảng tin cậy 95% bootstrap là [−0,031; +0,104] và p McNemar = 0,542. Chênh lệch này **chưa có ý nghĩa thống kê** với 200 request.
 - A0 hay đoán nhầm sang OS Command Injection. Đây là chỗ các ví dụ trong prompt có thể giúp.
 
-### 6.5. Giới hạn quota và điều chỉnh quy mô
+### 6.5. Kết quả tạm của B và BAL (149 request chung)
+
+B đã chạy 157/200 và BAL 149/200 request (dừng do hết quota trong ngày). Bảng dưới so sánh trên đúng **149 request mà A0, B, BAL đều đã chạy** (24–25 mỗi lớp). Đây là **kết quả tạm**.
+
+| Chỉ số | A0 | B (top-4) | BAL |
+| --- | ---: | ---: | ---: |
+| Normal | 0,65 | 0,65 | 0,67 |
+| SQL Injection | 0,81 | 0,84 | 0,86 |
+| Path Traversal | 0,89 | 0,96 | 0,94 |
+| Code Injection | 0,94 | 0,98 | 0,93 |
+| HTTP Response Splitting | 0,84 | 0,96 | 0,96 |
+| OS Command Injection | 0,70 | 0,82 | 0,75 |
+| **Macro-F1** | **0,806** | **0,869** | **0,850** |
+| FPR Normal | 36,0% | 40,0% | 44,0% |
+| LCR@4 | – | 0,713 | 0,384 |
+
+| So sánh | Chênh lệch | CI 95% | p McNemar |
+| --- | ---: | --- | ---: |
+| B so với A0 | +0,063 | [+0,019; +0,112] | 0,013 |
+| BAL so với A0 | +0,044 | [0,000; +0,094] | 0,092 |
+| BAL so với B | −0,019 | [−0,046; +0,001] | 0,250 |
+
+- **B tốt hơn A0 có ý nghĩa thống kê.** Đưa 4 ví dụ giống nhất vào prompt giúp LLM phân loại tốt hơn.
+- BAL chưa hơn B.
+- Ví dụ mẫu làm tăng báo động nhầm trên lớp Normal, khớp với RQ1. Đây là chỗ Pipeline C được thiết kế để cải thiện.
+
+### 6.6. Giới hạn quota và điều chỉnh quy mô
 
 Gói Groq miễn phí giới hạn khoảng 8.000 token/phút và 200.000 token/ngày cho mỗi key. Với 6 ví dụ × 1.500 ký tự, mỗi request tốn khoảng 2.600 token; lần chạy thử B bị dừng ở 34 request và không được dùng.
 
@@ -320,7 +346,7 @@ Nhóm điều chỉnh như sau:
 - dùng key của cả hai thành viên;
 - test 300 mẫu (50 mỗi lớp).
 
-⏳ B, BAL, C đang chạy (khoảng 3 ngày quota).
+⏳ B, BAL chạy nốt; C_knn, C_llm chạy tiếp theo quota.
 
 ## 7. Kế hoạch giai đoạn còn lại
 

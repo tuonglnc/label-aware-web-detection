@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from report_lib import Report, set_text, mi, mn, mo, row, sub  # noqa: E402
 from src.analysis.compare import plot_confusion  # noqa: E402
-from src.analysis.metrics import mcnemar, paired_bootstrap  # noqa: E402
+from src.analysis.metrics import classification_metrics, label_consistency_rate, mcnemar, paired_bootstrap  # noqa: E402
 from src.retrieval.knn import knn_vote  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -60,6 +60,23 @@ ALL_LABELS = ("NORMAL", "SQL_INJECTION", "PATH_TRAVERSAL", "CODE_INJECTION", "HT
               "OS_COMMAND_INJECTION")
 BOOT = paired_bootstrap(Y, [A0P[q] for q in QIDS], [KNNP[q] for q in QIDS], ALL_LABELS)
 MCN = mcnemar(Y, [A0P[q] for q in QIDS], [KNNP[q] for q in QIDS])
+
+# Kết quả TẠM của B và BAL: các run chưa xong, nên so sánh trên đúng các request mà A0, B, BAL đều đã chạy.
+INTERIM = {}
+for _name in ("B_k4", "BAL_k4"):
+    _dir = ART / "runs" / "validation" / _name
+    if (_dir / "predictions.jsonl").exists():
+        INTERIM[_name] = {r["request_id"]: r for r in jsonl(_dir / "predictions.jsonl")}
+A0R = {r["request_id"]: r for r in jsonl(ART / "runs" / "validation" / "A0" / "predictions.jsonl")}
+COMMON = sorted(set(A0R).intersection(*[set(x) for x in INTERIM.values()])) if INTERIM else []
+
+
+def _preds(recs):
+    return [recs[q]["predicted_label"] if recs[q]["status"] == "ok" else None for q in COMMON]
+
+
+YC = [VAL[q] for q in COMMON]
+IPRED = {"A0": _preds(A0R), **{n: _preds(r) for n, r in INTERIM.items()}}
 C = S["counts"]
 LCR = EV["lcr_at_k"]
 KNN = EV["knn_vote"]
@@ -75,7 +92,10 @@ def n(x):
 
 
 def v(x, d=3):
-    return f"{float(x):.{d}f}".replace(".", ",")
+    s = f"{float(x):.{d}f}"
+    if float(s) == 0:
+        s = s.lstrip("-")  # tránh hiện "-0,000"
+    return s.replace(".", ",")
 
 
 def pct(x, d=1):
@@ -86,6 +106,7 @@ def pct(x, d=1):
 assert EV["n_queries"] == 200 and EV["k"] == 4 and EV["n_candidates"] == 30 and EV["lambda"] == 0.1
 assert A0M["complete"] and A0M["n"] == 200 and A0M["macro_f1"] > KNN["k=5"]["macro_f1"]
 assert set(A0P) == set(VAL) == set(KNNP)
+assert set(INTERIM) == {"B_k4", "BAL_k4"} and len(COMMON) >= 100
 assert LCR["C_oracle_prior (analysis only)"]["mean"] > LCR["C_knn_prior"]["mean"] > LCR["B_semantic"]["mean"]
 assert LCR["C_knn_prior"]["zero_match_rate"] > LCR["B_semantic"]["zero_match_rate"]
 assert max(EV["rq1_top1_mismatch_by_class"], key=EV["rq1_top1_mismatch_by_class"].get) == "NORMAL"
@@ -122,7 +143,8 @@ summary = (
     f"kNN vote không dùng LLM đạt Macro-F1 {v(KNN['k=5']['macro_f1'])}, còn LLM zero-shot (gpt-oss-20b) đạt "
     f"{v(A0M['macro_f1'])}. Xếp hạng lại theo prior kNN nâng tỷ lệ ví dụ cùng nhãn từ {v(b_lcr)} lên {v(c_lcr)}, "
     f"nhưng làm {pct(LCR['C_knn_prior']['zero_match_rate'])} request không còn ví dụ đúng lớp nào khi prior sai. "
-    "Các pipeline có ví dụ đang được chạy trong giới hạn quota API miễn phí và sẽ hoàn thành ở cuối kỳ.")
+    f"Kết quả tạm trên {len(COMMON)} request cho thấy đưa 4 ví dụ giống nhất vào prompt (B) giúp LLM tốt hơn "
+    "zero-shot một cách có ý nghĩa thống kê. Các pipeline còn lại đang được chạy trong giới hạn quota API miễn phí.")
 summary_en = (
     "This project studies how to select labeled demonstrations for a large language model (LLM) that "
     "classifies HTTP requests into six classes without any training. The proposed method retrieves the top-N "
@@ -136,7 +158,8 @@ summary_en = (
     f"gpt-oss-20b reaches {A0M['macro_f1']:.3f}. Prior-based "
     f"reranking raises the share of same-label demonstrations from {b_lcr:.3f} to {c_lcr:.3f}, but leaves "
     f"{100 * LCR['C_knn_prior']['zero_match_rate']:.1f}% of queries without any correct-class example when the "
-    "prior is wrong. Few-shot pipelines are being run within the free API quota for the final report.")
+    f"prior is wrong. Interim results on {len(COMMON)} requests show that adding the 4 most similar examples (B) "
+    "significantly improves over zero-shot; the remaining pipelines are being run within the free API quota.")
 thanks = [
     f"Chúng em xin chân thành cảm ơn {ADVISOR} đã định hướng đề tài, góp ý về phương pháp và theo dõi tiến độ "
     "của nhóm trong học phần Dự án Công nghệ Thông tin. Những câu hỏi của thầy/cô về dữ liệu và cách đánh giá đã "
@@ -247,7 +270,7 @@ table("rq", "Ba câu hỏi nghiên cứu và cách trả lời", ["Câu hỏi", 
     ["RQ1. Semantic retrieval thường xuyên lấy về ví dụ khác nhãn với request cần phân loại đến mức nào?",
      "Tỷ lệ top-1 khác nhãn, LCR@k; không cần LLM", "Đã có kết quả (Chương 6)"],
     ["RQ2. Label-aware reranking (C) có cải thiện Macro-F1 so với semantic retrieval (B) và đối chứng cân bằng "
-     "lớp (BAL) không?", "So sánh trên cùng tập query, bootstrap và McNemar", "A0 xong; B, BAL, C đang chạy"],
+     "lớp (BAL) không?", "So sánh trên cùng tập query, bootstrap và McNemar", "A0 xong; B, BAL có kết quả tạm; C đang chạy"],
     ["RQ3. C giúp hay gây hại trong trường hợp nào: prior đúng, prior sai, lớp ít mẫu?",
      "Bảng prior đúng/sai, C-oracle, F1 từng lớp", "Đã có phân tích sơ bộ trên retrieval"]],
       [7.5, 5.0, 3.0])
@@ -464,7 +487,7 @@ table("issues", "Sự cố kỹ thuật và cách xử lý", ["Sự cố", "Nguy
 
 # ======================= CHƯƠNG 6 =======================
 R.h1("KẾT QUẢ GIỮA KỲ")
-p("Mục 6.1 đến 6.3 không cần LLM; Mục 6.4 là kết quả LLM thật đầu tiên (A0). Tất cả tính trên 200 request của tập "
+p("Mục 6.1 đến 6.3 không cần LLM; Mục 6.4 là kết quả LLM zero-shot (A0); Mục 6.5 là kết quả tạm của B và BAL. Tất cả tính trên 200 request của tập "
   "validation, với pool 3.000 ví dụ, N = 30, k = 4, λ = 0,1. Mọi số liệu được đọc từ các file kết quả trong thư mục "
   "src/artifacts của repository (danh sách lệnh ở Phụ lục B).")
 R.h2("RQ1: ví dụ giống nhất có khác nhãn không")
@@ -536,6 +559,57 @@ p(f"A0 cao hơn kNN {v(BOOT['observed_diff'])} điểm Macro-F1, với khoảng 
   "Response Splitting bị đoán thành lớp này, có thể do các payload kiểu sleep hay ký tự xuống dòng mà định nghĩa nhãn "
   "trong prompt chưa phân biệt rõ. Đây là chỗ các ví dụ trong prompt (B, BAL, C) có thể giúp.")
 figure("a0cm", WORD / "figures" / "confusion_a0.png", "Ma trận nhầm lẫn của A0 trên validation", 12)
+R.h2("Kết quả tạm của B và BAL")
+_m = {n: classification_metrics(YC, pr, ALL_LABELS) for n, pr in IPRED.items()}
+
+
+def _lcr(name):
+    if name == "A0":
+        return "–"
+    vals = [label_consistency_rate(INTERIM[name][q]["demo_labels"], VAL[q]) for q in COMMON]
+    return v(sum(vals) / len(vals))
+
+
+p(f"Đến thời điểm viết báo cáo, B đã chạy {len(INTERIM['B_k4'])}/200 và BAL {len(INTERIM['BAL_k4'])}/200 request "
+  f"validation (dừng do hết quota trong ngày). <<tab:interim>> so sánh A0, B và BAL trên đúng {len(COMMON)} request mà "
+  "cả ba đã chạy, mỗi lớp 24–25 request. Đây là [b]kết quả tạm[/b]: con số sẽ thay đổi khi các run chạy đủ 200 request. "
+  f"Lưu ý A0 trên tập con này đạt {v(_m['A0']['macro_f1'])}, khác với {v(A0M['macro_f1'])} trên đủ 200 request, nên "
+  "chỉ so sánh các pipeline trên cùng một tập.")
+_names = {"A0": "A0 (zero-shot)", "B_k4": "B (top-4)", "BAL_k4": "BAL (cân bằng lớp)"}
+table("interim", f"Kết quả tạm trên {len(COMMON)} request validation chung", ["Chỉ số", *[_names[n] for n in IPRED]],
+      [[SHORT[l], *[v(_m[n]["per_class"][l]["f1"], 2) for n in IPRED]] for l in LABELS]
+      + [["[b]Macro-F1[/b]", *[f"[b]{v(_m[n]['macro_f1'])}[/b]" for n in IPRED]],
+         ["FPR Normal", *[pct(_m[n]["normal_false_positive_rate"]) for n in IPRED]],
+         ["LCR@4", *[_lcr(n) for n in IPRED]]], [5.5, 3.3, 3.3, 3.4], 10.5)
+_pairs = [("B_k4", "A0"), ("BAL_k4", "A0"), ("BAL_k4", "B_k4")]
+_rows = []
+_stats = {}
+for a, b in _pairs:
+    bt = paired_bootstrap(YC, IPRED[a], IPRED[b], ALL_LABELS)
+    mc = mcnemar(YC, IPRED[a], IPRED[b])
+    _stats[(a, b)] = (bt, mc)
+    _rows.append([f"{_names[a]} so với {_names[b]}", ("+" if bt["observed_diff"] >= 0 else "") + v(bt["observed_diff"]),
+                  f"[{v(bt['ci95'][0])}; {v(bt['ci95'][1])}]", f"{mc['a_only_correct']} / {mc['b_only_correct']}",
+                  v(mc["p_value"])])
+table("interimdiff", "Chênh lệch Macro-F1 từng cặp (kết quả tạm)",
+      ["So sánh", "Chênh lệch", "CI 95% bootstrap", "Chỉ bên trái đúng / chỉ bên phải đúng", "p McNemar"],
+      _rows, [4.6, 2.2, 3.4, 3.3, 2.0], 10)
+_bA = _stats[("B_k4", "A0")][0]
+# Nhận xét bên dưới dựa trên các con số này; nếu kết quả đổi, script dừng để viết lại nhận xét.
+assert all(_m["B_k4"]["per_class"][l]["f1"] - _m["A0"]["per_class"][l]["f1"] > 0.05
+           for l in ("PATH_TRAVERSAL", "HTTP_RESPONSE_SPLITTING", "OS_COMMAND_INJECTION"))
+assert _m["B_k4"]["normal_false_positive_rate"] > _m["A0"]["normal_false_positive_rate"]
+assert _stats[("BAL_k4", "B_k4")][0]["observed_diff"] < 0
+_sig = _bA["ci95"][0] > 0
+p(f"Kết quả tạm có ba điểm. Thứ nhất, B cao hơn A0 {v(_bA['observed_diff'])} điểm Macro-F1"
+  + (", và khoảng tin cậy không chứa 0: đưa 4 ví dụ giống nhất vào prompt giúp LLM phân loại tốt hơn zero-shot một "
+     "cách có ý nghĩa thống kê." if _sig else "; khoảng tin cậy còn chứa 0 nên chưa kết luận được.")
+  + " Cải thiện rõ nhất ở Path Traversal, HTTP Response Splitting và OS Command Injection, là các lớp A0 hay nhầm. "
+  f"Thứ hai, BAL thấp hơn B {v(-_stats[('BAL_k4', 'B_k4')][0]['observed_diff'])} điểm nhưng chênh lệch chưa có ý nghĩa "
+  "thống kê; việc ép đủ các lớp trong ví dụ (LCR thấp hơn nhiều) chưa cho thấy lợi ích. Thứ ba, ví dụ mẫu làm tăng "
+  f"báo động nhầm trên lớp Normal (FPR từ {pct(_m['A0']['normal_false_positive_rate'])} ở A0 lên "
+  f"{pct(_m['B_k4']['normal_false_positive_rate'])} ở B), phù hợp với RQ1: hàng xóm gần nhất của request Normal "
+  "thường là request tấn công. Đây chính là chỗ Pipeline C được thiết kế để cải thiện; kết quả của C sẽ có ở cuối kỳ.")
 R.h2("Giới hạn quota và điều chỉnh quy mô thí nghiệm")
 p("Khi chạy thật, nhóm đo được giới hạn của gói Groq miễn phí cho gpt-oss-20b: khoảng 8.000 token mỗi phút và "
   "200.000 token mỗi ngày cho mỗi khóa API. Với 6 ví dụ cắt ở 1.500 ký tự, mỗi request có ví dụ tốn khoảng 2.600 "
@@ -560,7 +634,8 @@ R.bullets([
     "có kiểm định; 55 bài kiểm thử tự động đều đạt.",
     f"Trả lời RQ1 bằng số liệu thật: {pct(EV['rq1_top1_mismatch_rate'])} request có ví dụ giống nhất mang nhãn khác.",
     f"Có đối chứng kNN (Macro-F1 {v(KNN['k=5']['macro_f1'])}) và kết quả LLM zero-shot thật (Macro-F1 "
-    f"{v(A0M['macro_f1'])}), cùng bằng chứng sơ bộ cho cả lợi ích lẫn rủi ro của C."])
+    f"{v(A0M['macro_f1'])}), cùng bằng chứng sơ bộ cho cả lợi ích lẫn rủi ro của C.",
+    f"Kết quả tạm trên {len(COMMON)} request: B (top-4) tốt hơn A0 có ý nghĩa thống kê; BAL chưa hơn B."])
 R.h2("Hạn chế")
 R.bullets([
     "Chỉ một bộ dữ liệu, là traffic của một website WordPress trong 12 ngày.",
@@ -568,7 +643,8 @@ R.bullets([
     "Có endpoint chung giữa pool và tập đánh giá; chưa đo khả năng tổng quát sang endpoint mới.",
     "Tập con cân bằng lớp, không phản ánh tỷ lệ traffic thật; tập validation chỉ 200 request.",
     "Mỗi request tốn một đến hai lượt gọi LLM, chỉ phù hợp phân tích log offline.",
-    "Mới có kết quả LLM của A0; quy mô thí nghiệm bị giới hạn bởi quota API miễn phí (k = 4, test 300 request)."])
+    "B và BAL mới có kết quả tạm, C chưa có kết quả; quy mô thí nghiệm bị giới hạn bởi quota API miễn phí (k = 4, "
+    "test 300 request)."])
 R.h2("Kế hoạch giai đoạn cuối kỳ")
 table("plan", "Kế hoạch đến khi nộp báo cáo cuối kỳ", ["Thời gian", "Công việc"], [
     ["20–22/10", "Chạy B, BAL, C prior kNN, C prior LLM trên validation bằng hai khóa API"],
