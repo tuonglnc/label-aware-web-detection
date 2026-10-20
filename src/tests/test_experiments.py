@@ -189,20 +189,54 @@ class EndToEndTests(unittest.TestCase):
         self.assertEqual((second["resumed"], second["processed_now"]), (2, 4))
         self.assertTrue(json.loads((out / "metrics.json").read_text())["complete"])
 
-    def test_finished_run_is_skipped_when_only_code_version_changed(self):
+    def test_code_version_change_skips_finished_and_resumes_partial_runs(self):
         exp = self.experiment(pipeline="B")
         out = self.root / "codever"
         run_experiment(exp, MOCK, "development", out, data_dir=self.data)
-        manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
-        manifest["code_sha256"]["src/experiments/run_llm.py"] = "older-version"
-        (out / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+        def set_code_version(value):
+            manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+            manifest["code_sha256"]["src/experiments/run_llm.py"] = value
+            (out / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+        set_code_version("older-version")
         self.assertIn("skipped", run_experiment(exp, MOCK, "development", out, data_dir=self.data))
-        # Nếu run chưa xong thì vẫn bị chặn.
+        # Run còn dở và chỉ khác phiên bản code: được chạy tiếp, phiên bản cũ được ghi lại.
+        lines = (out / "predictions.jsonl").read_text(encoding="utf-8").splitlines()
+        (out / "predictions.jsonl").write_text("\n".join(lines[:2]) + "\n", encoding="utf-8")
         metrics = json.loads((out / "metrics.json").read_text(encoding="utf-8"))
         metrics["complete"] = False
         (out / "metrics.json").write_text(json.dumps(metrics), encoding="utf-8")
+        set_code_version("older-version-2")
+        result = run_experiment(exp, MOCK, "development", out, data_dir=self.data)
+        self.assertEqual((result["resumed"], result["processed_now"]), (2, 4))
+        history = json.loads((out / "manifest.json").read_text(encoding="utf-8"))["code_sha256_history"]
+        self.assertEqual(history[-1]["src/experiments/run_llm.py"], "older-version-2")
+        # Cấu hình đổi thì vẫn bị chặn.
         with self.assertRaises(ValueError):
-            run_experiment(exp, MOCK, "development", out, data_dir=self.data)
+            run_experiment(self.experiment(pipeline="B", k=3), MOCK, "development", out, data_dir=self.data)
+
+    def test_budget_stops_before_exceeding_limit(self):
+        from src.common.budget import SpendLedger
+        calls = []
+
+        def paid(messages):
+            calls.append(1)
+            return {"raw_output": '{"label":"NORMAL"}', "attempts": 1,
+                    "usage": {"prompt_tokens": 1000, "completion_tokens": 100, "total_tokens": 1100}}
+
+        real_llm = {"backend": "chat_completions", "model": "x", "max_tokens": 100, "max_request_chars": 32768}
+        # Mỗi call thật tốn ~0,0011 USD (giá 1 USD / 1 triệu token); ngưỡng 0,004 USD chỉ đủ vài call.
+        ledger = SpendLedger(self.root / "ledger.json", 0.004, 1.0, 1.0)
+        exp = self.experiment(pipeline="A0")
+        result = run_experiment(exp, real_llm, "development", self.root / "budget", client=paid,
+                                data_dir=self.data, budget=ledger)
+        self.assertIn("budget_exhausted", result["stopped"])
+        self.assertLessEqual(ledger.spent_usd, 0.004)
+        self.assertEqual(len(calls), result["processed_now"])
+        # Sổ được lưu và đọc lại đúng, cộng dồn qua các lần chạy.
+        again = SpendLedger(self.root / "ledger.json", 0.004, 1.0, 1.0)
+        self.assertAlmostEqual(again.spent_usd, ledger.spent_usd)
 
     def test_invalid_configs_rejected(self):
         for bad in ({"pipeline": "Z"}, {"pipeline": "C", "prior_source": "truth", "lambda": 1},

@@ -12,10 +12,10 @@
 - Giữ nguyên ý tưởng gốc: chọn ví dụ có tính đến nhãn, dùng prior để xếp hạng lại (Pipeline C).
 - **Thêm kNN vote** làm baseline không dùng LLM, đồng thời làm một nguồn prior cho C. **Không làm TF-IDF.**
 - Một dataset (SR-BH 2020, 6 lớp), một embedding model (all-MiniLM-L6-v2), một LLM: Groq `openai/gpt-oss-20b`, temperature 0, `reasoning_effort` low.
-- **Giữ gói Groq miễn phí** (quyết định ngày 19/10, sau khi đo thực tế: khoảng 200.000 token/ngày/key, 8.000 token/phút, 1.000 request/ngày). Để vừa quota:
-  - dùng **key của cả hai thành viên**, luân phiên tự động (`.env`, `.env.tv2`);
+- **API:** từ 20/10 dùng **một tài khoản Groq gói trả theo mức dùng** (Developer tier), key trong `.env`. Điều khoản của Groq cấm vượt giới hạn bằng cách dùng nhiều tài khoản hoặc điều phối giữa nhiều tổ chức, nên **không dùng key của người khác**. Các run trước 20/10 chạy trên gói miễn phí (khoảng 200.000 token/ngày, 8.000 token/phút); cấu hình thí nghiệm giữ nguyên nên kết quả đã có vẫn dùng được.
+- Cấu hình thí nghiệm (chốt 19/10, giữ nguyên khi chuyển gói để mọi run so sánh được với nhau):
   - **k = 4** ví dụ, mỗi ví dụ **cắt ở 500 ký tự** (khoảng 1.300 token mỗi request, thay vì 2.600);
-  - **chỉ chạy bộ chính**: A0, B, BAL, C prior kNN, C prior LLM, với **λ = 0,1** cố định trước. C-oracle và A1 chỉ chạy nếu còn quota. Không chạy ablation λ bằng LLM; thay bằng bảng quét λ offline (không tốn API) trong `eval_retrieval`;
+  - **chỉ chạy bộ chính**: A0, B, BAL, C prior kNN, C prior LLM, với **λ = 0,1** cố định trước. C-oracle và A1 chạy thêm sau bộ chính (`EXTRA=1`). Không chạy ablation λ bằng LLM; thay bằng bảng quét λ offline (không tốn API) trong `eval_retrieval`;
   - **test 300 mẫu** (300 mẫu đầu của `test_subset.jsonl`, đúng 50/lớp), cố định trước khi xem kết quả.
 - Lý do chọn λ = 0,1: độ chênh similarity giữa ứng viên số 1 và số 30 có trung vị 0,075, nên λ = 0,1 đủ đưa hầu hết ứng viên trùng prior lên trước, nhưng không hoàn toàn là lọc cứng.
 
@@ -46,10 +46,10 @@ Giả định mỗi người 15–20 giờ/tuần. Hằng ngày cập nhật 10 
 | 16–19/10 | Tải SR-BH, preprocessing, bỏ trùng, chia tập theo nhóm, kiểm tra leakage, khảo sát | Pipeline A0, kiểm thử, smoke API | **Đã xong:** 466.267 request, split v1 |
 | 19/10 | — | — | **Đã xong:** sửa lỗi 403, chạy được trên Windows, code đầy đủ (55 test), RQ1 + kNN thật, **A0 thật trên validation: Macro-F1 0,835** |
 | 20/10 | Trình bày dữ liệu, cặp request 99,5%, vấn đề nhãn | Trình bày RQ, pipeline, kết quả A0/kNN, kế hoạch | Báo cáo hướng đi với thầy, ghi lại quyết định |
-| 20/10 | Tạo key Groq của mình, lưu vào `.env.tv2` ở máy chạy | Kiểm tra key của mình trong `.env` | Hai key đều liệt kê được model `openai/gpt-oss-20b` |
-| 20–22/10 | Đọc hiểu `src/retrieval/`, `eval_retrieval.py` theo hướng dẫn | **Mỗi ngày chạy `bash src/experiments/run_suite.sh validation`** đến khi hết quota cả hai key | B, BAL, C_knn, C_llm đủ 200 query (khoảng 1,1 triệu token, ~3 ngày) |
+| 20/10 | Nộp báo cáo giữa kỳ (Word/PDF, có kết quả tạm của B/BAL) | Nâng tài khoản Groq lên gói trả theo mức dùng; xóa `.env.tv2` | Một key duy nhất trong `.env` |
+| 20–21/10 | Đọc hiểu `src/retrieval/`, `eval_retrieval.py` theo hướng dẫn | Chạy `bash src/experiments/run_suite.sh validation` rồi `EXTRA=1 bash src/experiments/run_suite.sh validation` | Đủ 200 query cho A0, B, BAL, C_knn, C_llm, C-oracle, A1 (vài giờ chạy) |
 | 22–23/10 | **Review nhãn:** hai người đọc độc lập 60 mẫu (10/lớp) trong `manual_review.jsonl`, ghi bất đồng | (như TV1) | Bảng đồng thuận + quyết định xử lý nhãn với thầy |
-| 23–25/10 | Viết chương Dữ liệu và Phương pháp | Nếu còn quota: `EXTRA=1 bash src/experiments/run_suite.sh validation` (C-oracle, A1) | Bản nháp 2 chương; run tùy chọn |
+| 22–25/10 | Viết chương Dữ liệu và Phương pháp; review các request Normal bị đoán sai | `compare` trên validation, bảng prior đúng/sai | Bản nháp 2 chương; kết quả validation đầy đủ |
 
 **Điều kiện xong tuần 1:** đủ 5 run bộ chính trên validation, có quyết định về nhãn.
 
@@ -61,16 +61,15 @@ Giả định mỗi người 15–20 giờ/tuần. Hằng ngày cập nhật 10 
 | 27/10 | Phân tích bảng prior đúng/sai, bảng quét λ | Viết Kết quả validation (bảng, thống kê, chi phí) | Kết quả validation trong báo cáo |
 | **28/10** | Ghi `reports/protocol/cau_hinh_khoa.md`: commit hash, config, model, 300 mẫu test | Review và ký nhận cùng TV1 | **Khóa cấu hình**, không sửa code/prompt/k/λ sau mốc này |
 | 28/10 | `build_retrieval --include-test` | — | Neighbors cho test |
-| 29–31/10 | Viết Thảo luận, Hạn chế | **Mỗi ngày chạy `bash src/experiments/run_suite.sh test --locked`** | Bắt đầu chạy test (cần ~4–5 ngày quota) |
-| 31/10 | Cả hai review, nộp **báo cáo giữa kỳ** (dựng bằng `reports/word/build_bao_cao_giua_ky.py`) | | Báo cáo giữa kỳ |
+| 29/10 | Viết Thảo luận, Hạn chế | Chạy `bash src/experiments/run_suite.sh test --locked` | Đủ 300 query test cho bộ chính (vài giờ chạy) |
+| 30–31/10 | kNN trên test: `eval_retrieval --split test --limit 300` | `compare --split test` | Bảng kết quả cuối |
 
 ## 5. Tuần 3 — 02/11 đến 08/11: Hoàn tất test và phân tích
 
 | Ngày | TV1 | TV2 | Đầu ra |
 | --- | --- | --- | --- |
-| 01–03/11 | Giám sát lỗi, kiểm tra log retrieval trên test | Tiếp tục `run_suite.sh test --locked` mỗi ngày | Đủ 300 query cho A0, B, BAL, C_knn, C_llm |
-| 04/11 | kNN trên test: `eval_retrieval --split test` | `compare --split test` | Bảng kết quả cuối |
-| 05–08/11 | Phân tích lỗi theo lớp, prior sai, ví dụ cụ thể | Bảng/hình cuối, kiểm định | Bộ kết quả cuối; 07–08/11 là thời gian dự phòng nếu quota chậm |
+| 02–05/11 | Phân tích lỗi theo lớp, prior sai, nhãn nhiễu, ví dụ cụ thể | Bảng/hình cuối, kiểm định, chi phí | Bộ kết quả cuối |
+| 06–08/11 | Dự phòng | Dự phòng | — |
 
 ## 6. Tuần 4 — 09/11 đến 14/11: Viết báo cáo và đóng gói
 
@@ -86,27 +85,27 @@ Giả định mỗi người 15–20 giờ/tuần. Hằng ngày cập nhật 10 
 
 | Mốc | Điều kiện | Nếu không đạt |
 | --- | --- | --- |
-| 20/10 | Có key thứ hai (`.env.tv2`) | Chạy bằng một key: validation mất khoảng 6 ngày, lùi ngày khóa cấu hình |
-| 22/10 | Đủ 5 run bộ chính trên validation | Ưu tiên B, BAL, C_knn; C_llm chạy sau |
+| 20/10 | Tài khoản Groq đã nâng gói trả theo mức dùng | Chạy bằng gói miễn phí của một tài khoản (~200.000 token/ngày): validation ~4 ngày, test ~10 ngày, giảm test còn 240 mẫu |
+| 21/10 | Đủ các run validation (bộ chính + C-oracle, A1) | Kiểm tra lỗi trong log, chạy lại đúng lệnh |
 | 23/10 | Quyết định cách xử lý nhãn nhiễu | Giữ nhãn gốc, ghi rõ hạn chế |
 | 28/10 | Đã khóa cấu hình | Không chạy test cho đến khi khóa |
-| 04/11 | Đủ kết quả test 300 mẫu | Báo phần thiếu (ghi rõ số query đã chạy), không thay bằng số ước tính |
+| 31/10 | Đủ kết quả test 300 mẫu | Báo phần thiếu (ghi rõ số query đã chạy), không thay bằng số ước tính |
 
-## 8. Ngân sách API (gói miễn phí, 2 key)
+## 8. Ngân sách API (một tài khoản, gói trả theo mức dùng)
 
-Số đo thật: A0 khoảng 640 token/request; pipeline có ví dụ (k = 4, cắt 500 ký tự) khoảng 1.360 token/request. Mỗi key khoảng 200.000 token/ngày, nên hai key được khoảng 400.000 token/ngày.
+Số đo thật: A0 khoảng 640 token/request; pipeline có ví dụ (k = 4, cắt 500 ký tự) khoảng 1.490 token/request.
 
-| Phần việc | Token | Ngày (2 key) |
-| --- | ---: | ---: |
-| Validation: A0 | đã xong (~128.000) | — |
-| Validation: B, BAL, C_knn, C_llm (4 × 200 × 1.360) | ~1,09 triệu | ~3 |
-| Validation tùy chọn: C-oracle, A1 | ~0,54 triệu | ~1,5 |
-| Test 300: A0 (300 × 640) + 4 pipeline (4 × 300 × 1.360) | ~1,82 triệu | ~4,5 |
-| **Tổng bộ chính** | **~2,9 triệu** | **~7,5** |
+| Phần việc | Token (ước tính) |
+| --- | ---: |
+| Validation còn lại: B (43), BAL (51), C_knn (200), C_llm (200) | ~0,74 triệu |
+| Validation thêm: C-oracle, A1 (2 × 200) | ~0,6 triệu |
+| Test 300: A0 (300 × 640) + 4 pipeline (4 × 300 × 1.490) | ~2,0 triệu |
+| **Tổng** | **~3,3 triệu** |
 
-- Giới hạn 8.000 token/phút khiến mỗi pipeline có ví dụ chạy khoảng 5–6 request/phút; runner tự chờ theo `retry-after`.
-- Khi hết quota ngày, runner tự dừng gọn, không ghi lỗi; chạy lại đúng lệnh hôm sau để tiếp tục.
-- Không tự tạo nhiều tài khoản cho một người; mỗi thành viên dùng đúng tài khoản của mình.
+- Theo giá tham khảo khoảng 0,075 USD/1 triệu token đầu vào và 0,30 USD/1 triệu token đầu ra cho `openai/gpt-oss-20b` (kiểm tra lại trên console Groq), tổng chi phí **dưới 1 USD**.
+- **Trần chi phí: 5 USD.** Hai lớp bảo vệ: (1) giới hạn chi tiêu trong console Groq (nếu có tùy chọn); (2) chốt ngân sách trong code (`src/configs/llm/budget.json`, ngưỡng 4,5 USD tính với giá gấp đôi), runner dừng trước khi có thể vượt ngưỡng.
+- Runner vẫn tự chờ khi bị giới hạn theo phút, và dừng gọn nếu gặp giới hạn dài; chạy lại đúng lệnh để tiếp tục.
+- Chỉ dùng một tài khoản, một key; không dùng key của người khác.
 
 ## 9. Danh sách kiểm tra cuối (14/11)
 
@@ -116,4 +115,4 @@ Số đo thật: A0 khoảng 640 token/request; pipeline có ví dụ (k = 4, c�
 - [ ] Bảng Macro-F1, F1 từng lớp, FPR Normal, bootstrap CI, McNemar, chi phí.
 - [ ] Bảng prior đúng/sai, bảng quét λ offline, phân tích lỗi (C-oracle nếu đã chạy).
 - [ ] Báo cáo đủ chương, mọi số liệu truy được về file trong `src/artifacts/`.
-- [ ] Phần Hạn chế: một dataset, nhãn nhiễu, endpoint chồng lấn, chỉ offline, quy mô thí nghiệm bị giới hạn bởi quota miễn phí (k = 4, test 300).
+- [ ] Phần Hạn chế: một dataset, nhãn nhiễu, endpoint chồng lấn, chỉ offline, quy mô thí nghiệm (k = 4, ví dụ cắt 500 ký tự, test 300) được chốt khi còn dùng gói miễn phí.

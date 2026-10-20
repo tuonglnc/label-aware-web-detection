@@ -37,6 +37,7 @@ import platform
 import time
 
 from src.analysis.metrics import classification_metrics, label_consistency_rate
+from src.common.budget import BudgetExceeded, SpendLedger
 from src.common.locking import directory_lock
 from src.pipeline_a0 import core
 from src.retrieval.knn import knn_vote
@@ -131,7 +132,8 @@ def load_llm_prior(run_dir):
 # ----------------------------------------------------------------------------
 
 def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=False, client=None,
-                   data_dir=None, sleep_seconds=0.0, retry_errors=False):
+                   data_dir=None, sleep_seconds=0.0, retry_errors=False, budget=None):
+    """`budget`: một SpendLedger (chốt ngân sách) hoặc None. Chỉ áp dụng khi gọi API thật."""
     if split == "test" and not allow_test:
         raise ValueError("test split is locked; pass allow_test=True only after freezing the configuration")
     kwargs = {} if data_dir is None else {"data_dir": data_dir}
@@ -213,16 +215,21 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
         manifest_path = output_dir / "manifest.json"
         if manifest_path.exists():
             old = json.loads(manifest_path.read_text(encoding="utf-8"))
-            if old != manifest:
-                # Run đã XONG và chỉ khác phiên bản code (cấu hình, prompt, dữ liệu như cũ): không chạy lại, chỉ báo.
-                # Run còn dở thì luôn bị chặn, để một run không trộn kết quả của hai phiên bản code.
-                strip = lambda m: {k: v for k, v in m.items() if k != "code_sha256"}
+            strip = lambda m: {k: v for k, v in m.items() if k not in ("code_sha256", "code_sha256_history")}
+            if strip(old) != strip(manifest):
+                # Cấu hình, prompt hoặc dữ liệu đã đổi: luôn chặn.
+                raise ValueError("manifest/config/data changed; use a new output directory")
+            if old.get("code_sha256") != manifest["code_sha256"]:
                 metrics_path = output_dir / "metrics.json"
                 finished = metrics_path.exists() and json.loads(metrics_path.read_text(encoding="utf-8")).get("complete")
-                if strip(old) == strip(manifest) and finished:
+                if finished:
+                    # Run đã XONG: không chạy lại, chỉ báo.
                     return {"selected": len(public), "resumed": len(public), "processed_now": 0,
                             "skipped": "already complete (recorded with an earlier code version)"}
-                raise ValueError("manifest/config/data/code changed; use a new output directory")
+                # Run còn dở, chỉ khác phiên bản code: cho chạy tiếp. Prompt của từng query vẫn được kiểm tra
+                # bằng cache_key bên dưới; phiên bản code cũ được ghi lại để truy vết.
+                history = old.get("code_sha256_history", []) + [old["code_sha256"]]
+                write_json(manifest_path, dict(manifest, code_sha256_history=history))
         else:
             if (output_dir / "predictions.jsonl").exists():
                 raise ValueError("predictions without manifest; use a new output directory")
@@ -258,8 +265,18 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
                 if len(query["request_text"]) > llm.get("max_request_chars", 32768):
                     record["error"] = "request_too_long; no truncation"
                 else:
+                    prompt_chars = sum(len(m["content"]) for m in prompt)
+                    if budget is not None and llm["backend"] != "mock_demo_majority":
+                        try:
+                            budget.check(prompt_chars, llm.get("max_tokens", 1024))
+                        except BudgetExceeded:
+                            # Request tiếp theo có thể làm vượt ngân sách: KHÔNG gọi API, dừng lại.
+                            stopped = "budget_exhausted"
+                            break
                     try:
                         record.update(client(prompt))
+                        if budget is not None and llm["backend"] != "mock_demo_majority":
+                            budget.record(record.get("usage"), prompt_chars, llm.get("max_tokens", 1024))
                         try:
                             record["predicted_label"] = parse_label(record["raw_output"])
                             record["status"] = "ok"
@@ -290,6 +307,8 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
                   "status_counts": metrics["status_counts"]}
         if stopped:
             result["stopped"] = f"{stopped}: {len(public) - len(finished)} queries left; rerun the same command later"
+        if budget is not None:
+            result["budget"] = f"~{budget.spent_usd:.4f} / {budget.limit_usd:.2f} USD (estimated, deliberately high prices)"
         return result
 
 
@@ -330,13 +349,15 @@ def main():
     parser.add_argument("--sleep", type=float, default=0.0, help="nghỉ giữa hai lần gọi (giây)")
     parser.add_argument("--allow-test", action="store_true", help="CHỈ dùng sau khi đã khóa cấu hình")
     parser.add_argument("--retry-errors", action="store_true", help="gọi lại các query trước đó bị lỗi API")
+    parser.add_argument("--budget", help="file chốt ngân sách, ví dụ src/configs/llm/budget.json")
     args = parser.parse_args()
     if args.env_file:
         load_env_file(args.env_file)
     try:
         result = run_experiment(load_experiment(args.config), load_llm(args.llm), args.split, args.output,
                                 args.limit, args.allow_test, sleep_seconds=args.sleep,
-                                retry_errors=args.retry_errors)
+                                retry_errors=args.retry_errors,
+                                budget=SpendLedger.from_config(args.budget, ROOT) if args.budget else None)
     except (ValueError, OSError, KeyError) as exc:
         # Không in nội dung lỗi của provider để tránh lộ thông tin nhạy cảm.
         parser.exit(2, f"run_llm stopped: {type(exc).__name__}: {str(exc)[:200]}\n")

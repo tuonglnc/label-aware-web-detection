@@ -343,29 +343,31 @@ Gói Groq miễn phí giới hạn khoảng 8.000 token/phút và 200.000 token/
 Nhóm điều chỉnh như sau:
 - k = 4, mỗi ví dụ cắt ở 500 ký tự (khoảng 1.300 token mỗi request);
 - chỉ chạy bộ chính A0, B, BAL, C prior kNN, C prior LLM với λ = 0,1;
-- dùng key của cả hai thành viên;
 - test 300 mẫu (50 mỗi lớp).
 
-⏳ B, BAL chạy nốt; C_knn, C_llm chạy tiếp theo quota.
+Từ 20/10, để kịp hạn và tuân thủ điều khoản của Groq (không dùng nhiều tài khoản để vượt giới hạn), nhóm chạy phần còn lại bằng **một tài khoản gói trả theo mức dùng**, có chốt ngân sách trong code để tổng chi phí không vượt 5 USD. Cấu hình giữ nguyên, nên các run đã chạy vẫn so sánh được. Phần còn lại cần khoảng 3,3 triệu token, chi phí ước tính dưới 1 USD.
+
+⏳ B, BAL chạy nốt; C_knn, C_llm, C-oracle, A1 chạy tiếp.
 
 ## 7. Kế hoạch giai đoạn còn lại
 
 | Thời gian | Công việc |
 | --- | --- |
-| 20–22/10 | Chạy B, BAL, C prior kNN, C prior LLM trên validation bằng hai key |
-| 22–25/10 | Hai thành viên review độc lập 60 mẫu nhãn; chạy C-oracle nếu còn quota |
+| 20–21/10 | Chạy nốt B, BAL và chạy C prior kNN, C prior LLM, C-oracle, A1 trên validation |
+| 22–25/10 | Hai thành viên review độc lập các mẫu nhãn và các request Normal bị đoán sai |
 | 26–27/10 | So sánh, bootstrap, McNemar, bảng prior đúng/sai |
 | 28/10 | Khóa cấu hình |
-| 29/10–04/11 | Chạy test 300 mẫu cho bộ chính; phân tích lỗi |
+| 29–31/10 | Chạy test 300 mẫu cho bộ chính |
+| 01–08/11 | Phân tích lỗi theo lớp, prior sai, nhãn nhiễu |
 | 05–14/11 | Viết báo cáo cuối, kiểm tra tái lập, nộp |
 
-Ngân sách khoảng 2,9 triệu token, tương đương khoảng 7,5 ngày quota của hai key. Chi tiết trong `reports/plan/ke_hoach_2_nguoi_11_10_den_14_11.md`.
+Phần còn lại khoảng 3,3 triệu token, chạy bằng một tài khoản gói trả theo mức dùng (chốt ngân sách 5 USD). Chi tiết trong `reports/plan/ke_hoach_2_nguoi_11_10_den_14_11.md`.
 
 ### Rủi ro
 
 | Rủi ro | Phương án |
 | --- | --- |
-| Quota API miễn phí không đủ | Đã giảm quy mô (k = 4, test 300); luân phiên 2 key; runner tự dừng/tiếp tục theo quota |
+| Quota API không đủ | Đã giảm quy mô (k = 4, test 300); dùng một tài khoản trả theo mức dùng, chốt ngân sách 5 USD; runner tự dừng/tiếp tục theo giới hạn |
 | kNN đã gần như tuyệt đối | Báo cáo trung thực; nhấn vào phân tích chi phí và các lớp khó |
 | C không hơn B | Vẫn là kết quả có giá trị; phân tích qua C-oracle và bảng prior đúng/sai |
 
