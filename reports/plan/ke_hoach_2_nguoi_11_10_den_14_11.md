@@ -59,8 +59,8 @@ Giả định mỗi người 15–20 giờ/tuần. Hằng ngày cập nhật 10 
 | --- | --- | --- | --- |
 | 26/10 | Kiểm tra log retrieval: chọn 5–10 query điển hình (B lấy ví dụ khác nhãn, C làm hỏng khi prior sai) | `python -m src.analysis.compare --split validation ...` | `comparison.md`: Macro-F1, bootstrap, McNemar, bảng prior đúng/sai |
 | 27/10 | Phân tích bảng prior đúng/sai, bảng quét λ | Viết Kết quả validation (bảng, thống kê, chi phí) | Kết quả validation trong báo cáo |
-| **28/10** | Ghi `reports/protocol/cau_hinh_khoa.md`: commit hash, config, model, 300 mẫu test | Review và ký nhận cùng TV1 | **Khóa cấu hình**, không sửa code/prompt/k/λ sau mốc này |
-| 28/10 | `build_retrieval --include-test` | — | Neighbors cho test |
+| **20/10** (sớm hơn dự kiến) | Ghi `reports/protocol/cau_hinh_khoa.md`: commit hash, config, model, 300 mẫu test | Review và ký nhận cùng TV1 | **Khóa cấu hình**, không sửa code/prompt/k/λ sau mốc này |
+| 20/10 | `build_retrieval --output src/artifacts/retrieval/minilm --add-split test` | — | Neighbors cho test (đã xong) |
 | 29/10 | Viết Thảo luận, Hạn chế | Chạy `bash src/experiments/run_suite.sh test --locked` | Đủ 300 query test cho bộ chính (vài giờ chạy) |
 | 30–31/10 | kNN trên test: `eval_retrieval --split test --limit 300` | `compare --split test` | Bảng kết quả cuối |
 

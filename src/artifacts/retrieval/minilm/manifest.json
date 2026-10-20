@@ -9,16 +9,19 @@
   "pool_size": 3000,
   "query_sizes": {
     "development": 30,
-    "validation": 200
+    "validation": 200,
+    "test": 600
   },
   "timings": {
     "pool_encode_seconds": 335.98,
     "development_seconds": 2.88,
-    "validation_seconds": 18.02
+    "validation_seconds": 18.02,
+    "test_seconds": 91.12
   },
   "inputs_sha256": {
     "pool": "6dd9ad930e6286bc4cdaece1737833e643e289afe3506f1d1642bdf77c672d38",
     "development": "76de5dcfb55d146fe7b014696e7465aa0b12c04b33fd596de94b3bd9457e95dc",
-    "validation": "41e7d77616290a7c54a06ea19550b30505eca72575db404422340eeb4d75ef35"
+    "validation": "41e7d77616290a7c54a06ea19550b30505eca72575db404422340eeb4d75ef35",
+    "test": "64c009b41a370ab95e89bf709e9f61d594e65b600955d6783f5c627d753e9d10"
   }
 }
