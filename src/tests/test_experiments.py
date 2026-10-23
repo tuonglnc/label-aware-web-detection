@@ -167,7 +167,7 @@ class EndToEndTests(unittest.TestCase):
 
     def test_backend_errors_are_recorded_not_dropped(self):
         def broken(messages):
-            from src.pipeline_a0.core import BackendError
+            from src.llm.client import BackendError
             raise BackendError("http_429", attempts=3)
 
         exp = self.experiment(pipeline="A0")
@@ -182,7 +182,7 @@ class EndToEndTests(unittest.TestCase):
         self.assertEqual(fixed["status_counts"], {"ok": 6})
 
     def test_daily_quota_stops_cleanly_and_resumes(self):
-        from src.pipeline_a0.core import QUOTA_EXHAUSTED, BackendError
+        from src.llm.client import QUOTA_EXHAUSTED, BackendError
         calls = []
 
         def quota_after_two(messages):

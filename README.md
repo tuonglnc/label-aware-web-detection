@@ -1,201 +1,143 @@
-# Label-Aware Web Attack Detection
+# Label-Aware Retrieval cho phát hiện tấn công web bằng LLM
 
-Nghiên cứu phát hiện và phân loại tấn công web từ HTTP request bằng Large Language Model (LLM). Dự án kiểm chứng việc dùng thông tin nhãn khi chọn ví dụ cho In-Context Learning có cải thiện kết quả so với chọn ví dụ chỉ theo độ tương đồng ngữ nghĩa hay không.
+Đồ án môn Dự án CNTT (TDTU). Đề tài phân loại HTTP request thành 6 lớp (Normal và 5 loại tấn công) bằng LLM theo kiểu **In-Context Learning**: đưa cho model vài ví dụ có nhãn rồi hỏi nhãn của request mới. Câu hỏi chính: **chọn ví dụ có xét đến nhãn (label-aware) có tốt hơn chọn ví dụ chỉ theo độ giống nhau về nội dung không?**
 
-Hướng triển khai là **inference-only**, không huấn luyện hoặc fine-tune model. Các kết luận về chất lượng phương pháp cần được kiểm chứng bằng thực nghiệm.
+Dự án chỉ dùng model có sẵn qua API (**inference-only**), không huấn luyện hay fine-tune.
 
-**Kế hoạch hiện tại:** [Kế hoạch 2 người 11/10–14/11](reports/plan/ke_hoach_2_nguoi_11_10_den_14_11.md). **Báo cáo giữa kỳ:** [bản tạm](reports/progress/bao_cao_giua_ky.md). **Hướng dẫn đọc và chạy code:** [bắt đầu từ đây](reports/protocol/huong_dan_doc_va_chay_code.md).
+**Bắt đầu đọc:** [Hướng dẫn đọc và chạy code](reports/guides/huong_dan_doc_va_chay_code.md) · [Mục lục tài liệu](reports/README.md) · [Báo cáo giữa kỳ](reports/midterm/bao_cao_giua_ky.md)
 
 ## Các pipeline
 
-Mọi pipeline dùng chung một LLM (Groq `openai/gpt-oss-20b`, temperature 0, `reasoning_effort` low), một khung prompt và cùng **k = 4** ví dụ (mỗi ví dụ cắt ở 500 ký tự); chỉ khác **cách chọn ví dụ**.
+Mọi pipeline dùng chung một LLM (Groq `openai/gpt-oss-20b`, temperature 0, `reasoning_effort` low), một khung prompt và cùng **k = 4** ví dụ (mỗi ví dụ cắt ở 500 ký tự). Chỉ khác **cách chọn ví dụ**.
 
-| Pipeline | Cách chọn ví dụ | Vai trò | Trạng thái (validation 200) |
-| --- | --- | --- | --- |
-| **kNN vote** | Không gọi LLM: đếm nhãn của 5 hàng xóm gần nhất | Baseline không LLM; nguồn prior rẻ cho C | Xong: Macro-F1 0,800 |
-| **A0** | Không có ví dụ (zero-shot) | Năng lực ban đầu của LLM; nguồn prior cho C | Xong: Macro-F1 0,835 |
-| **B** | Top-4 giống nhất theo embedding | Baseline retrieval chính | Tạm: 157/200 |
-| **BAL** | Từ top-30, lấy luân phiên theo lớp | Kiểm tra lợi ích của cân bằng nhãn | Tạm: 149/200 |
-| **C** | Từ top-30, xếp lại: `similarity + 0,1·1[nhãn = prior]` | Phương pháp đề xuất (prior từ kNN hoặc A0) | Chưa chạy |
-| C-oracle, A1 | Prior = nhãn thật / bộ ví dụ cố định | Chạy thêm sau bộ chính (`EXTRA=1`) | Chưa chạy |
+| Pipeline | Cách chọn ví dụ | Vai trò |
+| --- | --- | --- |
+| **kNN vote** | Không gọi LLM: bỏ phiếu nhãn của 5 láng giềng gần nhất | Baseline không LLM; nguồn prior rẻ cho C |
+| **A0** | Không có ví dụ (zero-shot) | Năng lực gốc của LLM; nguồn prior cho C |
+| **A1** | 4 ví dụ cố định cho mọi request | Kiểm tra: có ví dụ là đủ, hay ví dụ phải liên quan? |
+| **B** | Top-4 giống nhất theo embedding | Baseline retrieval chính |
+| **BAL** | Từ top-30, lấy luân phiên theo lớp | Cân bằng nhãn có giúp không? |
+| **C** | Từ top-30, xếp lại theo `similarity + 0,1·1[nhãn = prior]`, prior từ kNN hoặc A0 | Phương pháp label-aware đề xuất |
+| C-oracle | Như C nhưng prior = nhãn thật | Chỉ để phân tích: mức trần nếu prior luôn đúng |
 
 ```text
-HTTP request ──► embedding ──► top-N ứng viên từ pool (kèm nhãn của ứng viên)
+HTTP request ──► embedding ──► top-30 ứng viên từ pool (kèm nhãn)
      │                                   │
-     └──► prior (A0 zero-shot / kNN) ────┴──► chọn k ví dụ (B / BAL / C)
+     └──► prior (kNN / A0) ──────────────┴──► chọn k = 4 ví dụ (B / BAL / C)
                                                       │
                                      prompt (ví dụ + request) ──► LLM ──► nhãn
 ```
 
-**Chạy toàn bộ phần LLM** (Git Bash). Script dùng **một** key trong `.env` (một tài khoản Groq; điều khoản của Groq không cho dùng nhiều tài khoản để vượt giới hạn). Nếu gặp giới hạn, script tự dừng gọn; chạy lại đúng lệnh để tiếp tục:
+## Kết quả trên tập test (300 request, 50/lớp)
 
-```bash
-bash src/experiments/run_suite.sh validation
-```
+Cấu hình được khóa trước khi chạy test ([cau_hinh_khoa.md](reports/experiments/cau_hinh_khoa.md)). Bảng đầy đủ: [src/artifacts/reports/test/comparison.md](src/artifacts/reports/test/comparison.md).
 
-**Hiện trạng (19/10/2026):** 55/55 test đạt trên Windows 11 (Python 3.11.9). Retrieval và kNN đã chạy trên dữ liệu thật; A0 đã chạy thật trên 200 request validation. Lỗi 403 trước đây do Cloudflare của Groq chặn User-Agent mặc định của Python (`error code: 1010`), đã sửa.
+| Pipeline | Macro-F1 (gpt-oss-20b) | Δ so với B, CI 95% | Macro-F1 (gpt-oss-120b) |
+| --- | ---: | --- | ---: |
+| kNN vote (không LLM) | 0,742 | — | — |
+| A0 zero-shot | 0,834 | −0,047 [−0,081; −0,016] | 0,793 |
+| A1 cố định | 0,797 | −0,084 [−0,118; −0,051] | — |
+| **B top-4** | **0,881** | — | **0,869** |
+| BAL | 0,865 | −0,016 [−0,041; +0,008] | 0,862 |
+| C, prior kNN | 0,862 | −0,019 [−0,047; +0,008] | 0,866 |
+| C, prior A0 | 0,861 | −0,020 [−0,042; −0,002] | 0,854 |
+| C-oracle (phân tích) | 0,900 | +0,019 [−0,003; +0,043] | 0,880 |
+
+Kết luận chính:
+
+1. Ví dụ **liên quan** quan trọng hơn **có** ví dụ: B hơn A0 rõ rệt, còn A1 (ví dụ cố định) còn kém A0.
+2. Label-aware rerank (C) **không** vượt B với prior thực tế. Khi prior sai, C làm hỏng nhiều hơn sửa (prior kNN: hỏng 11, sửa 2).
+3. Với prior hoàn hảo (C-oracle), C nhỉnh hơn B nhưng chưa có ý nghĩa thống kê. Nút thắt là **chất lượng prior**, không phải cách rerank.
+4. Kết luận giữ nguyên khi đổi sang model lớn hơn gpt-oss-120b ([thí nghiệm bổ sung](reports/experiments/thi_nghiem_bo_sung_120b.md)).
+
+Tổng chi phí API thực tế khoảng 0,75 USD. Sổ chi phí (ước tính với giá cố ý đặt cao): [`src/artifacts/api_spend_ledger.json`](src/artifacts/api_spend_ledger.json), [`api_spend_ledger_120b.json`](src/artifacts/api_spend_ledger_120b.json).
 
 ## Cấu trúc repo
 
 ```text
 .
 ├── README.md
-├── env.example                  # Template cấu hình API, key để trống
+├── requirements.txt              # thư viện cho code thí nghiệm
+├── requirements-demo.txt         # thêm Streamlit cho app demo
+├── env.example                   # mẫu file .env (key để trống)
 ├── src/
-│   ├── preprocessing/           # Chuẩn bị dữ liệu, chia tập, khảo sát
-│   ├── pipeline_a0/             # Client API, parser, A0 smoke runner (giữ từ bản đầu)
-│   ├── retrieval/               # views, embedding, index, kNN, chiến lược chọn ví dụ
-│   ├── experiments/             # build_retrieval, eval_retrieval, run_llm, prompting
-│   ├── analysis/                # metrics, bootstrap, McNemar, so sánh và hình
-│   ├── common/                  # khóa thư mục chạy được trên Windows/Linux
-│   ├── configs/
-│   │   ├── data.json            # seed, nhãn, ngân sách subset
-│   │   ├── llm/                 # mock.json, groq.json
-│   │   └── experiments/         # A0, B_k4, BAL_k4, C_knn_k4, C_llm_k4 (+ C_oracle_k4, A1_k4)
-│   ├── tests/                   # Unit test + end-to-end test với dữ liệu giả
-│   ├── data/                    # raw/ và processed/, không track Git
-│   ├── artifacts/               # retrieval/, runs/, reports/, data audit
-│   └── requirements-*.txt
-└── reports/
-    ├── project_overview.md      # Thiết kế nghiên cứu
-    ├── surveys/                 # Khảo sát SR-BH, CSIC; hình minh họa
-    ├── protocol/                # Dữ liệu, hướng dẫn chạy thực nghiệm
-    ├── progress/                # Báo cáo tiến độ, báo cáo giữa kỳ
-    ├── plan/                    # Kế hoạch
-    └── references/              # Tài liệu tham khảo
+│   ├── preprocessing/            # (1) CSV gốc SR-BH 2020 → pool / validation / test; khảo sát CSIC 2010
+│   ├── retrieval/                # (2) embedding, index, kNN, các cách chọn ví dụ
+│   ├── experiments/              # (3) build_retrieval, eval_retrieval, run_llm, run_suite.sh
+│   ├── llm/                      #     client gọi API (Groq, tương thích OpenAI) + parser nhãn
+│   ├── analysis/                 # (4) metric, bootstrap, McNemar, bảng và hình so sánh
+│   ├── demo/                     #     app demo Streamlit: so sánh B và C cho một request
+│   ├── common/                   #     khóa thư mục chạy được trên Windows/Linux, chốt ngân sách
+│   ├── configs/                  #     data.json, llm/, experiments/ (20b), experiments_120b/
+│   ├── tests/                    #     56 bài kiểm thử tự động (không gọi API)
+│   ├── notebooks/                #     notebook khảo sát dữ liệu
+│   ├── data/                     #     dữ liệu (không có trên Git, tự tạo lại)
+│   └── artifacts/
+│       ├── data/                 #     thống kê, audit rò rỉ, kiểm chứng tái lập
+│       ├── retrieval/minilm/     #     neighbors và đánh giá retrieval/kNN
+│       ├── runs/                 #     dự đoán của từng pipeline (validation, test)
+│       ├── runs_120b/            #     dự đoán với gpt-oss-120b (test)
+│       └── reports/              #     bảng so sánh và confusion matrix
+└── reports/                      # tài liệu, báo cáo — xem reports/README.md
 ```
 
-Chạy các lệnh dưới đây từ thư mục gốc repo. Dữ liệu lớn và credential được giữ ở máy local.
+## Chạy lại
 
-## Bắt đầu bằng mock — không cần API key
-
-Yêu cầu **Python >=3.10**; đã kiểm chứng với Python 3.12.3 (Linux) và 3.11.9 (Windows 11). A0 dùng thư viện chuẩn. Khóa thư mục output dùng `fcntl` trên Linux/macOS và `msvcrt` trên Windows, nên chạy native được trên cả hai.
+Mọi lệnh chạy từ thư mục gốc repo, Python ≥ 3.10 (đã kiểm chứng 3.11.9 trên Windows 11). Hướng dẫn chi tiết cho cả PowerShell và Git Bash: [huong_dan_chay_thuc_nghiem.md](reports/guides/huong_dan_chay_thuc_nghiem.md).
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m unittest discover -s src/tests -v
+python -m venv .venv
+source .venv/Scripts/activate      # Git Bash trên Windows; Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
+python -m unittest discover -s src/tests
 ```
 
-Nếu đã có `.venv`, chỉ cần activate. Mỗi terminal mới cần chạy lại `source .venv/bin/activate`; thoát bằng `deactivate`. Dependency A0 được ghi tại [src/requirements-a0.txt](src/requirements-a0.txt). Các dependency tạo hình khảo sát được tách riêng, không cần cho mock A0.
-
-Chạy sáu request tổng hợp:
+Các bước (bước 1–3 và 5 không cần API key):
 
 ```bash
-python -m src.pipeline_a0 \
-  --config src/configs/pipeline_a0_mock.json \
-  --input src/tests/fixtures/a0_requests.jsonl \
-  --output src/artifacts/pipeline_a0/mock_quickstart \
-  --limit 6
+# 1. Dữ liệu: đặt CSV SR-BH 2020 vào src/data/raw/ (xem reports/dataset/huong_dan_xu_ly_du_lieu.md)
+python -m src.preprocessing.prepare --config src/configs/data.json
+# 2. Embedding pool và tìm top-30 ứng viên
+python -m src.experiments.build_retrieval --output src/artifacts/retrieval/minilm
+python -m src.experiments.build_retrieval --output src/artifacts/retrieval/minilm --add-split test
+# 3. Đánh giá retrieval và kNN
+python -m src.experiments.eval_retrieval --retrieval src/artifacts/retrieval/minilm --split validation
+# 4. Các pipeline LLM (cần key trong .env, tạo từ env.example)
+bash src/experiments/run_suite.sh validation
+EXTRA=1 bash src/experiments/run_suite.sh validation
+# 5. So sánh
+python -m src.analysis.compare --split validation --runs "src/artifacts/runs/validation/*" --output src/artifacts/reports/validation
 ```
 
-Lần đầu với thư mục output mới: `selected=6`, `processed_now=6`. Chạy lại nguyên lệnh: `resumed=6`, `processed_now=0`. Fixture cố ý có output lỗi và prediction sai để kiểm tra luồng đánh giá.
+Muốn thử luồng mà không tốn API, dùng LLM giả: `--llm src/configs/llm/mock.json` với `run_llm` (xem hướng dẫn).
 
-Xem kết quả:
+**An toàn khi chạy:**
+
+- Chỉ dùng **một** key Groq trong `.env`; điều khoản của Groq không cho dùng nhiều tài khoản để vượt giới hạn.
+- Chốt ngân sách (`src/configs/llm/budget.json`) dừng **trước khi** chi phí ước tính vượt 4,5 USD.
+- Tập test bị khóa: phải có `--locked` (script) hoặc `--allow-test` (run_llm).
+- Run đã xong thì được bỏ qua; run dở chạy tiếp từ chỗ dừng.
+
+## Demo
+
+App nhỏ chạy trên máy (Streamlit, [`src/demo/app.py`](src/demo/app.py)): dán một HTTP request hoặc chọn 1 trong 8 ví dụ lấy từ tập validation, app hiện song song B và C (prior kNN, λ = 0,1): prior kNN và phiếu của 5 láng giềng, 4 ví dụ được chọn (nhãn, similarity, điểm) và nhãn LLM trả về. Có nút bật thêm A0 (zero-shot). App dùng lại đúng code và cấu hình đã khóa của thực nghiệm.
 
 ```bash
-python -m json.tool src/artifacts/pipeline_a0/mock_quickstart/last_invocation.json
-python -m json.tool src/artifacts/pipeline_a0/mock_quickstart/metrics.json
+pip install -r requirements-demo.txt
+streamlit run src/demo/app.py
 ```
 
-## Dữ liệu và taxonomy
+Mở trình duyệt ở `http://localhost:8501`. Lần đầu mất khoảng 1 phút để nạp model embedding.
 
-Đã khảo sát dữ liệu thật của hai nguồn:
+- Mặc định là **Mock**: không gọi API, không cần key. Nhãn "LLM" khi đó chỉ là nhãn đa số của 4 ví dụ, không phải kết quả của LLM.
+- Chọn **Groq thật** ở thanh bên: key đọc từ `.env` (giống `--env-file`), mỗi lần gọi đều qua chốt ngân sách `budget.json` và ghi vào cùng sổ chi phí. Câu trả lời được nhớ lại, nên bấm lại cùng request không tốn thêm. Mỗi request tốn khoảng 2–3 lần gọi (B, C, A0), dưới 0,001 USD.
+- Nếu thiếu `src/artifacts/retrieval/minilm/pool_vectors.npy` (không có trên Git), app tự mã hóa lại pool lần đầu (vài phút) mà không đụng đến file neighbors. App cần dữ liệu đã xử lý trong `src/data/processed/sr_bh_v1/` (bước 1 ở trên).
+- `.streamlit/config.toml` chỉ mở app trên `localhost`, để người khác trong cùng mạng không dùng được key.
 
-| Dataset | Kết quả khảo sát | Vai trò hiện tại |
-| --- | --- | --- |
-| **SR-BH 2020 v1.2** | 907.815 bản ghi, 38 cột; Normal và 13 nhãn tấn công | Nguồn cho development pilot A0 |
-| **CSIC 2010** | 97.065 request trong ba file đã tải; nhãn nguồn Normal/Anomalous | Khảo sát độc lập, chưa thay nguồn A0 |
+## Dữ liệu
 
-Preprocessing SR-BH chỉ giữ request có đúng một nhãn hoạt động trong toàn bộ nhãn nguồn, sau đó chọn sáu lớp. Các request trùng nội dung nhưng mâu thuẫn nhãn được cách ly trước dedup và group split với seed 42. Không tự ép các mẫu multi-label thành single-label.
+[SR-BH 2020](reports/dataset/khao_sat_sr_bh_2020.md) (Harvard Dataverse, CC0): 907.815 bản ghi gốc. Chỉ giữ request có đúng một nhãn, còn 466.267 request không trùng. Chia theo nhóm 70/15/15 (seed 42) để tránh rò rỉ giữa các tập.
 
-Taxonomy hiện tại, theo [src/configs/data.json](src/configs/data.json):
+6 lớp: `NORMAL`, `SQL_INJECTION`, `PATH_TRAVERSAL`, `CODE_INJECTION`, `HTTP_RESPONSE_SPLITTING`, `OS_COMMAND_INJECTION`.
 
-```text
-NORMAL
-SQL_INJECTION
-PATH_TRAVERSAL
-CODE_INJECTION
-HTTP_RESPONSE_SPLITTING
-OS_COMMAND_INJECTION
-```
-
-Schema tối thiểu của mỗi dòng JSONL gồm `request_id`, `request_text`, `label`. `request_text` là chuỗi JSON canonical chứa method, URI, protocol, headers và body; giữ nguyên encoding của payload. Nhãn nằm ngoài nội dung đưa vào model.
-
-Development hiện có tại `src/data/processed/sr_bh_v1/development.jsonl`: 30 mẫu, 5 mẫu mỗi lớp. File raw/processed không đi kèm bản clone Git. Nếu máy chưa có dữ liệu, xem [hướng dẫn tải, preprocessing và kiểm chứng](reports/protocol/README.md); nếu đã có split thì dùng lại, không ghi đè hoặc tạo lại để chạy smoke.
-
-Chất lượng annotation còn điểm cần làm rõ; dataset benchmark chưa được chốt. Xem [quyết định dataset và giới hạn](reports/protocol/dataset_decision.md). Giữ final test riêng, không dùng để sửa prompt hoặc chọn cấu hình.
-
-## Cấu hình API bằng .env
-
-Client hiện hỗ trợ endpoint **chat completions tương thích OpenAI**. Template [env.example](env.example) dùng Groq làm ví dụ cấu hình; đây chưa phải model được chốt cho benchmark. Kiểm tra quyền truy cập model và quota trong tài khoản của mình trước khi gọi.
-
-Tạo file local, giữ nguyên nếu đã có:
-
-```bash
-cp -n env.example .env
-chmod 600 .env
-```
-
-Mở `.env` bằng editor, điền `A0_API_KEY`. Không điền key thật vào `env.example`.
-
-| Biến | Ý nghĩa |
-| --- | --- |
-| `A0_API_KEY` | API key của backend đã chọn |
-| `A0_BASE_URL` | URL gốc API; ví dụ trong template là `https://api.groq.com/openai/v1` |
-| `A0_MODEL` | Model ID backend hỗ trợ; ví dụ trong template là `openai/gpt-oss-20b` |
-
-Runner tự nối `/chat/completions` vào base URL. CLI **không tự đọc `.env`**; nạp file do mình quản lý vào môi trường Bash trước khi chạy:
-
-```bash
-set -a
-source .env
-set +a
-```
-
-`.env`, `.env.*` và `.venv/` đã được Git bỏ qua; `env.example` công khai chỉ chứa cấu hình mẫu. Không đưa key vào code, log hay artifact. Không cần cài `python-dotenv`, SDK Groq hoặc SDK OpenAI cho cách chạy này.
-
-## Smoke API thật trên development
-
-Sau khi cấu hình env và có development file, thử **một mẫu** trước:
-
-```bash
-python -m src.pipeline_a0 \
-  --config src/configs/pipeline_a0_groq_smoke.json \
-  --input src/data/processed/sr_bh_v1/development.jsonl \
-  --output src/artifacts/pipeline_a0/groq_quickstart_01 \
-  --limit 1
-```
-
-Cấu hình Groq smoke dùng timeout 60 giây, không retry, output budget 2048 token và temperature 0. Config API chung ở `src/configs/pipeline_a0_api.json` có cấu hình khác: timeout 30 giây, tối đa 2 retries và output budget 128 token. Chọn config phù hợp với model, ghi nhận thay đổi và dùng run directory mới.
-
-Runner API thật chỉ nhận đúng file development hiện có, giới hạn 1–10 mẫu mỗi lệnh. Mẫu được chọn từ đầu file, không cân bằng lớp. Smoke nhỏ kiểm tra kết nối và luồng xử lý; chưa đủ để kết luận chất lượng phân loại. Giữ tổng ngân sách tối đa 10 mẫu cho một phiên smoke, tính cả các lần gọi lại ở run khác.
-
-**Kiểm tra `status_counts` trong `metrics.json` sau mỗi lần chạy.** Runner có thể kết thúc bình thường dù toàn bộ prediction là lỗi, vì lỗi cũng phải được lưu lại. Khi gặp 401/403, kiểm tra credential/quyền model; 429 là giới hạn quota; `invalid_output` là JSON hoặc nhãn không hợp lệ. Không tự đổi câu trả lời lỗi thành nhãn dự đoán.
-
-## Output và resume
-
-| File trong mỗi thư mục run | Nội dung |
-| --- | --- |
-| `manifest.json` | Cấu hình, model, prompt, taxonomy và hash để truy vết |
-| `predictions.jsonl` | Kết quả từng mẫu, status, raw output, latency, usage nếu có |
-| `metrics.json` | Macro-F1, Accuracy, Weighted-F1, per-class precision/recall/F1, confusion matrix, coverage và error rates |
-| `last_invocation.json` | Số mẫu chọn, số resume và số xử lý mới |
-
-Mỗi prediction được flush/fsync ngay sau xử lý. Resume giữ cả kết quả lỗi và không tự gọi lại chúng. Cache phân biệt model, endpoint, prompt/config và nội dung request. Khi đổi config, model, input, `--limit` hoặc implementation, dùng thư mục output mới; không sửa manifest để ép dùng cache cũ. Run mới có thể gọi lại các mẫu trước đó và tiêu thụ quota.
-
-Metrics tính mẫu lỗi là dự đoán sai, giữ chúng trong confusion matrix ở cột riêng. Token usage chỉ được ghi khi backend cung cấp; không thay dữ liệu thiếu bằng số đo giả. Latency lưu trong prediction là latency inference gốc, không phải thời gian cache hit.
-
-## Tài liệu đọc tiếp
-
-| Tài liệu | Nội dung |
-| --- | --- |
-| [Tổng quan nghiên cứu](reports/project_overview.md) | Câu hỏi nghiên cứu và thiết kế A/B/C |
-| [Khảo sát SR-BH 2020](reports/surveys/khao_sat_sr_bh_2020.md) | Phân bố lớp, payload thật và cặp request minh họa |
-| [Khảo sát CSIC 2010](reports/surveys/khao_sat_csic_2010.md) | Schema, nhãn nguồn, split và các ví dụ thực tế |
-| [Protocol dữ liệu](reports/protocol/README.md) | Tải dữ liệu, representation, split và audit |
-| [Kết quả Task 1](reports/progress/task_1_dataset_va_protocol.md) | Các kiểm tra dữ liệu đã làm và vấn đề annotation |
-| [Kế hoạch triển khai](reports/plan/ke_hoach_trien_khai_4_tuan.md) | Phạm vi và các mốc thực nghiệm |
-| [Task 2](reports/plan/task_2_pipeline_a_va_kiem_thu.md) | Checklist tổng thể Pipeline A; A1 và validation vẫn là phần tiếp theo |
-
-Các tài liệu kế hoạch mô tả công việc dự kiến; dùng code, artifact và trạng thái ở README này để phân biệt phần đã chạy với phần chưa triển khai.
+Dùng: pool 3.000 (500/lớp), validation 200, test 300 (50/lớp). Lý do chọn dataset và giới hạn (nhiễu nhãn ở lớp Normal): [quyet_dinh_dataset.md](reports/dataset/quyet_dinh_dataset.md).

@@ -1,27 +1,32 @@
-src/data/raw/
-src/data/processed/
-src/notebooks/data_capec_multilabel.csv
-src/artifacts/data/manual_review.jsonl
-src/artifacts/data/group_review.jsonl
-src/artifacts/data/quarantine.jsonl
-src/artifacts/data/reproduce/
+# Python / môi trường
 __pycache__/
 .venv/
-# Local credentials; publish only templates with empty keys.
+
+# Key API: chỉ đẩy file mẫu env.example (key để trống)
 .env
 .env.*
 !.env.example
-setup_va_doc_lai.md
-/docs
 
-# Generated / temporary files (do not push)
-src/artifacts/retrieval/*/pool_vectors.npy
+# Dữ liệu SR-BH 2020 (tải và tạo lại bằng src/preprocessing, xem reports/dataset/huong_dan_xu_ly_du_lieu.md)
+src/data/raw/
+src/data/processed/
+
+# File dữ liệu lớn hoặc có payload tấn công thô, sinh lại được
+src/artifacts/data/manual_review.jsonl
+src/artifacts/data/group_review.jsonl
+src/artifacts/data/quarantine.jsonl
 src/artifacts/data/*/manual_review.jsonl
 src/artifacts/data/*/group_review.jsonl
 src/artifacts/data/*/quarantine.jsonl
+src/artifacts/data/reproduce/
+src/artifacts/retrieval/*/pool_vectors.npy
+
+# Kết quả thử nghiệm với mock và log chạy tạm
 src/artifacts/runs_mock/
 src/artifacts/reports_mock/
 src/artifacts/runs_*_log.txt
+
+# File tạm
 .run.lock
 *.tmp
 ~$*

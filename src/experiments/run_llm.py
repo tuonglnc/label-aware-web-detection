@@ -39,7 +39,7 @@ import time
 from src.analysis.metrics import classification_metrics, label_consistency_rate
 from src.common.budget import BudgetExceeded, SpendLedger
 from src.common.locking import directory_lock
-from src.pipeline_a0 import core
+from src.llm import client as core
 from src.retrieval.knn import knn_vote
 from src.retrieval.selectors import class_balanced, fixed_examples, label_aware_rerank, semantic_top_k
 
@@ -49,7 +49,7 @@ from .prompting import PROMPT_VERSION, SYSTEM, DemoMajorityMock, build_messages,
 PIPELINES = ("A0", "A1", "B", "BAL", "C")
 PRIOR_SOURCES = ("llm", "knn", "oracle")
 CODE_FILES = ("src/experiments/run_llm.py", "src/experiments/prompting.py", "src/retrieval/selectors.py",
-              "src/retrieval/knn.py", "src/retrieval/views.py", "src/pipeline_a0/core.py")
+              "src/retrieval/knn.py", "src/retrieval/views.py", "src/llm/client.py")
 
 
 # ----------------------------------------------------------------------------
