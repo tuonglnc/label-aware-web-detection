@@ -10,6 +10,7 @@ chỉ khác nhau ở cách chọn ví dụ.
 | B        | `semantic_top_k`     | k ứng viên giống nhất                                        |
 | BAL      | `class_balanced`     | Từ top-N, lấy luân phiên theo lớp để các lớp đều có mặt      |
 | C        | `label_aware_rerank` | Từ top-N, cộng điểm cho ứng viên có nhãn trùng prior         |
+| C-gated  | `gated_label_aware_rerank` | Như C khi prior kNN đủ tự tin, ngược lại dùng B          |
 
 Công thức của C (label-aware reranking):
 
@@ -66,6 +67,19 @@ def label_aware_rerank(candidates, k, prior, lam):
     # Điểm giảm dần; hòa điểm thì giữ thứ hạng similarity ban đầu.
     rescored.sort(key=lambda c: (-c["score"], c["rank"]))
     return rescored[:k]
+
+
+def gated_label_aware_rerank(candidates, k, prior, lam, confidence, min_confidence):
+    """Pipeline C-gated: chỉ dùng C khi prior đủ tự tin, còn lại quay về B.
+
+    `confidence` là độ tự tin của prior (với prior kNN: `knn.vote_share`).
+    Khi `confidence >= min_confidence` thì chọn như C; khi thấp hơn hoặc không
+    có thì chọn như B. Lý do: C chủ yếu làm hỏng các câu mà prior sai, và prior
+    hay sai đúng ở những query mà các hàng xóm bất đồng.
+    """
+    if confidence is None or confidence < min_confidence:
+        return semantic_top_k(candidates, k)
+    return label_aware_rerank(candidates, k, prior, lam)
 
 
 def fixed_examples(pool_rows, k, seed, labels):

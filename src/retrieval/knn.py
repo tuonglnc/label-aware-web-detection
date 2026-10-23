@@ -33,3 +33,15 @@ def knn_vote(candidates, k, weighted=True):
     # Sắp xếp: điểm cao trước; hòa điểm thì nhãn có hàng xóm đứng trước thắng.
     winner = min(scores, key=lambda label: (-round(scores[label], 9), best_rank[label]))
     return winner, {label: round(score, 6) for label, score in scores.items()}
+
+
+def vote_share(scores, winner):
+    """Độ tự tin của kNN vote: tỷ lệ phiếu (có trọng số) dồn cho nhãn thắng.
+
+    Ví dụ 5 hàng xóm cùng một nhãn thì share = 1,0; 3 trên 5 hàng xóm có
+    similarity gần bằng nhau thì share ≈ 0,6. Trả về None nếu không có phiếu.
+    """
+    total = sum(scores.values())
+    if winner is None or total <= 0:
+        return None
+    return round(scores[winner] / total, 6)

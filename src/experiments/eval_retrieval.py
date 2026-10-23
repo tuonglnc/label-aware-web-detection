@@ -159,11 +159,13 @@ def main():
     parser.add_argument("--n-candidates", type=int, default=30)
     parser.add_argument("--lam", type=float, default=0.1)
     parser.add_argument("--limit", type=int, help="chỉ đánh giá N query đầu (test: 300, khớp với phần LLM)")
+    parser.add_argument("--offset", type=int, default=0, help="bỏ qua M query đầu (nửa sau test: --offset 300)")
     parser.add_argument("--output", help="mặc định: <retrieval>/eval_<split>")
     args = parser.parse_args()
     neighbors = {r["request_id"]: r["candidates"]
                  for r in load_jsonl(Path(args.retrieval) / f"neighbors_{args.split}.jsonl")}
-    queries = load_split(args.split)[:args.limit] if args.limit else load_split(args.split)
+    queries = load_split(args.split)[args.offset:]
+    queries = queries[:args.limit] if args.limit else queries
     result = evaluate_retrieval(queries, neighbors, args.k, args.n_candidates, args.lam)
     output = Path(args.output or Path(args.retrieval) / f"eval_{args.split}")
     write_json(output / "retrieval_metrics.json", result)
