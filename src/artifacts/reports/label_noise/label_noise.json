@@ -1,0 +1,972 @@
+{
+  "rules": {
+    "time_delay": "\\bsleep\\s*\\(|\\bbenchmark\\s*\\(|waitfor\\s+delay|pg_sleep",
+    "sensitive_file": "/etc/(passwd|shadow|hosts)|win\\.ini|boot\\.ini",
+    "script_tag": "<\\s*script|javascript:|\\bonerror\\s*=|\\balert\\s*\\(",
+    "shell_command": "/bin/(sh|bash|sleep|cat|ls)|[;&|`]\\s*(cat|id|ls|whoami|uname|ping|wget|curl)\\b|\\$\\(|\\(\\)\\s*\\{",
+    "header_injection": "set-cookie\\s*:|[\\r\\n]",
+    "path_traversal": "\\.\\./|\\.\\.\\\\|\\b[a-z]:\\\\",
+    "sql_keywords": "\\bunion\\b.+\\bselect\\b|\\bor\\s+1\\s*=\\s*1|\\band\\s+1\\s*=\\s*1|'\\s*or\\s*'1'\\s*=\\s*'1"
+  },
+  "pool": {
+    "by_label": {
+      "NORMAL": {
+        "n": 500,
+        "flagged": 139,
+        "rate": 0.278
+      },
+      "SQL_INJECTION": {
+        "n": 500,
+        "flagged": 294,
+        "rate": 0.588
+      },
+      "PATH_TRAVERSAL": {
+        "n": 500,
+        "flagged": 475,
+        "rate": 0.95
+      },
+      "CODE_INJECTION": {
+        "n": 500,
+        "flagged": 11,
+        "rate": 0.022
+      },
+      "HTTP_RESPONSE_SPLITTING": {
+        "n": 500,
+        "flagged": 500,
+        "rate": 1.0
+      },
+      "OS_COMMAND_INJECTION": {
+        "n": 500,
+        "flagged": 141,
+        "rate": 0.282
+      }
+    },
+    "normal_rules": {
+      "shell_command": 95,
+      "sensitive_file": 94,
+      "time_delay": 13,
+      "path_traversal": 7,
+      "header_injection": 4,
+      "script_tag": 3,
+      "sql_keywords": 1
+    }
+  },
+  "groups": [
+    {
+      "name": "validation",
+      "split": "validation",
+      "offset": 0,
+      "n": 200,
+      "reference": "B_semantic_k4",
+      "noise": {
+        "by_label": {
+          "NORMAL": {
+            "n": 33,
+            "flagged": 7,
+            "rate": 0.21212121212121213
+          },
+          "SQL_INJECTION": {
+            "n": 33,
+            "flagged": 20,
+            "rate": 0.6060606060606061
+          },
+          "PATH_TRAVERSAL": {
+            "n": 33,
+            "flagged": 31,
+            "rate": 0.9393939393939394
+          },
+          "CODE_INJECTION": {
+            "n": 34,
+            "flagged": 1,
+            "rate": 0.029411764705882353
+          },
+          "HTTP_RESPONSE_SPLITTING": {
+            "n": 34,
+            "flagged": 34,
+            "rate": 1.0
+          },
+          "OS_COMMAND_INJECTION": {
+            "n": 33,
+            "flagged": 7,
+            "rate": 0.21212121212121213
+          }
+        },
+        "normal_rules": {
+          "sensitive_file": 4,
+          "time_delay": 3,
+          "shell_command": 3
+        }
+      },
+      "sensitivity": {
+        "n_flagged_normal": 7,
+        "n_normal": 33,
+        "runs": [
+          {
+            "name": "A0_zero_shot",
+            "n": 200,
+            "n_kept": 193,
+            "macro_f1": 0.835454096428137,
+            "normal_fpr": 0.2727272727272727,
+            "normal_f1": 0.7272727272727273,
+            "macro_f1_kept": 0.8632382710125751,
+            "normal_fpr_kept": 0.07692307692307693,
+            "normal_f1_kept": 0.8135593220338984,
+            "normal_false_positives": 9,
+            "normal_false_positives_flagged": 7,
+            "kept_vs_reference": {
+              "diff": -0.06022738647352266,
+              "ci95": [
+                -0.10630708102963238,
+                -0.019367706460757472
+              ]
+            }
+          },
+          {
+            "name": "A1_fixed_k4",
+            "n": 200,
+            "n_kept": 193,
+            "macro_f1": 0.8143178241562666,
+            "normal_fpr": 0.2727272727272727,
+            "normal_f1": 0.7058823529411764,
+            "macro_f1_kept": 0.8411877471302373,
+            "normal_fpr_kept": 0.07692307692307693,
+            "normal_f1_kept": 0.7868852459016394,
+            "normal_false_positives": 9,
+            "normal_false_positives_flagged": 7,
+            "kept_vs_reference": {
+              "diff": -0.08227791035586052,
+              "ci95": [
+                -0.13312376007436688,
+                -0.04028142956965386
+              ]
+            }
+          },
+          {
+            "name": "B_semantic_k4",
+            "n": 200,
+            "n_kept": 193,
+            "macro_f1": 0.8928070745206295,
+            "normal_fpr": 0.30303030303030304,
+            "normal_f1": 0.7301587301587302,
+            "macro_f1_kept": 0.9234656574860978,
+            "normal_fpr_kept": 0.11538461538461539,
+            "normal_f1_kept": 0.8214285714285715,
+            "normal_false_positives": 10,
+            "normal_false_positives_flagged": 7
+          },
+          {
+            "name": "BAL_class_balanced_k4",
+            "n": 200,
+            "n_kept": 193,
+            "macro_f1": 0.868629646923484,
+            "normal_fpr": 0.3333333333333333,
+            "normal_f1": 0.7457627118644068,
+            "macro_f1_kept": 0.8983150278663294,
+            "normal_fpr_kept": 0.15384615384615385,
+            "normal_f1_kept": 0.8461538461538461,
+            "normal_false_positives": 11,
+            "normal_false_positives_flagged": 7,
+            "kept_vs_reference": {
+              "diff": -0.025150629619768328,
+              "ci95": [
+                -0.05094841427033947,
+                -0.004457350473427768
+              ]
+            }
+          },
+          {
+            "name": "C_knn_prior_k4_lambda0.1",
+            "n": 200,
+            "n_kept": 193,
+            "macro_f1": 0.8824324869919149,
+            "normal_fpr": 0.2727272727272727,
+            "normal_f1": 0.7500000000000001,
+            "macro_f1_kept": 0.9132335399028251,
+            "normal_fpr_kept": 0.07692307692307693,
+            "normal_f1_kept": 0.8421052631578947,
+            "normal_false_positives": 9,
+            "normal_false_positives_flagged": 7,
+            "kept_vs_reference": {
+              "diff": -0.010232117583272693,
+              "ci95": [
+                -0.0340422252849214,
+                0.010969084734094636
+              ]
+            }
+          },
+          {
+            "name": "C_llm_prior_k4_lambda0.1",
+            "n": 200,
+            "n_kept": 193,
+            "macro_f1": 0.873767691044579,
+            "normal_fpr": 0.2727272727272727,
+            "normal_f1": 0.761904761904762,
+            "macro_f1_kept": 0.8979879072085292,
+            "normal_fpr_kept": 0.11538461538461539,
+            "normal_f1_kept": 0.8363636363636363,
+            "normal_false_positives": 9,
+            "normal_false_positives_flagged": 6,
+            "kept_vs_reference": {
+              "diff": -0.0254777502775686,
+              "ci95": [
+                -0.058009107073570876,
+                0.001729064682289505
+              ]
+            }
+          },
+          {
+            "name": "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY",
+            "n": 200,
+            "n_kept": 193,
+            "macro_f1": 0.8882453976615521,
+            "normal_fpr": 0.30303030303030304,
+            "normal_f1": 0.7301587301587302,
+            "macro_f1_kept": 0.918704813066132,
+            "normal_fpr_kept": 0.11538461538461539,
+            "normal_f1_kept": 0.8214285714285715,
+            "normal_false_positives": 10,
+            "normal_false_positives_flagged": 7,
+            "kept_vs_reference": {
+              "diff": -0.004760844419965715,
+              "ci95": [
+                -0.031563705087754634,
+                0.02289517844516331
+              ]
+            }
+          }
+        ]
+      },
+      "demo_contamination": {
+        "A1_fixed_k4": {
+          "queries_with_flagged_normal_demo": 0.0,
+          "with_flagged_demo": {
+            "attack_queries": 0,
+            "predicted_normal": 0,
+            "miss_rate": null
+          },
+          "without_flagged_demo": {
+            "attack_queries": 167,
+            "predicted_normal": 11,
+            "miss_rate": 0.0658682634730539
+          }
+        },
+        "B_semantic_k4": {
+          "queries_with_flagged_normal_demo": 0.16,
+          "with_flagged_demo": {
+            "attack_queries": 21,
+            "predicted_normal": 2,
+            "miss_rate": 0.09523809523809523
+          },
+          "without_flagged_demo": {
+            "attack_queries": 146,
+            "predicted_normal": 5,
+            "miss_rate": 0.03424657534246575
+          }
+        },
+        "BAL_class_balanced_k4": {
+          "queries_with_flagged_normal_demo": 0.32,
+          "with_flagged_demo": {
+            "attack_queries": 50,
+            "predicted_normal": 1,
+            "miss_rate": 0.02
+          },
+          "without_flagged_demo": {
+            "attack_queries": 117,
+            "predicted_normal": 3,
+            "miss_rate": 0.02564102564102564
+          }
+        },
+        "C_knn_prior_k4_lambda0.1": {
+          "queries_with_flagged_normal_demo": 0.075,
+          "with_flagged_demo": {
+            "attack_queries": 5,
+            "predicted_normal": 1,
+            "miss_rate": 0.2
+          },
+          "without_flagged_demo": {
+            "attack_queries": 162,
+            "predicted_normal": 6,
+            "miss_rate": 0.037037037037037035
+          }
+        },
+        "C_llm_prior_k4_lambda0.1": {
+          "queries_with_flagged_normal_demo": 0.145,
+          "with_flagged_demo": {
+            "attack_queries": 10,
+            "predicted_normal": 2,
+            "miss_rate": 0.2
+          },
+          "without_flagged_demo": {
+            "attack_queries": 157,
+            "predicted_normal": 4,
+            "miss_rate": 0.025477707006369428
+          }
+        },
+        "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY": {
+          "queries_with_flagged_normal_demo": 0.125,
+          "with_flagged_demo": {
+            "attack_queries": 2,
+            "predicted_normal": 1,
+            "miss_rate": 0.5
+          },
+          "without_flagged_demo": {
+            "attack_queries": 165,
+            "predicted_normal": 6,
+            "miss_rate": 0.03636363636363636
+          }
+        }
+      }
+    },
+    {
+      "name": "test 1-300",
+      "split": "test",
+      "offset": 0,
+      "n": 300,
+      "reference": "B_semantic_k4",
+      "noise": {
+        "by_label": {
+          "NORMAL": {
+            "n": 50,
+            "flagged": 15,
+            "rate": 0.3
+          },
+          "SQL_INJECTION": {
+            "n": 50,
+            "flagged": 34,
+            "rate": 0.68
+          },
+          "PATH_TRAVERSAL": {
+            "n": 50,
+            "flagged": 49,
+            "rate": 0.98
+          },
+          "CODE_INJECTION": {
+            "n": 50,
+            "flagged": 0,
+            "rate": 0.0
+          },
+          "HTTP_RESPONSE_SPLITTING": {
+            "n": 50,
+            "flagged": 50,
+            "rate": 1.0
+          },
+          "OS_COMMAND_INJECTION": {
+            "n": 50,
+            "flagged": 16,
+            "rate": 0.32
+          }
+        },
+        "normal_rules": {
+          "time_delay": 6,
+          "shell_command": 5,
+          "sensitive_file": 3,
+          "path_traversal": 2,
+          "script_tag": 1,
+          "header_injection": 1
+        }
+      },
+      "sensitivity": {
+        "n_flagged_normal": 15,
+        "n_normal": 50,
+        "runs": [
+          {
+            "name": "A0_zero_shot",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8337398910984367,
+            "normal_fpr": 0.34,
+            "normal_f1": 0.7333333333333334,
+            "macro_f1_kept": 0.8727751802971776,
+            "normal_fpr_kept": 0.08571428571428572,
+            "normal_f1_kept": 0.8648648648648648,
+            "normal_false_positives": 17,
+            "normal_false_positives_flagged": 14,
+            "kept_vs_reference": {
+              "diff": -0.054119120533201115,
+              "ci95": [
+                -0.09055579217052478,
+                -0.02094761839548409
+              ]
+            }
+          },
+          {
+            "name": "A1_fixed_k4",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.7971477120021925,
+            "normal_fpr": 0.4,
+            "normal_f1": 0.6122448979591836,
+            "macro_f1_kept": 0.8350057710981528,
+            "normal_fpr_kept": 0.14285714285714285,
+            "normal_f1_kept": 0.7228915662650602,
+            "normal_false_positives": 20,
+            "normal_false_positives_flagged": 15,
+            "kept_vs_reference": {
+              "diff": -0.09188852973222594,
+              "ci95": [
+                -0.12915464374919683,
+                -0.058169860180744104
+              ]
+            }
+          },
+          {
+            "name": "B_semantic_k4",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.881053447949228,
+            "normal_fpr": 0.3,
+            "normal_f1": 0.7692307692307692,
+            "macro_f1_kept": 0.9268943008303787,
+            "normal_fpr_kept": 0.0,
+            "normal_f1_kept": 0.9210526315789475,
+            "normal_false_positives": 15,
+            "normal_false_positives_flagged": 15
+          },
+          {
+            "name": "BAL_class_balanced_k4",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8649454660461217,
+            "normal_fpr": 0.28,
+            "normal_f1": 0.7578947368421052,
+            "macro_f1_kept": 0.9018463016139403,
+            "normal_fpr_kept": 0.02857142857142857,
+            "normal_f1_kept": 0.8717948717948717,
+            "normal_false_positives": 14,
+            "normal_false_positives_flagged": 13,
+            "kept_vs_reference": {
+              "diff": -0.02504799921643841,
+              "ci95": [
+                -0.049413440775955,
+                -0.0023688190478975413
+              ]
+            }
+          },
+          {
+            "name": "C_knn_prior_k4_lambda0.1",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8615975762668437,
+            "normal_fpr": 0.32,
+            "normal_f1": 0.7311827956989247,
+            "macro_f1_kept": 0.9014067123393749,
+            "normal_fpr_kept": 0.05714285714285714,
+            "normal_f1_kept": 0.8571428571428571,
+            "normal_false_positives": 16,
+            "normal_false_positives_flagged": 14,
+            "kept_vs_reference": {
+              "diff": -0.025487588491003854,
+              "ci95": [
+                -0.054924965231053946,
+                0.0009072761026148735
+              ]
+            }
+          },
+          {
+            "name": "C_llm_prior_k4_lambda0.1",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8607439093036425,
+            "normal_fpr": 0.32,
+            "normal_f1": 0.7555555555555556,
+            "macro_f1_kept": 0.9059748699706875,
+            "normal_fpr_kept": 0.02857142857142857,
+            "normal_f1_kept": 0.9066666666666667,
+            "normal_false_positives": 16,
+            "normal_false_positives_flagged": 15,
+            "kept_vs_reference": {
+              "diff": -0.020919430859691168,
+              "ci95": [
+                -0.04530805623758294,
+                0.0005299060056245253
+              ]
+            }
+          },
+          {
+            "name": "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.9001567671705043,
+            "normal_fpr": 0.28,
+            "normal_f1": 0.782608695652174,
+            "macro_f1_kept": 0.9432074796548481,
+            "normal_fpr_kept": 0.0,
+            "normal_f1_kept": 0.9210526315789475,
+            "normal_false_positives": 14,
+            "normal_false_positives_flagged": 14,
+            "kept_vs_reference": {
+              "diff": 0.016313178824469365,
+              "ci95": [
+                -0.007361986073261106,
+                0.03884424992070279
+              ]
+            }
+          }
+        ]
+      },
+      "demo_contamination": {
+        "A1_fixed_k4": {
+          "queries_with_flagged_normal_demo": 0.0,
+          "with_flagged_demo": {
+            "attack_queries": 0,
+            "predicted_normal": 0,
+            "miss_rate": null
+          },
+          "without_flagged_demo": {
+            "attack_queries": 250,
+            "predicted_normal": 18,
+            "miss_rate": 0.072
+          }
+        },
+        "B_semantic_k4": {
+          "queries_with_flagged_normal_demo": 0.15666666666666668,
+          "with_flagged_demo": {
+            "attack_queries": 37,
+            "predicted_normal": 0,
+            "miss_rate": 0.0
+          },
+          "without_flagged_demo": {
+            "attack_queries": 213,
+            "predicted_normal": 6,
+            "miss_rate": 0.028169014084507043
+          }
+        },
+        "BAL_class_balanced_k4": {
+          "queries_with_flagged_normal_demo": 0.3566666666666667,
+          "with_flagged_demo": {
+            "attack_queries": 92,
+            "predicted_normal": 2,
+            "miss_rate": 0.021739130434782608
+          },
+          "without_flagged_demo": {
+            "attack_queries": 158,
+            "predicted_normal": 7,
+            "miss_rate": 0.04430379746835443
+          }
+        },
+        "C_knn_prior_k4_lambda0.1": {
+          "queries_with_flagged_normal_demo": 0.07333333333333333,
+          "with_flagged_demo": {
+            "attack_queries": 13,
+            "predicted_normal": 1,
+            "miss_rate": 0.07692307692307693
+          },
+          "without_flagged_demo": {
+            "attack_queries": 237,
+            "predicted_normal": 8,
+            "miss_rate": 0.03375527426160337
+          }
+        },
+        "C_llm_prior_k4_lambda0.1": {
+          "queries_with_flagged_normal_demo": 0.07666666666666666,
+          "with_flagged_demo": {
+            "attack_queries": 8,
+            "predicted_normal": 0,
+            "miss_rate": 0.0
+          },
+          "without_flagged_demo": {
+            "attack_queries": 242,
+            "predicted_normal": 6,
+            "miss_rate": 0.024793388429752067
+          }
+        },
+        "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY": {
+          "queries_with_flagged_normal_demo": 0.09666666666666666,
+          "with_flagged_demo": {
+            "attack_queries": 4,
+            "predicted_normal": 0,
+            "miss_rate": 0.0
+          },
+          "without_flagged_demo": {
+            "attack_queries": 246,
+            "predicted_normal": 6,
+            "miss_rate": 0.024390243902439025
+          }
+        }
+      }
+    },
+    {
+      "name": "test 301-600",
+      "split": "test",
+      "offset": 300,
+      "n": 300,
+      "reference": "B_semantic_k4",
+      "noise": {
+        "by_label": {
+          "NORMAL": {
+            "n": 50,
+            "flagged": 14,
+            "rate": 0.28
+          },
+          "SQL_INJECTION": {
+            "n": 50,
+            "flagged": 35,
+            "rate": 0.7
+          },
+          "PATH_TRAVERSAL": {
+            "n": 50,
+            "flagged": 46,
+            "rate": 0.92
+          },
+          "CODE_INJECTION": {
+            "n": 50,
+            "flagged": 1,
+            "rate": 0.02
+          },
+          "HTTP_RESPONSE_SPLITTING": {
+            "n": 50,
+            "flagged": 50,
+            "rate": 1.0
+          },
+          "OS_COMMAND_INJECTION": {
+            "n": 50,
+            "flagged": 10,
+            "rate": 0.2
+          }
+        },
+        "normal_rules": {
+          "sensitive_file": 11,
+          "shell_command": 8,
+          "time_delay": 2,
+          "path_traversal": 1
+        }
+      },
+      "sensitivity": {
+        "n_flagged_normal": 14,
+        "n_normal": 50,
+        "runs": [
+          {
+            "name": "B_semantic_k4",
+            "n": 300,
+            "n_kept": 286,
+            "macro_f1": 0.8693883880332605,
+            "normal_fpr": 0.32,
+            "normal_f1": 0.7083333333333334,
+            "macro_f1_kept": 0.9099278183635197,
+            "normal_fpr_kept": 0.05555555555555555,
+            "normal_f1_kept": 0.8292682926829269,
+            "normal_false_positives": 16,
+            "normal_false_positives_flagged": 14
+          },
+          {
+            "name": "C_gated_knn_prior_k4_lambda0.1_share0.7",
+            "n": 300,
+            "n_kept": 286,
+            "macro_f1": 0.8823684877086332,
+            "normal_fpr": 0.3,
+            "normal_f1": 0.7446808510638298,
+            "macro_f1_kept": 0.9247508830525547,
+            "normal_fpr_kept": 0.027777777777777776,
+            "normal_f1_kept": 0.875,
+            "normal_false_positives": 15,
+            "normal_false_positives_flagged": 14,
+            "kept_vs_reference": {
+              "diff": 0.014823064689035048,
+              "ci95": [
+                -0.0015979820477314277,
+                0.033288254754259894
+              ]
+            }
+          },
+          {
+            "name": "C_knn_prior_k4_lambda0.1",
+            "n": 300,
+            "n_kept": 286,
+            "macro_f1": 0.8734308466279996,
+            "normal_fpr": 0.3,
+            "normal_f1": 0.7070707070707072,
+            "macro_f1_kept": 0.9097594352921178,
+            "normal_fpr_kept": 0.05555555555555555,
+            "normal_f1_kept": 0.8095238095238096,
+            "normal_false_positives": 15,
+            "normal_false_positives_flagged": 13,
+            "kept_vs_reference": {
+              "diff": -0.00016838307140187858,
+              "ci95": [
+                -0.01895518688478759,
+                0.019172418298446847
+              ]
+            }
+          }
+        ]
+      },
+      "demo_contamination": {
+        "B_semantic_k4": {
+          "queries_with_flagged_normal_demo": 0.18666666666666668,
+          "with_flagged_demo": {
+            "attack_queries": 33,
+            "predicted_normal": 4,
+            "miss_rate": 0.12121212121212122
+          },
+          "without_flagged_demo": {
+            "attack_queries": 217,
+            "predicted_normal": 8,
+            "miss_rate": 0.03686635944700461
+          }
+        },
+        "C_gated_knn_prior_k4_lambda0.1_share0.7": {
+          "queries_with_flagged_normal_demo": 0.16333333333333333,
+          "with_flagged_demo": {
+            "attack_queries": 27,
+            "predicted_normal": 3,
+            "miss_rate": 0.1111111111111111
+          },
+          "without_flagged_demo": {
+            "attack_queries": 223,
+            "predicted_normal": 6,
+            "miss_rate": 0.026905829596412557
+          }
+        },
+        "C_knn_prior_k4_lambda0.1": {
+          "queries_with_flagged_normal_demo": 0.06666666666666667,
+          "with_flagged_demo": {
+            "attack_queries": 7,
+            "predicted_normal": 1,
+            "miss_rate": 0.14285714285714285
+          },
+          "without_flagged_demo": {
+            "attack_queries": 243,
+            "predicted_normal": 13,
+            "miss_rate": 0.053497942386831275
+          }
+        }
+      }
+    },
+    {
+      "name": "test 1-300 (gpt-oss-120b)",
+      "split": "test",
+      "offset": 0,
+      "n": 300,
+      "reference": "B_semantic_k4_120b",
+      "noise": {
+        "by_label": {
+          "NORMAL": {
+            "n": 50,
+            "flagged": 15,
+            "rate": 0.3
+          },
+          "SQL_INJECTION": {
+            "n": 50,
+            "flagged": 34,
+            "rate": 0.68
+          },
+          "PATH_TRAVERSAL": {
+            "n": 50,
+            "flagged": 49,
+            "rate": 0.98
+          },
+          "CODE_INJECTION": {
+            "n": 50,
+            "flagged": 0,
+            "rate": 0.0
+          },
+          "HTTP_RESPONSE_SPLITTING": {
+            "n": 50,
+            "flagged": 50,
+            "rate": 1.0
+          },
+          "OS_COMMAND_INJECTION": {
+            "n": 50,
+            "flagged": 16,
+            "rate": 0.32
+          }
+        },
+        "normal_rules": {
+          "time_delay": 6,
+          "shell_command": 5,
+          "sensitive_file": 3,
+          "path_traversal": 2,
+          "script_tag": 1,
+          "header_injection": 1
+        }
+      },
+      "sensitivity": {
+        "n_flagged_normal": 15,
+        "n_normal": 50,
+        "runs": [
+          {
+            "name": "A0_zero_shot_120b",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.7925372755574355,
+            "normal_fpr": 0.36,
+            "normal_f1": 0.7441860465116279,
+            "macro_f1_kept": 0.8377939996776474,
+            "normal_fpr_kept": 0.08571428571428572,
+            "normal_f1_kept": 0.9014084507042254,
+            "normal_false_positives": 18,
+            "normal_false_positives_flagged": 15,
+            "kept_vs_reference": {
+              "diff": -0.07898430530061673,
+              "ci95": [
+                -0.1170412701369119,
+                -0.044833069805546466
+              ]
+            }
+          },
+          {
+            "name": "B_semantic_k4_120b",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8687838524507333,
+            "normal_fpr": 0.34,
+            "normal_f1": 0.7586206896551725,
+            "macro_f1_kept": 0.9167783049782642,
+            "normal_fpr_kept": 0.05714285714285714,
+            "normal_f1_kept": 0.9166666666666667,
+            "normal_false_positives": 17,
+            "normal_false_positives_flagged": 15
+          },
+          {
+            "name": "BAL_class_balanced_k4_120b",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8623257206066307,
+            "normal_fpr": 0.34,
+            "normal_f1": 0.7586206896551725,
+            "macro_f1_kept": 0.9096237484409947,
+            "normal_fpr_kept": 0.05714285714285714,
+            "normal_f1_kept": 0.9166666666666667,
+            "normal_false_positives": 17,
+            "normal_false_positives_flagged": 15,
+            "kept_vs_reference": {
+              "diff": -0.007154556537269485,
+              "ci95": [
+                -0.02845338349726667,
+                0.014108535814318923
+              ]
+            }
+          },
+          {
+            "name": "C_knn_prior_k4_lambda0.1_120b",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8662687799514432,
+            "normal_fpr": 0.34,
+            "normal_f1": 0.7586206896551725,
+            "macro_f1_kept": 0.9127729777698209,
+            "normal_fpr_kept": 0.05714285714285714,
+            "normal_f1_kept": 0.9166666666666667,
+            "normal_false_positives": 17,
+            "normal_false_positives_flagged": 15,
+            "kept_vs_reference": {
+              "diff": -0.004005327208443266,
+              "ci95": [
+                -0.029265211930755486,
+                0.02010131831312545
+              ]
+            }
+          },
+          {
+            "name": "C_llm_prior_k4_lambda0.1_120b",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.854139386595174,
+            "normal_fpr": 0.36,
+            "normal_f1": 0.7441860465116279,
+            "macro_f1_kept": 0.9016973616055162,
+            "normal_fpr_kept": 0.08571428571428572,
+            "normal_f1_kept": 0.9014084507042254,
+            "normal_false_positives": 18,
+            "normal_false_positives_flagged": 15,
+            "kept_vs_reference": {
+              "diff": -0.015080943372748012,
+              "ci95": [
+                -0.04205046415328084,
+                0.010513639523221818
+              ]
+            }
+          },
+          {
+            "name": "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY_120b",
+            "n": 300,
+            "n_kept": 285,
+            "macro_f1": 0.8800127424975296,
+            "normal_fpr": 0.36,
+            "normal_f1": 0.7529411764705883,
+            "macro_f1_kept": 0.9285142611381053,
+            "normal_fpr_kept": 0.08571428571428572,
+            "normal_f1_kept": 0.9142857142857143,
+            "normal_false_positives": 18,
+            "normal_false_positives_flagged": 15,
+            "kept_vs_reference": {
+              "diff": 0.011735956159841132,
+              "ci95": [
+                -0.013783104218151765,
+                0.0362234088714386
+              ]
+            }
+          }
+        ]
+      },
+      "demo_contamination": {
+        "B_semantic_k4_120b": {
+          "queries_with_flagged_normal_demo": 0.15666666666666668,
+          "with_flagged_demo": {
+            "attack_queries": 37,
+            "predicted_normal": 1,
+            "miss_rate": 0.02702702702702703
+          },
+          "without_flagged_demo": {
+            "attack_queries": 213,
+            "predicted_normal": 3,
+            "miss_rate": 0.014084507042253521
+          }
+        },
+        "BAL_class_balanced_k4_120b": {
+          "queries_with_flagged_normal_demo": 0.3566666666666667,
+          "with_flagged_demo": {
+            "attack_queries": 92,
+            "predicted_normal": 1,
+            "miss_rate": 0.010869565217391304
+          },
+          "without_flagged_demo": {
+            "attack_queries": 158,
+            "predicted_normal": 3,
+            "miss_rate": 0.0189873417721519
+          }
+        },
+        "C_knn_prior_k4_lambda0.1_120b": {
+          "queries_with_flagged_normal_demo": 0.07333333333333333,
+          "with_flagged_demo": {
+            "attack_queries": 13,
+            "predicted_normal": 0,
+            "miss_rate": 0.0
+          },
+          "without_flagged_demo": {
+            "attack_queries": 237,
+            "predicted_normal": 4,
+            "miss_rate": 0.016877637130801686
+          }
+        },
+        "C_llm_prior_k4_lambda0.1_120b": {
+          "queries_with_flagged_normal_demo": 0.06666666666666667,
+          "with_flagged_demo": {
+            "attack_queries": 6,
+            "predicted_normal": 1,
+            "miss_rate": 0.16666666666666666
+          },
+          "without_flagged_demo": {
+            "attack_queries": 244,
+            "predicted_normal": 3,
+            "miss_rate": 0.012295081967213115
+          }
+        },
+        "C_oracle_prior_k4_lambda0.1_ANALYSIS_ONLY_120b": {
+          "queries_with_flagged_normal_demo": 0.09666666666666666,
+          "with_flagged_demo": {
+            "attack_queries": 4,
+            "predicted_normal": 0,
+            "miss_rate": 0.0
+          },
+          "without_flagged_demo": {
+            "attack_queries": 246,
+            "predicted_normal": 3,
+            "miss_rate": 0.012195121951219513
+          }
+        }
+      }
+    }
+  ],
+  "flagged_pool_normal": 139
+}
