@@ -6,6 +6,8 @@ Hướng triển khai là **inference-only**, không huấn luyện hoặc fine-
 
 **Kế hoạch hiện tại:** [Kế hoạch 2 người 11/10–14/11](reports/plan/ke_hoach_2_nguoi_11_10_den_14_11.md). **Báo cáo giữa kỳ:** [bản tạm](reports/progress/bao_cao_giua_ky.md). **Hướng dẫn đọc và chạy code:** [bắt đầu từ đây](reports/protocol/huong_dan_doc_va_chay_code.md).
 
+**Sơ đồ hệ thống:** [Workflow, các pipeline và code flow](reports/protocol/so_do_workflow_pipeline_code_flow.md) — sơ đồ Mermaid từ chuẩn bị dữ liệu đến retrieval, LLM, resume và phân tích kết quả.
+
 ## Các pipeline
 
 Mọi pipeline dùng chung một LLM (Groq `openai/gpt-oss-20b`, temperature 0, `reasoning_effort` low), một khung prompt và cùng **k = 4** ví dụ (mỗi ví dụ cắt ở 500 ký tự); chỉ khác **cách chọn ví dụ**.
