@@ -1,0 +1,48 @@
+{
+  "method": "C_llm_k4",
+  "reference": "B_k4",
+  "n": 600,
+  "per_set": [
+    {
+      "set": "test:src/artifacts/runs/test",
+      "n": 300,
+      "method": 0.8607439093036425,
+      "reference": 0.881053447949228,
+      "mcnemar": {
+        "a_only_correct": 2,
+        "b_only_correct": 8,
+        "p_value": 0.109375
+      }
+    },
+    {
+      "set": "test_fresh:src/artifacts/runs/test_fresh",
+      "n": 300,
+      "method": 0.8398971482243818,
+      "reference": 0.8329399516038559,
+      "mcnemar": {
+        "a_only_correct": 6,
+        "b_only_correct": 4,
+        "p_value": 0.75390625
+      }
+    }
+  ],
+  "pooled": {
+    "method": 0.850670479730865,
+    "reference": 0.8569459249119742,
+    "bootstrap": {
+      "observed_diff": -0.006275445181109229,
+      "ci95": [
+        -0.02109561980272956,
+        0.007483236390969483
+      ],
+      "p_diff_le_0": 0.8165,
+      "n_resamples": 2000,
+      "unit": "query"
+    },
+    "mcnemar": {
+      "a_only_correct": 8,
+      "b_only_correct": 12,
+      "p_value": 0.5034446716308594
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "method": "C_oracle_k4",
+  "reference": "B_k4",
+  "n": 600,
+  "per_set": [
+    {
+      "set": "test:src/artifacts/runs/test",
+      "n": 300,
+      "method": 0.9001567671705043,
+      "reference": 0.881053447949228,
+      "mcnemar": {
+        "a_only_correct": 10,
+        "b_only_correct": 4,
+        "p_value": 0.1795654296875
+      }
+    },
+    {
+      "set": "test_fresh:src/artifacts/runs/test_fresh",
+      "n": 300,
+      "method": 0.8655676675146909,
+      "reference": 0.8329399516038559,
+      "mcnemar": {
+        "a_only_correct": 12,
+        "b_only_correct": 2,
+        "p_value": 0.012939453125
+      }
+    }
+  ],
+  "pooled": {
+    "method": 0.8831081764722074,
+    "reference": 0.8569459249119742,
+    "bootstrap": {
+      "observed_diff": 0.02616225156023322,
+      "ci95": [
+        0.009070568340193375,
+        0.0435624372882345
+      ],
+      "p_diff_le_0": 0.001,
+      "n_resamples": 2000,
+      "unit": "query"
+    },
+    "mcnemar": {
+      "a_only_correct": 22,
+      "b_only_correct": 6,
+      "p_value": 0.0037191659212112427
+    }
+  }
+}

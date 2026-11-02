@@ -15,6 +15,11 @@ Tài liệu của đồ án, xếp theo thứ tự nên đọc. Tổng quan, k�
 | | [huong_dan_chay_thuc_nghiem.md](guides/huong_dan_chay_thuc_nghiem.md) | Các lệnh chạy từng bước, PowerShell và Git Bash |
 | `experiments/` | [cau_hinh_khoa.md](experiments/cau_hinh_khoa.md) | Cấu hình khóa trước khi chạy test, giả thuyết đăng ký trước |
 | | [thi_nghiem_bo_sung_120b.md](experiments/thi_nghiem_bo_sung_120b.md) | Kiểm tra lại kết luận với gpt-oss-120b |
+| | [cau_hinh_khoa_c_gated.md](experiments/cau_hinh_khoa_c_gated.md) | Khóa C-gated (chỉ dùng prior khi kNN tự tin) trước khi chạy test 301–600 |
+| | [ket_qua_c_gated.md](experiments/ket_qua_c_gated.md) | Kết quả C-gated trên test 301–600 |
+| | [nhan_nhieu_lop_normal.md](experiments/nhan_nhieu_lop_normal.md) | Phân tích nhãn nhiễu ở lớp Normal |
+| | [cau_hinh_khoa_cai_tien.md](experiments/cau_hinh_khoa_cai_tien.md) | Khóa vòng cải tiến C trước khi chạy tập test mới |
+| | [cai_tien_pipeline_c.md](experiments/cai_tien_pipeline_c.md) | **Báo cáo vòng cải tiến C**: 6 phương pháp đã công bố, tập test mới, gộp 900 câu |
 | `plan/` | [ke_hoach_2_nguoi_11_10_den_14_11.md](plan/ke_hoach_2_nguoi_11_10_den_14_11.md) | Kế hoạch và phân công 11/10–14/11/2026 |
 | `midterm/` | [bao_cao_giua_ky.md](midterm/bao_cao_giua_ky.md) | Báo cáo giữa kỳ (Markdown); bản Word/PDF theo mẫu Khoa nằm cùng thư mục |
 | `references/` | [link_papers.md](references/link_papers.md) | Danh sách bài báo tham khảo (kèm PDF) |
@@ -22,7 +27,7 @@ Tài liệu của đồ án, xếp theo thứ tự nên đọc. Tổng quan, k�
 
 Hình dùng trong báo cáo: [`dataset/figures/`](dataset/figures/) (hình dữ liệu) và [`word/figures/`](word/figures/) (sơ đồ pipeline, confusion matrix).
 
-Kết quả thực nghiệm dạng bảng nằm cạnh code, trong [`src/artifacts/reports/`](../src/artifacts/reports/): `validation/`, `test/`, `test_120b/`.
+Kết quả thực nghiệm dạng bảng nằm cạnh code, trong [`src/artifacts/reports/`](../src/artifacts/reports/): `validation/`, `test/`, `test_120b/`, `test_301_600/`, `validation_improve/`, `test_fresh/`, `pooled/`.
 
 **Dựng lại báo cáo Word** (Windows, cần Microsoft Word để cập nhật mục lục và xuất PDF):
 

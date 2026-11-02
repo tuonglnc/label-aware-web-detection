@@ -141,6 +141,15 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(metrics["cost"]["llm_calls_per_query"], 3)
 
 
+class HolmTests(unittest.TestCase):
+    def test_holm_adjustment(self):
+        from src.analysis.metrics import holm
+        # Ví dụ chuẩn: p = (0,01; 0,04; 0,03) -> (0,03; 0,06; 0,06).
+        self.assertEqual([round(p, 6) for p in holm([0.01, 0.04, 0.03])], [0.03, 0.06, 0.06])
+        self.assertEqual(holm([0.9, 0.8]), [1.0, 1.0])
+        self.assertEqual(holm([]), [])
+
+
 class FreshTestTests(unittest.TestCase):
     def test_fresh_subset_is_balanced_and_disjoint(self):
         labels = ["NORMAL", "SQL_INJECTION"]

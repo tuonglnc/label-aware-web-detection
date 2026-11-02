@@ -110,6 +110,22 @@ def mcnemar(y_true, pred_a, pred_b):
     return {"a_only_correct": b, "b_only_correct": c, "p_value": min(1.0, 2 * tail)}
 
 
+def holm(p_values):
+    """Hiệu chỉnh Holm (1979) cho nhiều phép so sánh; trả về p-value đã hiệu chỉnh theo đúng thứ tự vào.
+
+    So nhiều phương pháp với cùng một mốc thì khả năng có một phương pháp "thắng
+    do may" tăng lên. Holm: xếp p tăng dần, nhân p thứ i (từ 0) với (m − i), giữ
+    tính đơn điệu và chặn ở 1.
+    """
+    m = len(p_values)
+    order = sorted(range(m), key=lambda i: p_values[i])
+    adjusted, running = [0.0] * m, 0.0
+    for rank, i in enumerate(order):
+        running = max(running, min(1.0, (m - rank) * p_values[i]))
+        adjusted[i] = running
+    return adjusted
+
+
 def label_consistency_rate(demo_labels, query_label):
     """LCR@k: tỷ lệ ví dụ mẫu có cùng nhãn với query (chỉ tính khi đánh giá offline)."""
     return sum(label == query_label for label in demo_labels) / len(demo_labels) if demo_labels else None
