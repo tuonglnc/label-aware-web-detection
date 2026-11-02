@@ -123,7 +123,7 @@ def load_predictions(run_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--retrieval", default="src/artifacts/retrieval/minilm")
-    parser.add_argument("--split", default="validation", choices=["development", "validation", "test"])
+    parser.add_argument("--split", default="validation", choices=["development", "validation", "test", "test_fresh"])
     parser.add_argument("--limit", type=int, help="chỉ phân tích N query đầu (test: 300)")
     parser.add_argument("--offset", type=int, default=0, help="bỏ qua M query đầu (nửa sau test: --offset 300)")
     parser.add_argument("--runs-dir", help="thư mục chứa B_k4/ và C_knn_k4/ (bỏ trống = chỉ phân tích retrieval)")

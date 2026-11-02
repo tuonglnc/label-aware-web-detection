@@ -13,6 +13,7 @@ Giá trong file cấu hình nên đặt CAO HƠN giá thật (ví dụ gấp đ�
 
 import json
 import os
+import time
 from pathlib import Path
 
 CHARS_PER_TOKEN = 3.0  # đo thực tế khoảng 3,2 ký tự/token; dùng 3,0 để ước tính dư
@@ -84,4 +85,13 @@ class SpendLedger:
             json.dump(data, stream, indent=2)
             stream.flush()
             os.fsync(stream.fileno())
-        tmp.replace(self.path)
+        # Trên Windows, phần mềm diệt virus hay trình lập chỉ mục có thể giữ file vài trăm ms,
+        # làm phép đổi tên báo "Access is denied"; thử lại vài lần trước khi bỏ cuộc.
+        for attempt in range(10):
+            try:
+                tmp.replace(self.path)
+                return
+            except PermissionError:
+                if attempt == 9:
+                    raise
+                time.sleep(0.2 * (attempt + 1))

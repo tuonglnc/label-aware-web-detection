@@ -1,0 +1,18 @@
+{
+  "seed": "test_fresh-v1-42",
+  "per_class": 50,
+  "size": 300,
+  "distribution": {
+    "CODE_INJECTION": 50,
+    "HTTP_RESPONSE_SPLITTING": 50,
+    "NORMAL": 50,
+    "OS_COMMAND_INJECTION": 50,
+    "PATH_TRAVERSAL": 50,
+    "SQL_INJECTION": 50
+  },
+  "source_sha256": {
+    "test.jsonl": "fe6666370705d1c5b0699ee997e1be33a6cba8099fe20dc9c7a82cccb560cc1b",
+    "test_subset.jsonl": "64c009b41a370ab95e89bf709e9f61d594e65b600955d6783f5c627d753e9d10"
+  },
+  "output_sha256": "a3dab67a59cb226bc2bc0cb11c87a1c7dcb5b6957a03243d9e742bbb1b553b0d"
+}

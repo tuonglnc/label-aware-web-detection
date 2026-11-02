@@ -87,7 +87,7 @@ def main():
     parser.add_argument("--max-seq-length", type=int, default=256)
     parser.add_argument("--n-candidates", type=int, default=50, help="N ứng viên lưu cho mỗi query (≥ N dùng ở C)")
     parser.add_argument("--include-test", action="store_true", help="dựng lại TOÀN BỘ, kể cả test (mã hóa lại pool)")
-    parser.add_argument("--add-split", choices=["development", "validation", "test"],
+    parser.add_argument("--add-split", choices=["development", "validation", "test", "test_fresh"],
                         help="chỉ thêm neighbors cho một split, dùng lại pool đã mã hóa")
     args = parser.parse_args()
     encoder = SentenceTransformerEncoder(args.model, args.max_seq_length)

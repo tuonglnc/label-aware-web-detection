@@ -43,16 +43,19 @@ from src.common.budget import BudgetExceeded, SpendLedger
 from src.common.locking import directory_lock
 from src.llm import client as core
 from src.retrieval.knn import knn_vote, vote_share
-from src.retrieval.selectors import (class_balanced, fixed_examples, gated_label_aware_rerank, label_aware_rerank,
-                                     semantic_top_k)
+from src.retrieval.pool_aux import AUX_FILE, PoolSpace, load_aux
+from src.retrieval.selectors import (class_balanced, drop_flagged, fixed_examples, gated_label_aware_rerank,
+                                     label_aware_rerank, label_term_rerank, mmr_select, semantic_top_k)
 
 from .data_io import LABELS, ROOT, file_sha256, load_jsonl, load_split, sha256_of, split_path, write_json
 from .prompting import PROMPT_VERSION, SYSTEM, DemoMajorityMock, build_messages, parse_label
 
 PIPELINES = ("A0", "A1", "B", "BAL", "C")
 PRIOR_SOURCES = ("llm", "knn", "oracle")
+SELECTORS = ("mmr", "cll")
+POOL_FILTERS = ("enn",)
 CODE_FILES = ("src/experiments/run_llm.py", "src/experiments/prompting.py", "src/retrieval/selectors.py",
-              "src/retrieval/knn.py", "src/retrieval/views.py", "src/llm/client.py")
+              "src/retrieval/knn.py", "src/retrieval/views.py", "src/llm/client.py", "src/retrieval/pool_aux.py")
 
 
 # ----------------------------------------------------------------------------
@@ -93,6 +96,19 @@ def load_experiment(path):
                 raise ValueError("prior_min_share must be a number in (0, 1]")
     elif "prior_min_share" in config:
         raise ValueError("prior_min_share is only for pipeline C")
+    # Các cách chọn cải tiến (chỉ có khi đặt trong cấu hình, để run_key của cấu hình cũ không đổi).
+    if "selector" in config:
+        if config["pipeline"] != "B" or config["selector"] not in SELECTORS:
+            raise ValueError(f"selector must be one of {SELECTORS} and only for pipeline B")
+        if config["selector"] == "mmr" and not (isinstance(config.get("mmr_lambda"), (int, float))
+                                                and 0 < config["mmr_lambda"] <= 1):
+            raise ValueError("mmr_lambda must be a number in (0, 1]")
+        if config["selector"] == "cll" and not (isinstance(config.get("cll_w1"), (int, float))
+                                                and config["cll_w1"] >= 0):
+            raise ValueError("cll_w1 must be a non-negative number")
+    if "pool_filter" in config:
+        if config["pipeline"] not in ("B", "BAL", "C") or config["pool_filter"] not in POOL_FILTERS:
+            raise ValueError(f"pool_filter must be one of {POOL_FILTERS} and only for B/BAL/C")
     return config
 
 
@@ -138,8 +154,10 @@ def load_llm_prior(run_dir):
     if not run_dir.is_absolute():
         run_dir = ROOT / run_dir
     manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
-    if manifest["experiment"]["pipeline"] != "A0":
-        raise ValueError("prior_run must be an A0 run")
+    # A0 (zero-shot) hoặc B: prior lấy từ câu trả lời của B là vòng lặp kiểu IDS
+    # (Qin và cộng sự, Findings of EMNLP 2024): dùng dự đoán vòng trước để chọn ví dụ vòng sau.
+    if manifest["experiment"]["pipeline"] not in ("A0", "B"):
+        raise ValueError("prior_run must be an A0 or B run")
     priors, usage = {}, {}
     for rec in load_jsonl(run_dir / "predictions.jsonl"):
         priors[rec["request_id"]] = rec["predicted_label"] if rec["status"] == "ok" else None
@@ -157,7 +175,7 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
 
     `offset`: bỏ qua `offset` query đầu của split rồi mới áp dụng `limit`.
     """
-    if split == "test" and not allow_test:
+    if split.startswith("test") and not allow_test:
         raise ValueError("test split is locked; pass allow_test=True only after freezing the configuration")
     if not isinstance(offset, int) or offset < 0:
         raise ValueError("offset must be a non-negative integer")
@@ -188,6 +206,13 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
         missing = [q["request_id"] for q in public if q["request_id"] not in neighbors]
         if missing:
             raise ValueError(f"{len(missing)} queries have no neighbors; rebuild retrieval for split {split}")
+        if "selector" in experiment or "pool_filter" in experiment:
+            aux = load_aux(rdir)
+            retrieval_manifest["pool_aux_sha256"] = file_sha256(rdir / AUX_FILE)
+            flagged = set(aux["enn"]["flagged"]) if experiment.get("pool_filter") == "enn" else set()
+            space = PoolSpace.load(rdir) if experiment.get("selector") == "mmr" else None
+            # Bỏ ví dụ nghi nhiễu nhãn TRƯỚC khi cắt top-N, để mọi pipeline vẫn có đủ N ứng viên.
+            neighbors = {qid: drop_flagged(cands, flagged) for qid, cands in neighbors.items()}
 
     priors, prior_usage, prior_info, confidences = {}, {}, None, {}
     experiment_kind = "mock" if llm["backend"] == "mock_demo_majority" else "llm"
@@ -220,6 +245,10 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
             return fixed
         cands = neighbors[query_id][:experiment["n_candidates"]]
         if pipeline == "B":
+            if experiment.get("selector") == "mmr":
+                return mmr_select(cands, experiment["k"], space.pair_similarity, experiment["mmr_lambda"])
+            if experiment.get("selector") == "cll":
+                return label_term_rerank(cands, experiment["k"], aux["cll"]["term"], experiment["cll_w1"])
             return semantic_top_k(cands, experiment["k"])
         if pipeline == "BAL":
             return class_balanced(cands, experiment["k"])
@@ -386,7 +415,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--config", required=True, help="file cấu hình thực nghiệm (pipeline, k, λ, …)")
     parser.add_argument("--llm", required=True, help="file cấu hình LLM (mock hoặc chat_completions)")
-    parser.add_argument("--split", default="development", choices=["development", "validation", "test"])
+    parser.add_argument("--split", default="development", choices=["development", "validation", "test", "test_fresh"])
     parser.add_argument("--output", required=True)
     parser.add_argument("--limit", type=int, help="chỉ chạy N query đầu (để thử nhanh)")
     parser.add_argument("--offset", type=int, default=0,

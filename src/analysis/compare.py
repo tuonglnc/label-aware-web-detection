@@ -163,7 +163,7 @@ def to_markdown(result):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--split", required=True, choices=["development", "validation", "test"])
+    parser.add_argument("--split", required=True, choices=["development", "validation", "test", "test_fresh"])
     parser.add_argument("--runs", nargs="+", required=True, help="các thư mục run (chấp nhận wildcard)")
     parser.add_argument("--reference", default="B_semantic_k4", help="tên run làm mốc so sánh")
     parser.add_argument("--output", required=True)

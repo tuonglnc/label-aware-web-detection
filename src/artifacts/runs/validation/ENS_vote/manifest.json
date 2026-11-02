@@ -1,0 +1,20 @@
+{
+  "run_key": "7ccf2f20e89a4a4bb396f9a6ae77f155f2d724180a0ca419fce8af3eab02108d",
+  "experiment": {
+    "name": "ENS_vote_B_BAL_Cknn",
+    "pipeline": "ENS",
+    "members": [
+      "B_semantic_k4",
+      "BAL_class_balanced_k4",
+      "C_knn_prior_k4_lambda0.1"
+    ],
+    "tie_break": "first member"
+  },
+  "split": "validation",
+  "experiment_kind": "llm",
+  "member_run_keys": [
+    "119954a425f6a11a0658ea1dba604a25d8598661218f32e50d40b5c13e0e7210",
+    "c1cbd558f69fccd392631cb47f4a2f4e45c3e8daf6dee6a70e33ed9d6e521e8e",
+    "0c90cfe4a62a13ff1c149339c8afcc8905fd32bc7fe166ef3055957164c93f51"
+  ]
+}

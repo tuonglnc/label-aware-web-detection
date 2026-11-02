@@ -154,7 +154,7 @@ def plot(result, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--retrieval", required=True, help="thư mục output của build_retrieval")
-    parser.add_argument("--split", default="validation", choices=["development", "validation", "test"])
+    parser.add_argument("--split", default="validation", choices=["development", "validation", "test", "test_fresh"])
     parser.add_argument("--k", type=int, default=4)
     parser.add_argument("--n-candidates", type=int, default=30)
     parser.add_argument("--lam", type=float, default=0.1)
