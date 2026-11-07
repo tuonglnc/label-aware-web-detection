@@ -6,6 +6,8 @@ Dự án chỉ dùng model có sẵn qua API (**inference-only**), không huấn
 
 **Bắt đầu đọc:** [Hướng dẫn đọc và chạy code](reports/guides/huong_dan_doc_va_chay_code.md) · [Mục lục tài liệu](reports/README.md) · [Báo cáo giữa kỳ](reports/midterm/bao_cao_giua_ky.md)
 
+**Sơ đồ hệ thống:** [Workflow, các pipeline và code flow](reports/guides/so_do_workflow_pipeline_code_flow.md) — sơ đồ Mermaid từ chuẩn bị dữ liệu đến retrieval, LLM, resume và phân tích kết quả. **Đọc hiểu code chi tiết:** [lần theo từng command đến từng hàm](reports/guides/huong_dan_doc_hieu_code.md).
+
 ## Các pipeline
 
 Mọi pipeline dùng chung một LLM (Groq `openai/gpt-oss-20b`, temperature 0, `reasoning_effort` low), một khung prompt và cùng **k = 4** ví dụ (mỗi ví dụ cắt ở 500 ký tự). Chỉ khác **cách chọn ví dụ**.

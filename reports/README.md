@@ -13,6 +13,8 @@ Tài liệu của đồ án, xếp theo thứ tự nên đọc. Tổng quan, k�
 | | [ket_qua_xu_ly_du_lieu.md](dataset/ket_qua_xu_ly_du_lieu.md) | Kết quả xử lý dữ liệu và các vấn đề về nhãn |
 | `guides/` | [huong_dan_doc_va_chay_code.md](guides/huong_dan_doc_va_chay_code.md) | **Bắt đầu từ đây:** bản đồ code, cài đặt, giải thích từng file |
 | | [huong_dan_chay_thuc_nghiem.md](guides/huong_dan_chay_thuc_nghiem.md) | Các lệnh chạy từng bước, PowerShell và Git Bash |
+| | [huong_dan_doc_hieu_code.md](guides/huong_dan_doc_hieu_code.md) | Lần theo từng command đến từng hàm, breakpoint gợi ý, câu tự kiểm tra |
+| | [so_do_workflow_pipeline_code_flow.md](guides/so_do_workflow_pipeline_code_flow.md) | Sơ đồ Mermaid: workflow, các pipeline, code flow của runner |
 | `experiments/` | [cau_hinh_khoa.md](experiments/cau_hinh_khoa.md) | Cấu hình khóa trước khi chạy test, giả thuyết đăng ký trước |
 | | [thi_nghiem_bo_sung_120b.md](experiments/thi_nghiem_bo_sung_120b.md) | Kiểm tra lại kết luận với gpt-oss-120b |
 | | [cau_hinh_khoa_c_gated.md](experiments/cau_hinh_khoa_c_gated.md) | Khóa C-gated (chỉ dùng prior khi kNN tự tin) trước khi chạy test 301–600 |
