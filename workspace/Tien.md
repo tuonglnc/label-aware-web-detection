@@ -49,6 +49,7 @@
 2. *Giả thuyết.* Dùng prior để ưu tiên ví dụ cùng nhãn sẽ giúp LLM (RQ2).
 3. *Bằng chứng.* Không giúp: C-kNN, C-LLM không vượt B, FPR Normal không giảm; 6 phương pháp đã công bố cũng không vượt B sau Holm. Prior sai làm hỏng nhiều hơn sửa (RQ3).
 4. *Vì sao.* (a) Hai lần chạy cùng prompt đã lệch khoảng 0,01, bằng cỡ mọi chênh lệch đang so. (b) Nhãn Normal trong dataset có nhiễu (27,8% đáng ngờ), và toàn bộ 15 lần B báo nhầm Normal ở test 1–300 rơi vào nhóm này. Một phần "lỗi" thật ra là nhãn sai.
+   (c) Dù vậy, làm sạch pool cũng không giúp: bỏ ví dụ Normal sai nhãn khỏi pool chỉ cho +0,011 (p = 0,21), và ở nhóm query thật sự đổi ví dụ gần như hòa (5 sửa, 4 hỏng). Nhãn nhiễu làm lệch con số tuyệt đối, không phải là nút thắt của phương pháp.
 5. *Ý nghĩa.* Với phát hiện tấn công web dùng LLM, đo đúng quan trọng hơn thêm kỹ thuật: cần báo cáo độ dao động, kiểm tra nhãn nhiễu, và so sánh trên nhiều tập test độc lập.
 
 **Ba đóng góp nên đứng tên ở Chương 1 và Chương 5** (thay vì chỉ liệt kê pipeline):
@@ -168,7 +169,13 @@ Quan sát: Normal và OS Command Injection là hai lớp thấp nhất ở mọi
 - Kết quả: phần lớn lỗi "báo nhầm Normal" là do nhãn dataset sai (request Normal chứa payload); bỏ chúng thì điểm tăng nhưng thứ hạng không đổi.
 - Số liệu: 27,8% Normal trong pool đáng ngờ; 15/15 lần B báo nhầm Normal ở test 1–300 rơi vào nhóm này; B: 0,881 → 0,927, FPR 30% → 0%.
 - Diễn giải: đây là giới hạn của dữ liệu chứ không phải của phương pháp; cũng giải thích vì sao LCR ở Normal cao (4.3). Phần này chuyển nguyên ý sang mục Hạn chế ở Chương 5.
-- Hình/bảng: Hình 4.6 (ma trận nhầm lẫn của B), Bảng 4.9.
+- **Thí nghiệm bổ sung có đăng ký trước (20/11/2026): bỏ ví dụ Normal sai nhãn khỏi pool (B-cleanpool).** Hỏi: nếu pool sạch thì B có hơn không? Bộ lọc (139 ví dụ pool) làm đổi bộ ví dụ của 18% query (110/600).
+  - Số liệu (600 query gộp, test mới + test 301–600): B 0,852; B-cleanpool 0,863; chênh +0,011 [−0,002; +0,025], McNemar p = 0,21. Câu tấn công bị đoán NORMAL: 25 → 23.
+  - Cả 3 giả thuyết đã khóa đều đúng: không hại (cận dưới > −0,02), không nhiều lỗi NORMAL hơn, và chênh không có ý nghĩa thống kê.
+  - Điểm cần nói trong báo cáo: ở nhóm 110 query thật sự đổi ví dụ chỉ có 5 sửa so với 4 hỏng; phần chênh còn lại đến từ 490 query có prompt giống hệt B (10 câu đổi đáp án, +5 nghiêng về cleanpool), tức là dao động của LLM. Vậy **không có bằng chứng** rằng ví dụ Normal sai nhãn làm hại B.
+  - Bảng đề xuất 4.10: B, B-cleanpool, chênh, CI, McNemar, và hàng "đổi ví dụ / giống hệt" (sửa/hỏng).
+  - Nguồn: `reports/experiments/cau_hinh_khoa_pool_sach.md` (khóa), `reports/experiments/ket_qua_pool_sach.md`, `src/artifacts/reports/cleanpool/cleanpool.json`.
+- Hình/bảng: Hình 4.6 (ma trận nhầm lẫn của B), Bảng 4.9, Bảng 4.10 (B-cleanpool).
 - Nguồn: `reports/experiments/nhan_nhieu_lop_normal.md`.
 - Chỉnh sửa:
 
@@ -176,7 +183,7 @@ Quan sát: Normal và OS Command Injection là hai lớp thấp nhất ở mọi
 
 - Trả lời: phần "chi phí thay đổi thế nào" của RQ2, và phương pháp có tái lập được không. Cần nêu rõ C-LLM tốn 2 lượt gọi/query (một lượt tạo prior, một lượt phân loại) trong khi B, C-kNN chỉ 1 lượt; kNN không gọi LLM (theo bảng 2.5.3). Token trung bình: A0 630; B 1.487; C-kNN 1.488; C-LLM 1.490 (nếu bảng chỉ tính lượt phân loại cuối thì ghi rõ phạm vi, như 2.5.3 yêu cầu).
 - Kết quả: chi phí thấp, có demo và quy trình tái lập.
-- Số liệu: hơn 11.000 lượt gọi được ghi trong sổ chi phí, khoảng 1,5 USD; khoảng 1.500 token/request với B; trung vị 0,6–0,8 giây/lượt gọi; 93 bài kiểm thử.
+- Số liệu: hơn 12.000 lượt gọi (sổ chi phí: 9.576 + 1.800 lượt đến 20/11 trước khi thêm B-cleanpool, cộng khoảng 800 lượt mới), khoảng 1,5–1,7 USD theo giá tham khảo; sổ chi phí đặt giá gấp đôi nên ghi 2,43 USD (20b) và 0,85 USD (120b), đều dưới ngưỡng 4,5 và 3,0 USD. Khoảng 1.500 token/request với B; trung vị 0,6–0,8 giây/lượt gọi; 94 bài kiểm thử (đã chạy lại ngày 20/11/2026, tất cả đạt).
 - Nguồn: `src/artifacts/api_spend_ledger*.json`.
 - Chỉnh sửa:
 
