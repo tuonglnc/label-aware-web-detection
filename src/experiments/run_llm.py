@@ -38,6 +38,7 @@ from pathlib import Path
 import platform
 import time
 
+from src.analysis.label_noise import suspicious_rules
 from src.analysis.metrics import classification_metrics, label_consistency_rate
 from src.common.budget import BudgetExceeded, SpendLedger
 from src.common.locking import directory_lock
@@ -53,7 +54,7 @@ from .prompting import PROMPT_VERSION, SYSTEM, DemoMajorityMock, build_messages,
 PIPELINES = ("A0", "A1", "B", "BAL", "C")
 PRIOR_SOURCES = ("llm", "knn", "oracle")
 SELECTORS = ("mmr", "cll")
-POOL_FILTERS = ("enn",)
+POOL_FILTERS = ("enn", "noise_rule")
 CODE_FILES = ("src/experiments/run_llm.py", "src/experiments/prompting.py", "src/retrieval/selectors.py",
               "src/retrieval/knn.py", "src/retrieval/views.py", "src/llm/client.py", "src/retrieval/pool_aux.py")
 
@@ -209,7 +210,15 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
         if "selector" in experiment or "pool_filter" in experiment:
             aux = load_aux(rdir)
             retrieval_manifest["pool_aux_sha256"] = file_sha256(rdir / AUX_FILE)
-            flagged = set(aux["enn"]["flagged"]) if experiment.get("pool_filter") == "enn" else set()
+            flagged = set()
+            if experiment.get("pool_filter") == "enn":
+                flagged = set(aux["enn"]["flagged"])
+            elif experiment.get("pool_filter") == "noise_rule":
+                # Bỏ ví dụ pool mang nhãn NORMAL nhưng chứa payload tấn công rõ ràng
+                # (quy tắc cố định ở src/analysis/label_noise.py, chỉ nhìn nội dung request).
+                flagged = {rid for rid, row in pool.items()
+                           if row["label"] == "NORMAL" and suspicious_rules(row["request_text"])}
+                retrieval_manifest["pool_filter_removed"] = len(flagged)
             space = PoolSpace.load(rdir) if experiment.get("selector") == "mmr" else None
             # Bỏ ví dụ nghi nhiễu nhãn TRƯỚC khi cắt top-N, để mọi pipeline vẫn có đủ N ứng viên.
             neighbors = {qid: drop_flagged(cands, flagged) for qid, cands in neighbors.items()}

@@ -120,6 +120,18 @@ class RunnerTests(unittest.TestCase):
             self.assertFalse(flagged & set(r["demo_ids"]))
         self.assertNotIn("pool_aux_sha256", json.loads((self.root / "runs" / "B" / "manifest.json").read_text())["retrieval"])
 
+    def test_noise_rule_filter_removes_suspicious_normal_from_demos(self):
+        from src.analysis.label_noise import suspicious_rules
+        from src.experiments.data_io import load_split
+        pool = load_split("pool", data_dir=self.data)
+        expected = {r["request_id"] for r in pool if r["label"] == "NORMAL" and suspicious_rules(r["request_text"])}
+        out, clean = self.run_mock("CLEAN", pipeline="B", pool_filter="noise_rule")
+        manifest = json.loads((out / "manifest.json").read_text())
+        self.assertEqual(manifest["retrieval"]["pool_filter_removed"], len(expected))
+        for r in clean.values():
+            self.assertFalse(expected & set(r["demo_ids"]))
+            self.assertEqual(len(r["demo_ids"]), 4)
+
     def test_prior_from_b_run(self):
         b_out, b = self.run_mock("B", pipeline="B")
         _, it = self.run_mock("IT", pipeline="C", prior_source="llm", prior_run=str(b_out), **{"lambda": 0.1})
