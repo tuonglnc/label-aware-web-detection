@@ -1,0 +1,6 @@
+# Thư viện cho toàn bộ dự án (Python >= 3.10; đã kiểm chứng với Python 3.11.9 trên Windows 11, CPU).
+# Tiền xử lý dữ liệu, client LLM và chạy pipeline chỉ dùng thư viện chuẩn của Python.
+# Các thư viện dưới đây dùng cho embedding/retrieval, vẽ hình và đọc kết quả.
+numpy>=1.26
+sentence-transformers==5.1.0
+matplotlib>=3.6

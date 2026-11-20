@@ -6,6 +6,8 @@
 #   EXTRA=1 bash src/experiments/run_suite.sh validation # thêm C-oracle và A1
 #   ENV_FILE=.env.khac bash src/experiments/run_suite.sh validation   # dùng file key khác (mặc định .env)
 #   MODEL=120b bash src/experiments/run_suite.sh test --locked          # thí nghiệm bổ sung với gpt-oss-120b
+#   IMPROVE=1 bash src/experiments/run_suite.sh validation              # thêm các cách chọn cải tiến cho C
+#   EXTRA=1 IMPROVE=1 bash src/experiments/run_suite.sh test_fresh --locked   # toàn bộ trên tập test mới (300)
 #
 # MODEL=20b (mặc định): cấu hình chính, kết quả ở src/artifacts/runs/.
 # MODEL=120b: cùng prompt/k/λ/pool nhưng model openai/gpt-oss-120b; cấu hình ở src/configs/experiments_120b/,
@@ -24,7 +26,9 @@ case "$MODEL" in
   20b)
     LLM_CONFIG="src/configs/llm/groq.json"; CONFIG_DIR="src/configs/experiments"; RUNS_ROOT="src/artifacts/runs"
     DEFAULT_BUDGET="src/configs/llm/budget.json"
-    CONFIGS="A0 B_k4 BAL_k4 C_knn_k4 C_llm_k4"; EXTRA_CONFIGS="C_oracle_k4 A1_k4" ;;
+    CONFIGS="A0 B_k4 BAL_k4 C_knn_k4 C_llm_k4"; EXTRA_CONFIGS="C_oracle_k4 A1_k4"
+    # Vòng cải tiến C (xem reports/experiments/cai_tien_pipeline_c.md). C_iter cần B_k4 chạy trước.
+    IMPROVE_CONFIGS="C_gated_k4 B_mmr_k4 B_cll_k4 B_enn_k4 C_knn_enn_k4 C_iter_k4" ;;
   120b)
     LLM_CONFIG="src/configs/llm/groq_120b.json"; CONFIG_DIR="src/configs/experiments_120b"; RUNS_ROOT="src/artifacts/runs_120b"
     DEFAULT_BUDGET="src/configs/llm/budget_120b.json"
@@ -34,13 +38,16 @@ case "$MODEL" in
 esac
 BUDGET="${BUDGET:-$DEFAULT_BUDGET}"
 EXTRA_ARGS="--retry-errors --budget $BUDGET"
-if [ "$SPLIT" = "test" ]; then
-  if [ "${2:-}" != "--locked" ]; then
-    echo "Tập test chỉ chạy sau khi khóa cấu hình: bash src/experiments/run_suite.sh test --locked"
-    exit 1
-  fi
-  EXTRA_ARGS="$EXTRA_ARGS --allow-test --limit 300"
-fi
+case "$SPLIT" in
+  test|test_fresh)
+    if [ "${2:-}" != "--locked" ]; then
+      echo "Tập test chỉ chạy sau khi khóa cấu hình: bash src/experiments/run_suite.sh $SPLIT --locked"
+      exit 1
+    fi
+    EXTRA_ARGS="$EXTRA_ARGS --allow-test"
+    # test: 300 query đầu của test_subset (thí nghiệm chính); test_fresh: toàn bộ 300 query của tập mới.
+    [ "$SPLIT" = "test" ] && EXTRA_ARGS="$EXTRA_ARGS --limit 300" ;;
+esac
 PY="${PYTHON:-python}"
 ENV_FILE="${ENV_FILE:-.env}"
 export PYTHONIOENCODING=utf-8
@@ -53,6 +60,7 @@ echo "File key: $ENV_FILE | Model: $MODEL ($LLM_CONFIG) | Kết quả: $RUNS_ROO
 
 # A0 phải chạy trước vì C_llm dùng dự đoán của A0 làm prior.
 [ "${EXTRA:-0}" = "1" ] && CONFIGS="$CONFIGS $EXTRA_CONFIGS"
+[ "${IMPROVE:-0}" = "1" ] && CONFIGS="$CONFIGS ${IMPROVE_CONFIGS:-}"
 
 FAILED=""
 for c in $CONFIGS; do

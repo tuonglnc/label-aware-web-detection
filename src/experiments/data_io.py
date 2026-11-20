@@ -9,6 +9,8 @@ Thực nghiệm dùng các tập con (subset) đã cố định từ trước:
 | development  | development.jsonl        | Thử nhanh, sửa lỗi (30 mẫu)                      |
 | validation   | validation_subset.jsonl  | Chọn cấu hình k, λ, … (200 mẫu)                  |
 | test         | test_subset.jsonl        | Chỉ chạy MỘT lần sau khi đã khóa cấu hình (600) |
+| test_fresh   | test_fresh_subset.jsonl  | Tập test MỚI (300, 50/lớp) cho vòng cải tiến C,  |
+|              |                          | lấy từ test.jsonl, không trùng nhóm với test cũ  |
 """
 
 import hashlib
@@ -22,6 +24,7 @@ SPLIT_FILES = {
     "development": "development.jsonl",
     "validation": "validation_subset.jsonl",
     "test": "test_subset.jsonl",
+    "test_fresh": "test_fresh_subset.jsonl",
 }
 LABELS = tuple(json.loads((ROOT / "src/configs/data.json").read_text(encoding="utf-8"))["labels"].values())
 

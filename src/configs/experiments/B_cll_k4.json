@@ -1,0 +1,1 @@
+{"name": "B_cll_w1.0_k4", "pipeline": "B", "k": 4, "n_candidates": 30, "selector": "cll", "cll_w1": 1.0, "max_demo_chars": 500, "retrieval_dir": "src/artifacts/retrieval/minilm"}

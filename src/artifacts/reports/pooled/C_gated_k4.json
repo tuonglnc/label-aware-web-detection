@@ -1,0 +1,48 @@
+{
+  "method": "C_gated_k4",
+  "reference": "B_k4",
+  "n": 600,
+  "per_set": [
+    {
+      "set": "test:src/artifacts/runs/test_301_600",
+      "n": 300,
+      "method": 0.8823684877086332,
+      "reference": 0.8693883880332605,
+      "mcnemar": {
+        "a_only_correct": 5,
+        "b_only_correct": 1,
+        "p_value": 0.21875
+      }
+    },
+    {
+      "set": "test_fresh:src/artifacts/runs/test_fresh",
+      "n": 300,
+      "method": 0.8407315910683142,
+      "reference": 0.8329399516038559,
+      "mcnemar": {
+        "a_only_correct": 3,
+        "b_only_correct": 1,
+        "p_value": 0.625
+      }
+    }
+  ],
+  "pooled": {
+    "method": 0.8618247105993073,
+    "reference": 0.8516922743021816,
+    "bootstrap": {
+      "observed_diff": 0.01013243629712568,
+      "ci95": [
+        -0.0003332314741020248,
+        0.021493696976411125
+      ],
+      "p_diff_le_0": 0.0315,
+      "n_resamples": 2000,
+      "unit": "query"
+    },
+    "mcnemar": {
+      "a_only_correct": 8,
+      "b_only_correct": 2,
+      "p_value": 0.109375
+    }
+  }
+}

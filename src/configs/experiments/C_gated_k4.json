@@ -1,0 +1,1 @@
+{"name": "C_gated_knn_prior_k4_lambda0.1_share0.7", "pipeline": "C", "k": 4, "n_candidates": 30, "lambda": 0.1, "prior_source": "knn", "prior_knn_k": 5, "prior_min_share": 0.7, "max_demo_chars": 500, "retrieval_dir": "src/artifacts/retrieval/minilm"}

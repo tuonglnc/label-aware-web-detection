@@ -1,7 +1,7 @@
 """Render the evidence-backed Vietnamese survey report and exportable figures.
 
 The CSV survey itself has no third-party dependencies. Figures require
-matplotlib; see src/requirements-survey.txt for the validated plotting version.
+matplotlib; see requirements.txt.
 """
 
 import argparse
@@ -270,7 +270,7 @@ python3 -m src.preprocessing.survey
 MPLCONFIGDIR=/tmp/sr-bh-mpl python3 -m src.preprocessing.survey_report
 ```
 
-`find_pair` có thể mất vài phút. `survey` đọc lại mọi record trong CSV thật, kiểm checksum, label cardinality, tổng số lượt nhãn, lấy ví dụ theo raw index, đối chiếu nhãn, xác nhận cặp chỉ khác URI và thuộc pool/development. `verification.json` ghi kết quả. Khảo sát và tìm cặp dùng Python standard library; xuất hình dùng matplotlib, phiên bản kiểm chứng trong `src/requirements-survey.txt`.
+`find_pair` có thể mất vài phút. `survey` đọc lại mọi record trong CSV thật, kiểm checksum, label cardinality, tổng số lượt nhãn, lấy ví dụ theo raw index, đối chiếu nhãn, xác nhận cặp chỉ khác URI và thuộc pool/development. `verification.json` ghi kết quả. Khảo sát và tìm cặp dùng Python standard library; xuất hình dùng matplotlib, phiên bản kiểm chứng trong `requirements.txt`.
 
 Các thống kê và ví dụ không phụ thuộc website mô tả; metadata nguồn chỉ dùng cho provenance/version/license/danh sách file. Không thay đổi nhãn, split hoặc benchmark manifests trong quá trình khảo sát này.
 """
@@ -279,8 +279,8 @@ Các thống kê và ví dụ không phụ thuộc website mô tả; metadata ng
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifacts", default="src/artifacts/data/sr_bh_survey")
-    parser.add_argument("--report", default="reports/surveys/khao_sat_sr_bh_2020.md")
-    parser.add_argument("--figures", default="reports/surveys/figures")
+    parser.add_argument("--report", default="reports/dataset/khao_sat_sr_bh_2020.md")
+    parser.add_argument("--figures", default="reports/dataset/figures")
     args = parser.parse_args()
     root = Path(args.artifacts)
     load = lambda path: json.loads(Path(path).read_text(encoding="utf-8"))

@@ -19,7 +19,7 @@ from collections import Counter
 import json
 import re
 
-from src.pipeline_a0.core import BackendError, SYSTEM as A0_SYSTEM, parse_output
+from src.llm.client import BackendError, SYSTEM as A0_SYSTEM, parse_output
 from src.retrieval.views import prompt_view
 
 PROMPT_VERSION = "icl-v1"

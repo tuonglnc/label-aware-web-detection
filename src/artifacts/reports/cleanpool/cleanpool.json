@@ -1,0 +1,108 @@
+{
+  "sets": {
+    "test_fresh": {
+      "n": 300,
+      "B": 0.8329399516038559,
+      "cleanpool": 0.8406992423328911,
+      "bootstrap": {
+        "observed_diff": 0.00775929072903514,
+        "ci95": [
+          -0.010965628736689714,
+          0.026580570108194368
+        ],
+        "p_diff_le_0": 0.2095,
+        "n_resamples": 2000,
+        "unit": "query"
+      },
+      "mcnemar": {
+        "a_only_correct": 5,
+        "b_only_correct": 3,
+        "p_value": 0.7265625
+      },
+      "attack_pred_normal": {
+        "B": 13,
+        "cleanpool": 12
+      },
+      "eval_without_suspicious_normal": {
+        "n": 284,
+        "B": 0.8720030210782016,
+        "cleanpool": 0.8809534332342494
+      },
+      "changed_demos": {
+        "n": 54,
+        "fixed": 2,
+        "broken": 2
+      },
+      "same_demos": {
+        "n": 246,
+        "fixed": 3,
+        "broken": 1,
+        "answer_changed": 7
+      }
+    },
+    "test 301-600": {
+      "n": 300,
+      "B": 0.8693883880332605,
+      "cleanpool": 0.8835447585565324,
+      "bootstrap": {
+        "observed_diff": 0.0141563705232719,
+        "ci95": [
+          -0.0027272281283922117,
+          0.033573723837673874
+        ],
+        "p_diff_le_0": 0.0575,
+        "n_resamples": 2000,
+        "unit": "query"
+      },
+      "mcnemar": {
+        "a_only_correct": 6,
+        "b_only_correct": 2,
+        "p_value": 0.2890625
+      },
+      "attack_pred_normal": {
+        "B": 12,
+        "cleanpool": 11
+      },
+      "eval_without_suspicious_normal": {
+        "n": 286,
+        "B": 0.9099278183635197,
+        "cleanpool": 0.9211867880915405
+      },
+      "changed_demos": {
+        "n": 56,
+        "fixed": 3,
+        "broken": 2
+      },
+      "same_demos": {
+        "n": 244,
+        "fixed": 3,
+        "broken": 0,
+        "answer_changed": 3
+      }
+    }
+  },
+  "pooled": {
+    "n": 600,
+    "B": 0.8516922743021816,
+    "cleanpool": 0.8626075817250539,
+    "bootstrap": {
+      "observed_diff": 0.010915307422872278,
+      "ci95": [
+        -0.0016656050427311664,
+        0.025147213906525745
+      ],
+      "p_diff_le_0": 0.0395,
+      "n_resamples": 2000,
+      "unit": "query"
+    },
+    "mcnemar": {
+      "a_only_correct": 11,
+      "b_only_correct": 5,
+      "p_value": 0.210113525390625
+    },
+    "attack_pred_normal": {
+      "B": 25,
+      "cleanpool": 23
+    }
+  }
+}

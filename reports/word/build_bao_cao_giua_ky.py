@@ -5,7 +5,7 @@ Chạy từ thư mục gốc repo (cần python-docx, lxml, matplotlib và Micro
 
     python reports/word/make_figures.py
     python reports/word/build_bao_cao_giua_ky.py
-    python reports/word/export_word.py reports/progress/Bao_cao_giua_ky_LabelAware.docx   # cập nhật mục lục + xuất PDF
+    python reports/word/export_word.py reports/midterm/Bao_cao_giua_ky_LabelAware.docx   # cập nhật mục lục + xuất PDF
 """
 from pathlib import Path
 import copy
@@ -26,7 +26,7 @@ from src.retrieval.knn import knn_vote  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 WORD = ROOT / "reports" / "word"
 BASE = WORD / "tpl" / "base.docx"
-OUT_DOC = ROOT / "reports" / "progress" / "Bao_cao_giua_ky_LabelAware.docx"
+OUT_DOC = ROOT / "reports" / "midterm" / "Bao_cao_giua_ky_LabelAware.docx"
 ART = ROOT / "src" / "artifacts"
 RET = ART / "retrieval" / "minilm"
 
@@ -261,7 +261,7 @@ p(f"<<fig:pair>> là một cặp request thật trong SR-BH 2020: giống hệt 
   f"chỉ khác chuỗi [code]+AND+1%3D1[/code] trong tham số. Độ tương đồng ký tự của toàn request là "
   f"{pct(PAIR['request_text_similarity'], 2)}, nhưng một request mang nhãn Normal, request kia là SQL Injection. "
   "Nếu ví dụ giống nhất lại mang nhãn khác, LLM có thể bị dẫn sai. Đây là động cơ của đề tài.")
-figure("pair", ROOT / "reports/surveys/figures/sr_bh_motivating_pair.png",
+figure("pair", ROOT / "reports/dataset/figures/sr_bh_motivating_pair.png",
        "Cặp request Normal và SQL Injection gần giống hệt nhau trong SR-BH 2020", 15.5)
 R.h2("Mục tiêu và câu hỏi nghiên cứu")
 p("Đề tài kiểm chứng việc dùng thông tin nhãn khi chọn ví dụ có giúp LLM phân loại tốt hơn so với chỉ chọn theo "
@@ -351,7 +351,7 @@ p(f"File gồm {n(C['total_rows'])} bản ghi và 38 cột: 5 cột metadata, 15
   f"nhãn (Normal và 13 lớp CAPEC). Dữ liệu mất cân bằng nặng: Normal có {n(raw['000 - Normal'])} bản ghi, SQL "
   f"Injection {n(raw['66 - SQL Injection'])}, trong khi lớp nhỏ nhất chỉ có {n(min(raw.values()))} bản ghi "
   "(<<fig:dist>>). Khoảng 97% bản ghi không có body.")
-figure("dist", ROOT / "reports/surveys/figures/sr_bh_class_distribution.png",
+figure("dist", ROOT / "reports/dataset/figures/sr_bh_class_distribution.png",
        "Phân bố 14 nhãn gốc của SR-BH 2020 trên trục logarit", 14.5)
 R.h2("Tiền xử lý")
 p("Đầu vào của mô hình là chuỗi request_text: một JSON gồm method, URI, protocol, 11 header và body. Payload được "
@@ -696,9 +696,9 @@ table("members", "Phân công và mức độ hoàn thành",
       [["", "", "Dữ liệu, truy hồi, kNN, reranker C", "", ""],
        ["", "", "API LLM, chạy pipeline, chỉ số, thống kê", "", ""]], [3.5, 2.5, 5, 2.25, 2.25], 11)
 R.h1("PHỤ LỤC B. LỆNH TÁI LẬP", numbered=False)
-p("Chạy từ thư mục gốc của repository. Hướng dẫn đầy đủ nằm ở reports/protocol/huong_dan_doc_va_chay_code.md.",
+p("Chạy từ thư mục gốc của repository. Hướng dẫn đầy đủ nằm ở reports/guides/huong_dan_doc_va_chay_code.md.",
   indent=False)
-R.code("pip install -r src/requirements-experiments.txt\n"
+R.code("pip install -r requirements.txt\n"
        "python -m unittest discover -s src/tests\n"
        "python -m src.preprocessing.prepare --config src/configs/data.json\n"
        "python -m src.experiments.build_retrieval --output src/artifacts/retrieval/minilm\n"

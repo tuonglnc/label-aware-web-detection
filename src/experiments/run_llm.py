@@ -24,6 +24,8 @@ Quy tắc an toàn:
   `oracle_analysis` và chỉ dùng để phân tích mức trần.
 - Split `test` chỉ chạy được khi thêm `--allow-test`. Hãy khóa cấu hình trên
   validation trước khi dùng cờ này.
+- `--offset M --limit N` chạy các query thứ M+1 … M+N của split (ví dụ nửa sau
+  của test: `--offset 300 --limit 300`); offset được ghi vào manifest.
 - Đổi config, model, dữ liệu hoặc code thì phải dùng thư mục output mới
   (runner sẽ từ chối nếu manifest không khớp).
 """
@@ -36,20 +38,25 @@ from pathlib import Path
 import platform
 import time
 
+from src.analysis.label_noise import suspicious_rules
 from src.analysis.metrics import classification_metrics, label_consistency_rate
 from src.common.budget import BudgetExceeded, SpendLedger
 from src.common.locking import directory_lock
-from src.pipeline_a0 import core
-from src.retrieval.knn import knn_vote
-from src.retrieval.selectors import class_balanced, fixed_examples, label_aware_rerank, semantic_top_k
+from src.llm import client as core
+from src.retrieval.knn import knn_vote, vote_share
+from src.retrieval.pool_aux import AUX_FILE, PoolSpace, load_aux
+from src.retrieval.selectors import (class_balanced, drop_flagged, fixed_examples, gated_label_aware_rerank,
+                                     label_aware_rerank, label_term_rerank, mmr_select, semantic_top_k)
 
 from .data_io import LABELS, ROOT, file_sha256, load_jsonl, load_split, sha256_of, split_path, write_json
 from .prompting import PROMPT_VERSION, SYSTEM, DemoMajorityMock, build_messages, parse_label
 
 PIPELINES = ("A0", "A1", "B", "BAL", "C")
 PRIOR_SOURCES = ("llm", "knn", "oracle")
+SELECTORS = ("mmr", "cll")
+POOL_FILTERS = ("enn", "noise_rule")
 CODE_FILES = ("src/experiments/run_llm.py", "src/experiments/prompting.py", "src/retrieval/selectors.py",
-              "src/retrieval/knn.py", "src/retrieval/views.py", "src/pipeline_a0/core.py")
+              "src/retrieval/knn.py", "src/retrieval/views.py", "src/llm/client.py", "src/retrieval/pool_aux.py")
 
 
 # ----------------------------------------------------------------------------
@@ -80,6 +87,29 @@ def load_experiment(path):
         if config["prior_source"] == "llm" and not config.get("prior_run"):
             raise ValueError("prior_run (an A0 run directory) is required when prior_source = llm")
         config.setdefault("prior_knn_k", 5)
+        # C-gated: chỉ rerank khi độ tự tin của prior kNN >= ngưỡng (không đặt mặc định,
+        # để cấu hình C cũ giữ nguyên run_key).
+        if "prior_min_share" in config:
+            if config["prior_source"] != "knn":
+                raise ValueError("prior_min_share needs prior_source = knn")
+            share = config["prior_min_share"]
+            if not isinstance(share, (int, float)) or not 0 < share <= 1:
+                raise ValueError("prior_min_share must be a number in (0, 1]")
+    elif "prior_min_share" in config:
+        raise ValueError("prior_min_share is only for pipeline C")
+    # Các cách chọn cải tiến (chỉ có khi đặt trong cấu hình, để run_key của cấu hình cũ không đổi).
+    if "selector" in config:
+        if config["pipeline"] != "B" or config["selector"] not in SELECTORS:
+            raise ValueError(f"selector must be one of {SELECTORS} and only for pipeline B")
+        if config["selector"] == "mmr" and not (isinstance(config.get("mmr_lambda"), (int, float))
+                                                and 0 < config["mmr_lambda"] <= 1):
+            raise ValueError("mmr_lambda must be a number in (0, 1]")
+        if config["selector"] == "cll" and not (isinstance(config.get("cll_w1"), (int, float))
+                                                and config["cll_w1"] >= 0):
+            raise ValueError("cll_w1 must be a non-negative number")
+    if "pool_filter" in config:
+        if config["pipeline"] not in ("B", "BAL", "C") or config["pool_filter"] not in POOL_FILTERS:
+            raise ValueError(f"pool_filter must be one of {POOL_FILTERS} and only for B/BAL/C")
     return config
 
 
@@ -125,8 +155,10 @@ def load_llm_prior(run_dir):
     if not run_dir.is_absolute():
         run_dir = ROOT / run_dir
     manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
-    if manifest["experiment"]["pipeline"] != "A0":
-        raise ValueError("prior_run must be an A0 run")
+    # A0 (zero-shot) hoặc B: prior lấy từ câu trả lời của B là vòng lặp kiểu IDS
+    # (Qin và cộng sự, Findings of EMNLP 2024): dùng dự đoán vòng trước để chọn ví dụ vòng sau.
+    if manifest["experiment"]["pipeline"] not in ("A0", "B"):
+        raise ValueError("prior_run must be an A0 or B run")
     priors, usage = {}, {}
     for rec in load_jsonl(run_dir / "predictions.jsonl"):
         priors[rec["request_id"]] = rec["predicted_label"] if rec["status"] == "ok" else None
@@ -139,12 +171,20 @@ def load_llm_prior(run_dir):
 # ----------------------------------------------------------------------------
 
 def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=False, client=None,
-                   data_dir=None, sleep_seconds=0.0, retry_errors=False, budget=None):
-    """`budget`: một SpendLedger (chốt ngân sách) hoặc None. Chỉ áp dụng khi gọi API thật."""
-    if split == "test" and not allow_test:
+                   data_dir=None, sleep_seconds=0.0, retry_errors=False, budget=None, offset=0):
+    """`budget`: một SpendLedger (chốt ngân sách) hoặc None. Chỉ áp dụng khi gọi API thật.
+
+    `offset`: bỏ qua `offset` query đầu của split rồi mới áp dụng `limit`.
+    """
+    if split.startswith("test") and not allow_test:
         raise ValueError("test split is locked; pass allow_test=True only after freezing the configuration")
+    if not isinstance(offset, int) or offset < 0:
+        raise ValueError("offset must be a non-negative integer")
     kwargs = {} if data_dir is None else {"data_dir": data_dir}
     queries = load_split(split, **kwargs)
+    if offset >= len(queries):
+        raise ValueError(f"offset {offset} leaves no queries in split {split}")
+    queries = queries[offset:]
     if limit is not None:
         queries = queries[:limit]
     # Tách nhãn ra khỏi dữ liệu query ngay từ đầu: phần chọn ví dụ/prompt chỉ thấy `public`.
@@ -167,8 +207,23 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
         missing = [q["request_id"] for q in public if q["request_id"] not in neighbors]
         if missing:
             raise ValueError(f"{len(missing)} queries have no neighbors; rebuild retrieval for split {split}")
+        if "selector" in experiment or "pool_filter" in experiment:
+            aux = load_aux(rdir)
+            retrieval_manifest["pool_aux_sha256"] = file_sha256(rdir / AUX_FILE)
+            flagged = set()
+            if experiment.get("pool_filter") == "enn":
+                flagged = set(aux["enn"]["flagged"])
+            elif experiment.get("pool_filter") == "noise_rule":
+                # Bỏ ví dụ pool mang nhãn NORMAL nhưng chứa payload tấn công rõ ràng
+                # (quy tắc cố định ở src/analysis/label_noise.py, chỉ nhìn nội dung request).
+                flagged = {rid for rid, row in pool.items()
+                           if row["label"] == "NORMAL" and suspicious_rules(row["request_text"])}
+                retrieval_manifest["pool_filter_removed"] = len(flagged)
+            space = PoolSpace.load(rdir) if experiment.get("selector") == "mmr" else None
+            # Bỏ ví dụ nghi nhiễu nhãn TRƯỚC khi cắt top-N, để mọi pipeline vẫn có đủ N ứng viên.
+            neighbors = {qid: drop_flagged(cands, flagged) for qid, cands in neighbors.items()}
 
-    priors, prior_usage, prior_info = {}, {}, None
+    priors, prior_usage, prior_info, confidences = {}, {}, None, {}
     experiment_kind = "mock" if llm["backend"] == "mock_demo_majority" else "llm"
     if pipeline == "C":
         source = experiment["prior_source"]
@@ -179,8 +234,10 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
             if absent:
                 raise ValueError(f"A0 prior run lacks {len(absent)} queries of this split")
         elif source == "knn":
-            priors = {q["request_id"]: knn_vote(neighbors[q["request_id"]][:experiment["n_candidates"]],
-                                                experiment["prior_knn_k"])[0] for q in public}
+            votes = {q["request_id"]: knn_vote(neighbors[q["request_id"]][:experiment["n_candidates"]],
+                                               experiment["prior_knn_k"]) for q in public}
+            priors = {qid: winner for qid, (winner, _) in votes.items()}
+            confidences = {qid: vote_share(scores, winner) for qid, (winner, scores) in votes.items()}
         else:  # oracle: chỉ để phân tích mức trần, KHÔNG phải phương pháp
             priors = dict(truth)
             experiment_kind += "_oracle_analysis"
@@ -197,9 +254,16 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
             return fixed
         cands = neighbors[query_id][:experiment["n_candidates"]]
         if pipeline == "B":
+            if experiment.get("selector") == "mmr":
+                return mmr_select(cands, experiment["k"], space.pair_similarity, experiment["mmr_lambda"])
+            if experiment.get("selector") == "cll":
+                return label_term_rerank(cands, experiment["k"], aux["cll"]["term"], experiment["cll_w1"])
             return semantic_top_k(cands, experiment["k"])
         if pipeline == "BAL":
             return class_balanced(cands, experiment["k"])
+        if "prior_min_share" in experiment:
+            return gated_label_aware_rerank(cands, experiment["k"], priors.get(query_id), experiment["lambda"],
+                                            confidences.get(query_id), experiment["prior_min_share"])
         return label_aware_rerank(cands, experiment["k"], priors.get(query_id), experiment["lambda"])
 
     llm_public = {k: v for k, v in llm.items() if k != "mock_responses"}
@@ -214,6 +278,9 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
         "code_sha256": {f: hashlib.sha256((ROOT / f).read_bytes()).hexdigest() for f in CODE_FILES},
         "python": platform.python_version(),
     }
+    if offset:
+        # Chỉ ghi khi khác 0, để manifest của các run cũ (không có offset) vẫn khớp khi chạy lại.
+        manifest["offset"] = offset
     manifest = json.loads(json.dumps(manifest))
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -268,6 +335,10 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
                           "prior": priors.get(qid) if pipeline == "C" else None,
                           "predicted_label": None, "status": "input_error", "error": None,
                           "raw_output": None, "usage": None, "attempts": 0}
+                if "prior_min_share" in experiment:
+                    record["prior_confidence"] = confidences.get(qid)
+                    record["gated_in"] = (confidences.get(qid) is not None
+                                          and confidences[qid] >= experiment["prior_min_share"])
                 started = time.perf_counter()
                 if len(query["request_text"]) > llm.get("max_request_chars", 32768):
                     record["error"] = "request_too_long; no truncation"
@@ -308,6 +379,10 @@ def run_experiment(experiment, llm, split, output_dir, limit=None, allow_test=Fa
         metrics = summarize(records, [truth[q["request_id"]] for q in finished], prior_usage)
         metrics.update(experiment_kind=experiment_kind, run_key=run_key, pipeline=pipeline, split=split,
                        complete=len(finished) == len(public), n_selected=len(public))
+        if offset:
+            metrics["offset"] = offset
+        if "prior_min_share" in experiment:
+            metrics["gated_in_rate"] = sum(bool(r.get("gated_in")) for r in records) / len(records) if records else None
         write_json(output_dir / "metrics.json", metrics)
         result = {"selected": len(public), "resumed": resumed, "processed_now": len(finished) - resumed,
                   "macro_f1": metrics["macro_f1"], "coverage": metrics["coverage"],
@@ -349,9 +424,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--config", required=True, help="file cấu hình thực nghiệm (pipeline, k, λ, …)")
     parser.add_argument("--llm", required=True, help="file cấu hình LLM (mock hoặc chat_completions)")
-    parser.add_argument("--split", default="development", choices=["development", "validation", "test"])
+    parser.add_argument("--split", default="development", choices=["development", "validation", "test", "test_fresh"])
     parser.add_argument("--output", required=True)
     parser.add_argument("--limit", type=int, help="chỉ chạy N query đầu (để thử nhanh)")
+    parser.add_argument("--offset", type=int, default=0,
+                        help="bỏ qua M query đầu rồi mới lấy --limit (nửa sau test: --offset 300 --limit 300)")
     parser.add_argument("--env-file", help="file .env chứa A0_API_KEY, A0_BASE_URL, A0_MODEL")
     parser.add_argument("--sleep", type=float, default=0.0, help="nghỉ giữa hai lần gọi (giây)")
     parser.add_argument("--allow-test", action="store_true", help="CHỈ dùng sau khi đã khóa cấu hình")
@@ -363,7 +440,7 @@ def main():
     try:
         result = run_experiment(load_experiment(args.config), load_llm(args.llm), args.split, args.output,
                                 args.limit, args.allow_test, sleep_seconds=args.sleep,
-                                retry_errors=args.retry_errors,
+                                retry_errors=args.retry_errors, offset=args.offset,
                                 budget=SpendLedger.from_config(args.budget, ROOT) if args.budget else None)
     except (ValueError, OSError, KeyError) as exc:
         # Không in nội dung lỗi của provider để tránh lộ thông tin nhạy cảm.

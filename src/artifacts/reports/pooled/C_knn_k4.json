@@ -1,0 +1,59 @@
+{
+  "method": "C_knn_k4",
+  "reference": "B_k4",
+  "n": 900,
+  "per_set": [
+    {
+      "set": "test:src/artifacts/runs/test",
+      "n": 300,
+      "method": 0.8615975762668437,
+      "reference": 0.881053447949228,
+      "mcnemar": {
+        "a_only_correct": 7,
+        "b_only_correct": 13,
+        "p_value": 0.26317596435546875
+      }
+    },
+    {
+      "set": "test:src/artifacts/runs/test_301_600",
+      "n": 300,
+      "method": 0.8734308466279996,
+      "reference": 0.8693883880332605,
+      "mcnemar": {
+        "a_only_correct": 5,
+        "b_only_correct": 4,
+        "p_value": 1.0
+      }
+    },
+    {
+      "set": "test_fresh:src/artifacts/runs/test_fresh",
+      "n": 300,
+      "method": 0.8543498368557548,
+      "reference": 0.8329399516038559,
+      "mcnemar": {
+        "a_only_correct": 8,
+        "b_only_correct": 2,
+        "p_value": 0.109375
+      }
+    }
+  ],
+  "pooled": {
+    "method": 0.8631330596353869,
+    "reference": 0.8612397195398823,
+    "bootstrap": {
+      "observed_diff": 0.0018933400955045698,
+      "ci95": [
+        -0.01193725388311917,
+        0.0155862786228681
+      ],
+      "p_diff_le_0": 0.4085,
+      "n_resamples": 2000,
+      "unit": "query"
+    },
+    "mcnemar": {
+      "a_only_correct": 20,
+      "b_only_correct": 19,
+      "p_value": 1.0
+    }
+  }
+}

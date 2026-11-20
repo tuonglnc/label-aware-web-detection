@@ -208,14 +208,14 @@ MPLCONFIGDIR=/tmp/csic-mpl python3 -m src.preprocessing.csic_report
 python3 -m unittest discover -s src/tests -v
 ```
 
-Lệnh tải và source URLs được lưu trong `src/configs/csic_2010_sources.json`. Khảo sát chỉ dùng Python standard library; hình xuất bằng matplotlib theo `src/requirements-survey.txt`. Raw text và checksums được giữ, ví dụ có offsets để kiểm lại từng byte.
+Lệnh tải và source URLs được lưu trong `src/configs/csic_2010_sources.json`. Khảo sát chỉ dùng Python standard library; hình xuất bằng matplotlib theo `requirements.txt`. Raw text và checksums được giữ, ví dụ có offsets để kiểm lại từng byte.
 """
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifacts", default="src/artifacts/data/csic_2010")
-    parser.add_argument("--report", default="reports/surveys/khao_sat_csic_2010.md")
+    parser.add_argument("--report", default="reports/dataset/khao_sat_csic_2010.md")
     args = parser.parse_args()
     root = Path(args.artifacts)
     summary, examples, pair = [json.loads((root / name).read_text(encoding="utf-8")) for name in ("summary.json", "examples.json", "motivating_pair.json")]
