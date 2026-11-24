@@ -8,6 +8,7 @@ bổ sung Chương 3 (công trình liên quan, C-gated), viết mới Chương 4
 Chương 5 (kết luận) và danh mục tài liệu tham khảo. Mọi con số lấy từ src/artifacts/.
 """
 import copy
+import os
 from pathlib import Path
 
 from docx.enum.table import WD_TABLE_ALIGNMENT
@@ -20,7 +21,10 @@ from report_lib import Report, set_text
 ROOT = Path(__file__).resolve().parents[2]
 WORD = ROOT / "reports/word"
 BASE = WORD / "tpl" / "giua_ky_ban_sua.docx"
-OUT = ROOT / "reports" / "final" / "Bao_cao_cuoi_ky_LabelAware.docx"
+# Bản báo cáo đúng format không có các ô "Nói ngắn gọn" / "Điều rút ra". Đặt KEEP_BOXES=1 để dựng
+# bản giữ các ô này, lưu ở reports/final/TEMP/ (chỉ để tham khảo, không nộp).
+KEEP_BOXES = os.environ.get("KEEP_BOXES") == "1"
+OUT = ROOT / "reports" / "final" / ("TEMP" if KEEP_BOXES else "") / "Bao_cao_cuoi_ky_LabelAware.docx"
 FIG = WORD / "figures"
 ART = ROOT / "src/artifacts"
 
@@ -41,7 +45,9 @@ class FinalReport(Report):
         return par
 
     def box(self, text, title="Nói ngắn gọn"):
-        """Ô nền nhạt tóm tắt ý chính cho người đọc không chuyên."""
+        """Ô nền nhạt tóm tắt ý chính cho người đọc không chuyên (bỏ qua khi KEEP_BOXES không bật)."""
+        if not KEEP_BOXES:
+            return
         table = self.doc.add_table(rows=1, cols=1)
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
         self._borders(table, color="9DC3E6")
@@ -140,7 +146,7 @@ TOM_TAT = [
     "Đóng góp của đề tài: (1) bằng chứng rằng ví dụ phải giống yêu cầu mới có ích, kèm số đo hiện tượng “giống nhưng khác "
     "nhãn” (khoảng 24% yêu cầu); (2) chỉ ra nút thắt của cách chọn ví dụ theo nhãn là chất lượng nhãn dự đoán, bổ sung "
     "bằng chứng cho tranh luận về vai trò của nhãn trong ICL; (3) một quy trình đánh giá tái lập được, có đo độ dao động "
-    "của chính LLM (khoảng 0,01 Macro-F1 giữa hai lần chạy cùng câu lệnh). Toàn bộ chi phí API khoảng 1,5 USD.",
+    "của chính LLM (khoảng 0,01 Macro-F1 giữa hai lần chạy cùng câu lệnh). Toàn bộ chi phí API khoảng 1,5–1,7 USD.",
 ]
 ABSTRACT = [
     "Web servers receive large volumes of HTTP requests, some of which carry attack payloads. A large language model (LLM) "
@@ -157,7 +163,7 @@ ABSTRACT = [
     "Contributions: evidence that demonstrations must resemble the query, with a measured rate of similar-but-differently-"
     "labelled neighbours (about 24%); evidence that the bottleneck of label-aware selection is prior quality; and a "
     "reproducible evaluation protocol that also measures the LLM's own run-to-run variation (about 0.01 macro-F1). Total "
-    "API cost was about 1.5 USD.",
+    "API cost was about 1.5-1.7 USD.",
 ]
 for heading, paragraphs in (("TÓM TẮT", TOM_TAT), ("ABSTRACT", ABSTRACT)):
     i = find(body, heading)
@@ -236,7 +242,15 @@ from chapter5 import write_chapter5, write_references  # noqa: E402
 
 write_chapter4(rep, FIG, ART)
 write_chapter5(rep)
-write_references(rep)
+
+from chapter5 import REFERENCES  # noqa: E402
+from citations import convert_citations  # noqa: E402
+
+order, unused, leftover = convert_citations(rep.doc, REFERENCES)
+print("references cited:", len(order), "| not cited:", [REFERENCES[i][:40] for i in unused])
+if leftover:
+    print("WARNING author-year left over:", leftover)
+write_references(rep, order, unused)
 
 missing = rep.resolve_refs()
 if missing:
