@@ -200,20 +200,46 @@ Quan sát: Normal và OS Command Injection là hai lớp thấp nhất ở mọi
 
 ---
 
-## Việc cần làm sau khi sửa dàn ý này
+## Việc cần làm sau khi sửa dàn ý này (cập nhật 22/11/2026)
 
-- [ ] Trong file Word, thêm 1–2 câu đầu mỗi mục 4.3–4.8: "Mục này trả lời RQx".
-- [ ] Mỗi bảng/hình có một câu đọc kết quả ngay bên dưới (không để bảng đứng một mình).
-- [ ] Tách rõ hai đoạn trong mỗi mục: kết quả, rồi diễn giải.
-- [ ] Rà lại từ ngữ: không dùng "tốt hơn" khi p không có ý nghĩa.
-- [ ] Đối chiếu RQ ở Chương 1, 4 và 5 (cùng nội dung, cùng thứ tự). Dùng đúng ba RQ ở khung trên.
-- [ ] Bổ sung BAL, FPR Normal, coverage, LCR@4, token vào Bảng 4.3; thêm bảng F1 theo lớp.
-- [ ] Bỏ chữ "trần" cho C-oracle trong file Word.
+- [x] Thêm câu "Mục này trả lời RQx" đầu mỗi mục 4.3–4.8 (trong `reports/word/chapter4.py`).
+- [x] Mỗi bảng/hình có một câu đọc kết quả ngay bên dưới.
+- [x] Tách hai đoạn kết quả và diễn giải ở các mục có kết luận (4.4, 4.5, 4.7, 4.8).
+- [x] Rà từ ngữ: không dùng "tốt hơn" khi p không có ý nghĩa.
+- [x] Bổ sung BAL, FPR Normal, coverage, LCR@4, token vào Bảng 4.3; thêm bảng F1 theo lớp (Bảng 4.6).
+- [x] Bỏ chữ "trần" cho C-oracle.
+- [x] Thêm thí nghiệm B-cleanpool vào mục 4.8 (Bảng 4.12).
+- [x] Viết lại giọng văn Chương 4–5 theo báo cáo mẫu `Baocao.docx`; bỏ các ô "Nói ngắn gọn", "Điều rút ra" khỏi bản chính (bản có ô nằm ở `reports/final/TEMP/`).
+- [x] Danh mục tài liệu tham khảo đổi sang kiểu `[n]` theo thứ tự trích dẫn đầu tiên, như báo cáo mẫu (script `reports/word/citations.py`, hiện 30 mục).
+- [ ] Đối chiếu RQ ở Chương 1, 4 và 5: Chương 4–5 đã dùng đúng ba RQ ở mục 1.2.4 của `Katun.md`. Còn lại là đối chiếu lần cuối khi Chương 1–2 mới của Katun vào Word.
+- [ ] Rà thủ công 36 yêu cầu Normal đáng ngờ (Tiến): xem `reports/experiments/ra_soat/huong_dan_ra_soat_36.md`. Xong thì sửa câu "chưa được chuyên gia bảo mật xác nhận" ở mục 4.8 và 5.2.
+- [ ] Chờ Katun xử lý các điểm bên dưới.
 
-## Việc cần báo Katun (lệch giữa Chương 1–2 và Chương 4)
+## Việc cần báo Katun (lệch giữa Chương 1–2 và Chương 4–5, cập nhật 22/11/2026)
 
-1. **Công thức reranking:** mục 2.4.1 ghi "Công thức ở mục 1.2.5" nhưng Chương 1 không có mục 1.2.5. Cần thêm công thức vào Chương 3 và sửa tham chiếu.
-2. **Phần mở rộng chưa được báo trước:** Chương 4 có C-gated, 6 phương pháp đã công bố, kiểm tra gpt-oss-120b, test mới, gộp các tập test và phân tích nhãn nhiễu. Mục tiêu 1.2.3, đóng góp 1.3.2 và cấu trúc báo cáo 1.4 chưa nhắc. Nên thêm 1–2 dòng (ví dụ ở 1.4 hoặc Chương 3) rằng đây là các kiểm chứng bổ sung cho RQ2 và RQ3.
-3. **Holm:** mục 2.5.4 chỉ nêu bootstrap và McNemar, thiếu hiệu chỉnh Holm.
-4. **Đường dẫn tài liệu [20]:** ghi `reports/protocol/cau_hinh_khoa.md` nhưng thư mục đó đang trống; file thật là `reports/experiments/cau_hinh_khoa.md`. Dàn ý Chương 4 dùng đường dẫn thật.
-5. **Tên Chương 3:** Katun ghi "Thiết kế hệ thống và Phương pháp nghiên cứu", bản Word hiện là "Mô hình đề xuất". Tên Chương 4: "Thực nghiệm và Đánh giá" so với "Thực nghiệm" trong Word. Cần thống nhất.
+Bối cảnh: bản Word cuối kỳ hiện vẫn dùng Chương 1–2 cũ của bản giữa kỳ (Chương 1 có 2 mục, Chương 2 có 3 mục). Chương 1–2 mới trong `Katun.md` chưa vào Word. Vì vậy các điểm dưới đây vừa cần sửa trong `Katun.md`, vừa là việc phải làm khi đưa vào Word.
+
+### A. Cần sửa trong `Katun.md`
+
+1. **Công thức reranking:** dòng 237 (mục 2.4) ghi "Công thức ở mục 1.2.5", nhưng Chương 1 chỉ có 1.2.1 đến 1.2.4. Đề nghị đặt công thức vào Chương 3 (phần mô tả reranking) và đổi tham chiếu thành mục đó.
+2. **Phần mở rộng chưa được báo trước:** Chương 4 có C-gated, sáu phương pháp chọn ví dụ đã công bố, kiểm tra với gpt-oss-120b, tập test mới và gộp các tập test, phân tích nhãn nhiễu Normal và thử bỏ ví dụ sai nhãn khỏi kho (B-cleanpool). Mục 1.2.3, 1.3.2 và 1.4 chưa nhắc. Đề xuất thêm một đoạn ở 1.3.2 hoặc 1.4:
+   > "Ngoài các cấu hình chính, sau giữa kỳ đề tài bổ sung một số kiểm chứng: cải tiến C-gated, thử sáu cách chọn ví dụ đã công bố, kiểm tra với một mô hình lớn hơn, đánh giá trên tập test mới và gộp các tập test, và phân tích nhãn nhiễu ở lớp Normal. Các kiểm chứng này bổ sung bằng chứng cho RQ2 và RQ3, không thêm câu hỏi nghiên cứu mới."
+3. **Holm:** mục 2.5.4 (dòng 292) chỉ nêu bootstrap và McNemar, thiếu hiệu chỉnh Holm mà Chương 4 dùng. Đề xuất thêm một câu: "Khi một cấu hình được so với nhiều cấu hình khác trên cùng một chỉ số, giá trị p được hiệu chỉnh theo phương pháp Holm [Holm, 1979] để hạn chế kết quả có ý nghĩa chỉ do so sánh nhiều lần."
+4. **Đường dẫn tài liệu [20]** (dòng 346) ghi `../reports/protocol/cau_hinh_khoa.md`. Thư mục `reports/protocol/` không còn; tệp thật là `reports/experiments/cau_hinh_khoa.md`.
+5. **Chỉ số nêu ở Chương 1 nhưng Chương 4 chưa có đủ:** 1.3.2 và 1.4 nêu "precision, recall, F1 theo lớp" và "độ trễ". Chương 4 hiện có F1 theo lớp (Bảng 4.6) và chỉ một câu về thời gian trả lời trung vị ở mục 4.9. Hai cách xử lý: Tiến bổ sung precision, recall theo lớp và bảng độ trễ (nếu có dữ liệu trong `src/artifacts/`), hoặc Katun bỏ các chữ này khỏi 1.3.2 và 1.4. Tiến sẽ kiểm tra dữ liệu rồi báo lại.
+
+### B. Cần thống nhất giữa Chương 1–2 và Chương 4–5
+
+6. **Tên chương.** `Katun.md` mục 1.4 ghi Chương 1 "Giới thiệu Tổng quan đề tài", Chương 3 "Thiết kế hệ thống và Phương pháp nghiên cứu", Chương 4 "Thực nghiệm và Đánh giá". Bản Word và báo cáo mẫu dùng "Mở đầu và tổng quan đề tài" (mẫu: "Tổng quan đề tài"), "Mô hình đề xuất", "Thực nghiệm". Đề xuất giữ tên trong Word (khớp báo cáo mẫu) và sửa lại mục 1.4 của `Katun.md`.
+7. **Thuật ngữ.** `Katun.md` dùng nhiều từ tiếng Anh, Chương 4–5 dùng tiếng Việt:
+
+   | `Katun.md` | Chương 4–5 |
+   | --- | --- |
+   | request, query | yêu cầu (HTTP), yêu cầu cần phân loại |
+   | demonstration | ví dụ (ví dụ minh họa) |
+   | prior | nhãn dự đoán (sơ bộ) |
+   | validation, test | giữ nguyên "validation", "test" như bản cũ |
+
+   Đề xuất: ở lần đầu ghi "ví dụ minh họa (demonstration)", "nhãn dự đoán sơ bộ (prior)", sau đó dùng tiếng Việt cả báo cáo, như báo cáo mẫu. Cần hai người đồng ý trước khi sửa hàng loạt.
+8. **Tài liệu tham khảo.** Bản Word giờ đánh số `[n]` theo thứ tự trích dẫn đầu tiên trong cả báo cáo (30 mục), nên số `[n]` trong `Katun.md` sẽ đổi khi vào Word. Chín tài liệu trong `Katun.md` chưa có trong danh mục Word: [8] Jiang và cộng sự, [9] Luo và cộng sự (Love Me, Love My Label), [10] Li và cộng sự (PhishDebate), [11] Luo và cộng sự (MalRAG), [12] Guo và cộng sự, [13] Fumero và cộng sự (CyberSleuth), [14] Osama và cộng sự (WAMM), [16] Lewis và cộng sự (RAG), [17] Lu và cộng sự (Fantastically Ordered Prompts). Katun cần gửi đủ thông tin (tác giả, năm, tên, nơi đăng, DOI hoặc URL) để Tiến thêm vào `reports/word/chapter5.py`. Ba mục "Nhóm đề tài" ([15], [19], [20]) cần quyết định có đưa vào danh mục chính thức hay chỉ nhắc trong bài.
+9. **Giọng văn.** Báo cáo mẫu viết đoạn liền, không in đậm giữa đoạn, hạn chế gạch đầu dòng; Chương 4–5 đã chỉnh theo. `Katun.md` đang dùng nhiều chữ in đậm đầu đoạn và danh sách đánh số, nên khi đưa vào Word cần chuyển thành đoạn văn.
