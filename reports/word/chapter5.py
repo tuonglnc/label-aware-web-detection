@@ -7,66 +7,81 @@ def write_chapter5(r):
           "dùng thêm nhãn chỉ có lợi khi nhãn dự đoán đủ chính xác; và mọi kết luận đều được kiểm chứng bằng quy trình "
           "khóa cấu hình trước, tập test độc lập và kiểm định thống kê.")
 
-    r.h2("Trả lời ba câu hỏi nghiên cứu")
-    r.p("[b]RQ1: Ví dụ giống nhất có hay khác nhãn không?[/b] Có. Khoảng 23–24% yêu cầu có ví dụ giống nhất mang nhãn "
-        "khác, lặp lại trên validation và hai tập test. Hiện tượng tập trung ở Normal (38–45%) và SQL Injection (36–40%), "
-        "hai lớp thường chỉ khác nhau vài ký tự trong URL.")
-    r.p("[b]RQ2: Xếp hạng lại theo nhãn dự đoán có giúp không, và tốn thêm bao nhiêu?[/b] Với nhãn dự đoán thực tế thì "
-        "không: C-kNN ngang B trên 900 yêu cầu gộp, C-LLM ngang B trên 600 yêu cầu và còn tốn thêm một lượt gọi LLM. Tỷ "
-        "lệ báo nhầm Normal cũng không cải thiện rõ. Cả sáu phương pháp chọn ví dụ đã công bố cũng không vượt B sau hiệu "
-        "chỉnh Holm.")
-    r.p("[b]RQ3: Nhãn dự đoán đúng và sai ảnh hưởng thế nào?[/b] Khi đúng, C sửa được lỗi của B; khi sai, C làm hỏng "
-        "nhiều câu B đang đúng (C-kNN trên test 1–300: hỏng 11, sửa 2). Khi nhãn dự đoán luôn đúng (C-oracle), C hơn B "
-        "có ý nghĩa thống kê (+0,026, p = 0,004 trên 600 yêu cầu). Như vậy giới hạn chính của cơ chế không nằm ở công "
-        "thức cộng điểm, mà ở độ chính xác của nhãn dự đoán (khoảng 75–81% với kNN).")
+    r.h2("Kết luận")
+    r.p("Đề tài trả lời một câu hỏi thực tế: khi nhờ LLM phân loại một yêu cầu HTTP (bình thường hay thuộc loại tấn công "
+        "nào), nên đưa cho LLM xem những ví dụ mẫu nào để nó đoán đúng nhất. Nhóm so sánh ba cách chọn ví dụ: chọn những "
+        "ví dụ giống yêu cầu nhất (B), chọn ví dụ đủ các loại (BAL), và chọn ví dụ giống nhất nhưng ưu tiên những ví dụ "
+        "cùng loại với một dự đoán sơ bộ (C). Cả ba chạy trên cùng bộ dữ liệu SR-BH 2020 và cùng một LLM. Kết luận dưới "
+        "đây chỉ đúng trong phạm vi bộ dữ liệu và cấu hình này.")
+    r.p("Câu hỏi nghiên cứu thứ nhất: ví dụ giống nhất có hay thuộc loại khác không? Có. Khoảng 1 trong 4 yêu cầu (23–24%) "
+        "có ví dụ giống nhất mang nhãn khác. Hiện tượng này hay gặp nhất ở Normal (38–45%) và SQL Injection (36–40%), vì hai "
+        "loại này nhiều khi chỉ khác nhau vài ký tự trong URL (mục 4.3).")
+    r.p("Câu hỏi nghiên cứu thứ hai: ưu tiên ví dụ theo dự đoán sơ bộ (C) có giúp LLM đoán đúng hơn B và BAL không? Chưa. Với "
+        "dự đoán sơ bộ lấy từ kNN hoặc từ LLM, C chỉ ngang B. Trên 900 yêu cầu gộp, hai bên gần như hòa (20 yêu cầu chỉ C "
+        "đúng, 19 yêu cầu chỉ B đúng). C-LLM còn tốn thêm một lượt gọi LLM cho mỗi yêu cầu, và tỷ lệ báo nhầm Normal cũng "
+        "không giảm (32% so với 30% ở B). Sáu phương pháp chọn ví dụ đã được công bố cũng không hơn B một cách đáng tin "
+        "(mục 4.6).")
+    r.p("Điều chắc chắn hơn là B tốt hơn hẳn việc không đưa ví dụ nào và việc đưa ví dụ cố định: trên 600 yêu cầu gộp, B cao "
+        "hơn 0,058 và 0,052 điểm Macro-F1 (p < 0,001). Kết quả này lặp lại trên bốn tập đánh giá và hai cỡ mô hình (mục "
+        "4.4, 4.5, 4.7). Nói cách khác, điều quan trọng nhất là ví dụ phải giống yêu cầu cần phân loại.")
+    r.p("Câu hỏi nghiên cứu thứ ba: dự đoán sơ bộ đúng hay sai thì ảnh hưởng thế nào? Khi dự đoán sơ bộ đúng, C sửa được một ít "
+        "lỗi của B. Khi dự đoán sơ bộ sai, C làm hỏng nhiều yêu cầu mà B vốn đoán đúng (trên tập test 1–300, C-kNN làm hỏng "
+        "11 yêu cầu và chỉ sửa được 2). Nếu giả sử dự đoán sơ bộ luôn đúng (C-oracle, chỉ là thí nghiệm phân tích vì ngoài "
+        "thực tế không biết trước đáp án), C hơn B rõ ràng: +0,026 Macro-F1, p = 0,004 trên 600 yêu cầu. Như vậy chỗ yếu của "
+        "C không phải công thức cộng điểm, mà là dự đoán sơ bộ của kNN chỉ đúng khoảng 75–81%. Lưu ý thêm: những yêu cầu mà "
+        "dự đoán sơ bộ sai có thể vốn đã khó đoán, nên chưa thể khẳng định dự đoán sai là nguyên nhân gây ra lỗi (mục 4.4, "
+        "4.7).")
 
     r.h2("Đóng góp của đề tài")
-    r.p("Các ý tưởng nền (truy xuất ví dụ theo độ giống, dùng nhãn dự đoán để chọn ví dụ, LLM không tất định) đã có "
-        "trong các nghiên cứu về văn bản. Theo khảo sát của nhóm, chưa có công trình nào so sánh có đối chứng các cách "
-        "chọn ví dụ này cho LLM phân loại yêu cầu HTTP. Đóng góp của đề tài là kiểm chứng chúng trong miền mới này:")
-    r.bullets([
-        "[b]Bằng chứng thực nghiệm rằng ví dụ phải giống yêu cầu mới có ích[/b]: B hơn không dùng ví dụ và ví dụ cố định "
-        "trên bốn tập đánh giá và hai cỡ model; kèm số đo hiện tượng “giống nhưng khác nhãn” trên dữ liệu HTTP thật. Ý "
-        "nghĩa thực tế: truy xuất theo độ giống nên là cấu hình mặc định khi dùng LLM phân loại yêu cầu mà không huấn "
-        "luyện.",
-        "[b]Chỉ ra khi nào thông tin nhãn giúp và khi nào gây hại[/b]: tách được hai trường hợp nhãn dự đoán thực tế (ngang "
-        "B) và nhãn dự đoán hoàn hảo (hơn B có ý nghĩa). Đây là bằng chứng bổ sung cho tranh luận về vai trò của nhãn "
-        "trong ICL (Min và cộng sự, 2022; Yoo và cộng sự, 2022), và cho thấy các phương pháp hiệu quả trên văn bản như "
-        "CLL-RetICL không tự động chuyển sang được dữ liệu HTTP.",
-        "[b]Một quy trình đánh giá tái lập được[/b] cho phân loại an ninh bằng LLM qua API: chia theo nhóm chống rò rỉ, "
-        "khóa cấu hình và giả thuyết trước mỗi lần chạy test, tập test độc lập, gộp nhiều tập, hiệu chỉnh nhiều phép so, "
-        "và đo độ dao động của chính LLM (khoảng 0,01 Macro-F1). Kèm theo là phát hiện nhãn nhiễu ở lớp Normal của "
-        "SR-BH 2020, một cảnh báo hữu ích cho người dùng bộ dữ liệu này.",
-    ])
-    r.p("Đề tài không đề xuất một mô hình mới và không khẳng định phương pháp label-aware tốt hơn truy xuất theo độ "
-        "giống. Kết quả âm tính có kiểm định vẫn có giá trị: nó cho người làm sau biết nên đầu tư vào đâu.")
+    r.p("Các ý tưởng nền gồm truy xuất ví dụ theo độ tương đồng, dùng nhãn dự đoán để chọn ví dụ và hiện tượng LLM không tất "
+        "định đã có trong các nghiên cứu về văn bản. Theo khảo sát của nhóm, chưa có công trình nào so sánh có đối chứng các "
+        "cách chọn ví dụ này cho LLM phân loại yêu cầu HTTP. Đóng góp của đề tài là kiểm chứng chúng trong miền mới này.")
+    r.p("Thứ nhất, đề tài cung cấp bằng chứng thực nghiệm rằng ví dụ cần giống yêu cầu cần phân loại: B cao hơn không dùng ví "
+        "dụ và ví dụ cố định trên bốn tập đánh giá và hai cỡ mô hình, kèm số đo hiện tượng “giống nhưng khác nhãn” trên dữ "
+        "liệu HTTP thực. Về thực tiễn, truy xuất theo độ tương đồng có thể là cấu hình mặc định khi dùng LLM phân loại yêu "
+        "cầu mà không huấn luyện.")
+    r.p("Thứ hai, đề tài chỉ ra khi nào thông tin nhãn có lợi và khi nào gây hại: tách được hai trường hợp là nhãn dự đoán thực "
+        "tế (ngang B) và nhãn dự đoán hoàn hảo (cao hơn B có ý nghĩa thống kê). Kết quả này bổ sung bằng chứng cho tranh luận "
+        "về vai trò của nhãn trong học trong ngữ cảnh (Min và cộng sự, 2022; Yoo và cộng sự, 2022) và cho thấy các phương pháp "
+        "hiệu quả trên văn bản như CLL-RetICL không tự động chuyển sang được dữ liệu HTTP.")
+    r.p("Thứ ba, đề tài xây dựng một quy trình đánh giá có thể tái lập cho phân loại an ninh bằng LLM qua API: chia dữ liệu "
+        "theo nhóm để chống rò rỉ, khóa cấu hình và giả thuyết trước mỗi lần chạy tập test, dùng tập test độc lập, "
+        "gộp nhiều tập, hiệu chỉnh khi so sánh nhiều phương án và đo độ dao động của chính LLM (khoảng 0,01 Macro-F1). Kèm "
+        "theo là phát hiện nhãn nhiễu ở lớp Normal của SR-BH 2020, một lưu ý cho những người sử dụng lại bộ dữ liệu này.")
+    r.p("Đề tài không đề xuất một mô hình mới và không khẳng định phương pháp dựa trên nhãn cao hơn truy xuất theo độ tương "
+        "đồng. Các kết quả âm tính có kiểm định vẫn có giá trị vì chỉ ra những hướng chưa mang lại cải thiện đáng tin trong "
+        "phạm vi đã khảo sát.")
 
     r.h2("Hạn chế")
-    r.bullets([
-        "[b]Một bộ dữ liệu[/b]: SR-BH 2020 với sáu lớp tấn công cổ điển, thu năm 2020. Chưa có các dạng tấn công mới "
-        "(Log4Shell, SSTI, SSRF, tấn công vào API JSON). Nhóm đã khảo sát CSIC 2010, ECML/PKDD 2007 và một số bộ mới hơn "
-        "nhưng chưa có bộ nào vừa mới, vừa là lưu lượng thật, vừa có nhãn theo loại tấn công và có lớp Normal.",
-        "[b]Tập đánh giá nhỏ[/b]: 200–300 yêu cầu mỗi tập, khoảng tin cậy rộng cỡ ±0,03, nên chỉ phân biệt được chênh "
-        "lệch lớn. Việc gộp các tập giúp thu hẹp phần nào.",
-        "[b]Tập con cân bằng[/b] 50 yêu cầu mỗi lớp, không giống tỷ lệ của lưu lượng thật; điểm số tuyệt đối không phản "
-        "ánh hiệu năng khi triển khai.",
-        "[b]Nhãn nguồn có nhiễu[/b], nhất là lớp Normal; điểm số đo mức khớp với nhãn của dataset.",
-        "[b]Một họ model[/b] (gpt-oss 20b và 120b) và mỗi phương án chỉ chạy một lần (riêng B chạy hai lần để đo dao "
-        "động).",
-        "[b]Một số phương pháp phải làm khác bài gốc[/b] để so sánh công bằng (giữ 4 ví dụ, dùng bỏ phiếu thay cho xác "
-        "suất), nên kết luận về chúng chỉ nói về cách áp dụng trong đề tài.",
-    ])
+    r.p("Phạm vi dữ liệu còn hẹp. Thực nghiệm chỉ dùng bộ SR-BH 2020 với sáu lớp tấn công cổ điển, thu thập năm 2020, chưa có "
+        "các dạng tấn công mới như Log4Shell, SSTI, SSRF hay tấn công vào API JSON. Nhóm đã khảo sát CSIC 2010, ECML/PKDD "
+        "2007 và một số bộ mới hơn, nhưng chưa có bộ nào đồng thời mới, là lưu lượng thực, có nhãn theo loại tấn công và có "
+        "lớp Normal. Kết quả vì vậy chưa cho phép suy rộng sang các loại tấn công hoặc nguồn lưu lượng khác.")
+    r.p("Quy mô và cách lấy mẫu của tập đánh giá cũng là một giới hạn. Mỗi tập có 200–300 yêu cầu, khoảng tin cậy rộng cỡ "
+        "±0,03, nên chỉ phân biệt được các chênh lệch lớn; việc gộp các tập thu hẹp được phần nào khoảng tin cậy. Các tập "
+        "đánh giá cân bằng 50 yêu cầu mỗi lớp, không giống tỷ lệ của lưu lượng thực, nên điểm số tuyệt đối không phản ánh hiệu "
+        "năng khi triển khai.")
+    r.p("Nhãn nguồn có nhiễu, nhất là ở lớp Normal (mục 4.8). Điểm số trong Chương 4 vì vậy đo mức khớp với nhãn của bộ dữ liệu "
+        "hơn là khả năng phát hiện mọi mã tấn công. Bộ quy tắc dùng để đánh dấu Normal đáng ngờ được viết sau khi xem lỗi của "
+        "B và chưa được chuyên gia bảo mật xác nhận; thí nghiệm bỏ ví dụ Normal sai nhãn khỏi kho cũng chỉ bắt được các "
+        "payload phổ biến.")
+    r.p("Về mô hình và cách chạy, đề tài chỉ dùng một họ mô hình (gpt-oss-20b và gpt-oss-120b) và mỗi phương án chỉ chạy một "
+        "lần; riêng B được chạy hai lần để đo độ dao động. Một số phương pháp đã công bố phải được điều chỉnh khác bài gốc để "
+        "so sánh công bằng (giữ 4 ví dụ, dùng bỏ phiếu thay cho xác suất), nên kết luận về chúng chỉ áp dụng cho cách triển "
+        "khai trong đề tài.")
+    r.p("Cuối cùng, chưa có đánh giá trên lưu lượng thực với tỷ lệ tấn công thấp, nơi mức báo nhầm Normal khoảng 30% có thể tạo "
+        "ra rất nhiều cảnh báo cần xử lý. Chi phí và độ trễ cũng mới được đo ở mức gọi API đơn lẻ.")
 
     r.h2("Hướng phát triển")
-    r.bullets([
-        "[b]Nâng chất lượng nhãn dự đoán[/b]: kết hợp nhiều nguồn (kNN và LLM), hoặc chỉ dùng nhãn dự đoán khi đủ tự tin "
-        "như C-gated, rồi kiểm chứng trên tập lớn hơn (khoảng 1.000–2.000 yêu cầu) để có đủ sức kiểm định.",
-        "[b]Thêm dữ liệu[/b]: một bộ thứ hai (ví dụ CSIC 2010 với nhãn bán tự động có kiểm tra thủ công), và một bộ thử "
-        "payload hiện đại ghép từ lưu lượng hợp lệ thật với payload công khai theo loại.",
-        "[b]Làm sạch nhãn[/b]: rà soát thủ công các yêu cầu Normal đáng ngờ và đánh giá lại trên nhãn đã sửa.",
-        "[b]Đưa vào ứng dụng[/b]: phát triển demo thành dịch vụ phân loại yêu cầu theo thời gian thực, đo độ trễ và chi "
-        "phí trên lưu lượng thật.",
-    ])
+    r.p("Thứ nhất, cần nâng chất lượng nhãn dự đoán, vì kết quả với C-oracle cho thấy đây là điểm nghẽn của cơ chế. Có thể "
+        "kết hợp nhiều nguồn dự đoán (kNN và LLM), hoặc chỉ dùng nhãn dự đoán khi đủ tự tin như C-gated, rồi kiểm chứng "
+        "trên tập lớn hơn (khoảng 1.000–2.000 yêu cầu) để kiểm định có đủ độ nhạy.")
+    r.p("Thứ hai, cần mở rộng dữ liệu: dùng một bộ thứ hai (ví dụ CSIC 2010 với nhãn bán tự động có kiểm tra thủ công) và một "
+        "bộ thử payload hiện đại, ghép từ lưu lượng hợp lệ thực với payload công khai theo từng loại.")
+    r.p("Thứ ba, cần làm sạch nhãn: rà soát thủ công các yêu cầu Normal đáng ngờ và đánh giá lại các phương án trên nhãn đã "
+        "sửa, để tách khả năng phát hiện khỏi khả năng tái hiện nhãn của bộ dữ liệu.")
+    r.p("Cuối cùng, trước khi xem xét triển khai, cần phát triển ứng dụng minh họa thành dịch vụ phân loại yêu cầu theo thời "
+        "gian thực, đo độ trễ và chi phí trên lưu lượng thực, đồng thời đánh giá ở các mức báo nhầm thấp hơn.")
 
 
 REFERENCES = [
@@ -103,10 +118,13 @@ REFERENCES = [
 ]
 
 
-def write_references(r):
+def write_references(r, order=None, unused=()):
+    """Danh mục tham khảo đánh số [n] theo thứ tự trích dẫn đầu tiên, như báo cáo mẫu."""
+    from citations import format_reference
     r.h1("TÀI LIỆU THAM KHẢO", numbered=False)
-    for ref in REFERENCES:
-        par = r.p(ref, indent=False)
+    sequence = list(order) + list(unused) if order is not None else range(len(REFERENCES))
+    for n, i in enumerate(sequence, 1):
+        par = r.p(f"[{n}]\t{format_reference(REFERENCES[i])}", indent=False)
         fmt = par.paragraph_format
         from docx.shared import Cm
         fmt.left_indent = Cm(1.0)

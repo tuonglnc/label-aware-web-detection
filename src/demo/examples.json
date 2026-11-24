@@ -1,0 +1,53 @@
+{
+  "_comment": "8 request lấy nguyên văn từ split validation của SR-BH 2020 (src/data/processed/sr_bh_v1/validation.jsonl, cũng nằm trong validation_subset). KHÔNG lấy từ test. Hai ví dụ cuối là các ca B và C (prior kNN) cho kết quả khác nhau trong run validation.",
+  "examples": [
+    {
+      "title": "NORMAL: đọc RSS feed bình thường",
+      "request_id": "aa20da4b05157d693f78b9cd49e05fc79fc0c7cff27789d09378241f393ae521",
+      "label": "NORMAL",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"*/*\",\"Accept-Encoding\":\"gzip, deflate\",\"Accept-Language\":\"\",\"Connection\":\"keep-alive\",\"Content-Type\":\"\",\"Cookie\":\"\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"\",\"User-Agent\":\"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.91 Safari/537.36\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/blog/index.php/comments/feed/\"}"
+    },
+    {
+      "title": "SQL_INJECTION: UNION ALL SELECT trong URI",
+      "request_id": "80898456d366f7b939d26311baf601b6cfbda9a25702b92371b48df07bd8a2b2",
+      "label": "SQL_INJECTION",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"\",\"Accept-Encoding\":\"\",\"Accept-Language\":\"\",\"Connection\":\"Close\",\"Content-Type\":\"\",\"Cookie\":\"\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"http://test-site.com/blog/index.php/page/2/\",\"User-Agent\":\"Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/blog%29%29+UNION+ALL+SELECT+NULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%23/index.php/2020/03/22\"}"
+    },
+    {
+      "title": "PATH_TRAVERSAL: chuỗi ..\\ mã hóa URL",
+      "request_id": "89b6172e92c7a026d6f8498e39f957ff7aeba7de45e4e06c8d9f7fc187c230bd",
+      "label": "PATH_TRAVERSAL",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"\",\"Accept-Encoding\":\"\",\"Accept-Language\":\"\",\"Connection\":\"\",\"Content-Type\":\"\",\"Cookie\":\"\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"\",\"User-Agent\":\"Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C..%5C/index.php/search/solution\"}"
+    },
+    {
+      "title": "CODE_INJECTION: print(chr(...)) kiểu PHP",
+      "request_id": "6e79bb7c020cb9b6ef8050048197ea82a8587b1d5a921da9fe27471e22adcdc1",
+      "label": "CODE_INJECTION",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"\",\"Accept-Encoding\":\"\",\"Accept-Language\":\"\",\"Connection\":\"\",\"Content-Type\":\"\",\"Cookie\":\"\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"\",\"User-Agent\":\"Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/%3Bprint%28chr%28122%29.chr%2897%29.chr%28112%29.chr%2895%29.chr%28116%29.chr%28111%29.chr%28107%29.chr%28101%29.chr%28110%29%29%3B/index.php/tag/nobis-perspiciatis-optio\"}"
+    },
+    {
+      "title": "HTTP_RESPONSE_SPLITTING: chèn CRLF + Set-cookie",
+      "request_id": "586fc73eb221547c60d10026accd9ee66642c53e533958cb9ba7959bac5dba03",
+      "label": "HTTP_RESPONSE_SPLITTING",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"\",\"Accept-Encoding\":\"\",\"Accept-Language\":\"\",\"Connection\":\"\",\"Content-Type\":\"\",\"Cookie\":\"\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"http://test-site.com/\",\"User-Agent\":\"Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/any%0D%0ASet-cookie%3A+Tamper%3Dc88743ec-f944-4ab1-95c1-23a28c90805e%0D%0A\"}"
+    },
+    {
+      "title": "OS_COMMAND_INJECTION: &sleep 15& sau tham số",
+      "request_id": "de23f9d76ddc14204f596efedd9dce12157209d6d74398b5b3f296ebf42e90ae",
+      "label": "OS_COMMAND_INJECTION",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"\",\"Accept-Encoding\":\"\",\"Accept-Language\":\"\",\"Connection\":\"\",\"Content-Type\":\"\",\"Cookie\":\"comment_author_url_1aefbe2f76edd740f8e362f39da3353b=http%3A%2F%2Fwww.example.com; comment_author_email_1aefbe2f76edd740f8e362f39da3353b=foo-bar%40example.com; comment_author_1aefbe2f76edd740f8e362f39da3353b=statement; wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_1aefbe2f76edd740f8e362f39da3353b=rafael%7C1595212059%7CGWgAWVHapC2bzAMywZ77DCFlV58k9y04hBeDt9B2wpg%7C59006f949e57d0c4fd439f571f0a913f28f8cabfb99520b35997b552dc918655\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"\",\"User-Agent\":\"Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/blog/wp-includes/js/underscore.min.js?ver=1.8.3%26sleep+15%26\"}"
+    },
+    {
+      "title": "Ca prior đúng: C chọn 4 ví dụ NORMAL, B là ca giáp ranh",
+      "request_id": "77162b1b791f6822b121fe06d3abf8d22eec20f306a01ab0f6ba8deeca061b07",
+      "label": "NORMAL",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"\",\"Accept-Encoding\":\"\",\"Accept-Language\":\"\",\"Connection\":\"\",\"Content-Type\":\"\",\"Cookie\":\"wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_1aefbe2f76edd740f8e362f39da3353b=rafael%7C1595188528%7ClHi7YVFypQtuJVAqG6B4FOpzZ24r5fr11PP0w4JBwKX%7C05eff642e7638456de705bca89de40119bc343cb09e3b0c57372fe30717543b0\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"http://test-site.com/blog/index.php/commodi-ut-sint-sequi-excepturi/\",\"User-Agent\":\"Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/blog/wp-content/uploads/%5C6e5c5163-fca7-365f-898b-acced7ed5063.png/04/6e5c5163-fca7-365f-898b-acced7ed5063.png\"}"
+    },
+    {
+      "title": "Ca B đúng, C sai: prior kNN = NORMAL nhưng thật là SQL_INJECTION",
+      "request_id": "fc61c1077ee68bfca07409c4f754dd2ce780ec4a1ec4de0082d54d507c567fe8",
+      "label": "SQL_INJECTION",
+      "request_text": "{\"body\":\"\",\"headers\":{\"Accept\":\"\",\"Accept-Encoding\":\"\",\"Accept-Language\":\"\",\"Connection\":\"\",\"Content-Type\":\"\",\"Cookie\":\"\",\"DNT\":\"\",\"Host\":\"test-site.com\",\"Origin\":\"\",\"Referer\":\"http://test-site.com/blog/index.php/2020/04/04/\",\"User-Agent\":\"Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0\"},\"method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"uri\":\"/%27%22/index.php/2020/04/04/page\"}"
+    }
+  ]
+}

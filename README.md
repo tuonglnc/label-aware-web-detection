@@ -130,7 +130,6 @@ streamlit run src/demo/app.py
 ```
 
 Mở trình duyệt ở `http://localhost:8501`. Lần đầu mất khoảng 1 phút để nạp model embedding.
-
 - Mặc định là **Mock**: không gọi API, không cần key. Nhãn "LLM" khi đó chỉ là nhãn đa số của 4 ví dụ, không phải kết quả của LLM.
 - Chọn **Groq thật** ở thanh bên: key đọc từ `.env` (giống `--env-file`), mỗi lần gọi đều qua chốt ngân sách `budget.json` và ghi vào cùng sổ chi phí. Câu trả lời được nhớ lại, nên bấm lại cùng request không tốn thêm. Mỗi request tốn khoảng 2–3 lần gọi (B, C, A0), dưới 0,001 USD.
 - Nếu thiếu `src/artifacts/retrieval/minilm/pool_vectors.npy` (không có trên Git), app tự mã hóa lại pool lần đầu (vài phút) mà không đụng đến file neighbors. App cần dữ liệu đã xử lý trong `src/data/processed/sr_bh_v1/` (bước 1 ở trên).

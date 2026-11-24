@@ -1,0 +1,8 @@
+# Cấu hình cho `streamlit run src/demo/app.py` (chạy từ thư mục gốc repo).
+# Chỉ mở demo trên máy này: ở chế độ Groq thật, ai truy cập được trang cũng tiêu được ngân sách của key.
+[server]
+address = "localhost"
+port = 8501
+
+[browser]
+gatherUsageStats = false
