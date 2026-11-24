@@ -1,0 +1,4 @@
+# Thư viện thêm cho demo Streamlit (src/demo/app.py). Cài: pip install -r requirements-demo.txt
+# Code thí nghiệm và bộ test KHÔNG cần file này.
+-r requirements.txt
+streamlit==1.50.0
