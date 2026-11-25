@@ -2,7 +2,7 @@
 
 
 def write_chapter5(r):
-    r.h1("KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN")
+    r.h1("KẾT LUẬN")
     r.box("Đề tài không tìm ra một cách chọn ví dụ “thần kỳ”, nhưng trả lời được rõ ràng: ví dụ phải giống yêu cầu; "
           "dùng thêm nhãn chỉ có lợi khi nhãn dự đoán đủ chính xác; và mọi kết luận đều được kiểm chứng bằng quy trình "
           "khóa cấu hình trước, tập test độc lập và kiểm định thống kê.")
@@ -13,6 +13,7 @@ def write_chapter5(r):
         "ví dụ giống yêu cầu nhất (B), chọn ví dụ đủ các loại (BAL), và chọn ví dụ giống nhất nhưng ưu tiên những ví dụ "
         "cùng loại với một dự đoán sơ bộ (C). Cả ba chạy trên cùng bộ dữ liệu SR-BH 2020 và cùng một LLM. Kết luận dưới "
         "đây chỉ đúng trong phạm vi bộ dữ liệu và cấu hình này.")
+    r.h3("Trả lời các câu hỏi nghiên cứu")
     r.p("Câu hỏi nghiên cứu thứ nhất: ví dụ giống nhất có hay thuộc loại khác không? Có. Khoảng 1 trong 4 yêu cầu (23–24%) "
         "có ví dụ giống nhất mang nhãn khác. Hiện tượng này hay gặp nhất ở Normal (38–45%) và SQL Injection (36–40%), vì hai "
         "loại này nhiều khi chỉ khác nhau vài ký tự trong URL (mục 4.3).")
@@ -32,7 +33,7 @@ def write_chapter5(r):
         "dự đoán sơ bộ sai có thể vốn đã khó đoán, nên chưa thể khẳng định dự đoán sai là nguyên nhân gây ra lỗi (mục 4.4, "
         "4.7).")
 
-    r.h2("Đóng góp của đề tài")
+    r.h3("Đóng góp của đề tài")
     r.p("Các ý tưởng nền gồm truy xuất ví dụ theo độ tương đồng, dùng nhãn dự đoán để chọn ví dụ và hiện tượng LLM không tất "
         "định đã có trong các nghiên cứu về văn bản. Theo khảo sát của nhóm, chưa có công trình nào so sánh có đối chứng các "
         "cách chọn ví dụ này cho LLM phân loại yêu cầu HTTP. Đóng góp của đề tài là kiểm chứng chúng trong miền mới này.")
@@ -52,7 +53,7 @@ def write_chapter5(r):
         "đồng. Các kết quả âm tính có kiểm định vẫn có giá trị vì chỉ ra những hướng chưa mang lại cải thiện đáng tin trong "
         "phạm vi đã khảo sát.")
 
-    r.h2("Hạn chế")
+    r.h3("Hạn chế")
     r.p("Phạm vi dữ liệu còn hẹp. Thực nghiệm chỉ dùng bộ SR-BH 2020 với sáu lớp tấn công cổ điển, thu thập năm 2020, chưa có "
         "các dạng tấn công mới như Log4Shell, SSTI, SSRF hay tấn công vào API JSON. Nhóm đã khảo sát CSIC 2010, ECML/PKDD "
         "2007 và một số bộ mới hơn, nhưng chưa có bộ nào đồng thời mới, là lưu lượng thực, có nhãn theo loại tấn công và có "
@@ -118,16 +119,15 @@ REFERENCES = [
 ]
 
 
-def write_references(r, order=None, unused=()):
-    """Danh mục tham khảo đánh số [n] theo thứ tự trích dẫn đầu tiên, như báo cáo mẫu."""
-    from citations import format_reference
+def write_references(r):
+    """Danh mục tham khảo theo mẫu Khoa CNTT: APA, xếp theo bảng chữ cái, chia nhóm theo ngôn ngữ."""
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Cm
     r.h1("TÀI LIỆU THAM KHẢO", numbered=False)
-    sequence = list(order) + list(unused) if order is not None else range(len(REFERENCES))
-    for n, i in enumerate(sequence, 1):
-        par = r.p(f"[{n}]\t{format_reference(REFERENCES[i])}", indent=False)
+    r.p("Tiếng Anh", indent=False, bold=True)
+    for ref in sorted(REFERENCES, key=lambda x: x.lower()):
+        par = r.p(ref, indent=False)
         fmt = par.paragraph_format
-        from docx.shared import Cm
         fmt.left_indent = Cm(1.0)
         fmt.first_line_indent = Cm(-1.0)
-        from docx.enum.text import WD_ALIGN_PARAGRAPH
         par.alignment = WD_ALIGN_PARAGRAPH.LEFT

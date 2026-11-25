@@ -41,7 +41,7 @@ class FinalReport(Report):
         self._field(par, " STYLEREF 1 \\s ", str(self.chapter))
         par.add_run(".")
         self._field(par, f" SEQ {kind} \\* ARABIC \\s 1 ", str(self.count[kind]))
-        par.add_run(". " + text)
+        par.add_run(": " + text)
         return par
 
     def box(self, text, title="Nói ngắn gọn"):
@@ -243,14 +243,11 @@ from chapter5 import write_chapter5, write_references  # noqa: E402
 write_chapter4(rep, FIG, ART)
 write_chapter5(rep)
 
-from chapter5 import REFERENCES  # noqa: E402
-from citations import convert_citations  # noqa: E402
+from template_fixes import fix_captions, use_et_al  # noqa: E402
 
-order, unused, leftover = convert_citations(rep.doc, REFERENCES)
-print("references cited:", len(order), "| not cited:", [REFERENCES[i][:40] for i in unused])
-if leftover:
-    print("WARNING author-year left over:", leftover)
-write_references(rep, order, unused)
+print("et al. replacements:", use_et_al(rep.doc))
+print("captions fixed / sources split:", fix_captions(rep.doc))
+write_references(rep)
 
 missing = rep.resolve_refs()
 if missing:
