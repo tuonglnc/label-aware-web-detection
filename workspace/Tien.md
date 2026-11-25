@@ -210,7 +210,7 @@ Quan sát: Normal và OS Command Injection là hai lớp thấp nhất ở mọi
 - [x] Bỏ chữ "trần" cho C-oracle.
 - [x] Thêm thí nghiệm B-cleanpool vào mục 4.8 (Bảng 4.12).
 - [x] Viết lại giọng văn Chương 4–5 theo báo cáo mẫu `Baocao.docx`; bỏ các ô "Nói ngắn gọn", "Điều rút ra" khỏi bản chính (bản có ô nằm ở `reports/final/TEMP/`).
-- [x] Danh mục tài liệu tham khảo đổi sang kiểu `[n]` theo thứ tự trích dẫn đầu tiên, như báo cáo mẫu (script `reports/word/citations.py`, hiện 30 mục).
+- [x] Báo cáo Word đã chỉnh theo mẫu chính thức của Khoa (`TemplateCacMonDuAnVaThucTap_KhoaCNTT.dotx`): tài liệu tham khảo kiểu APA xếp theo bảng chữ cái, trích dẫn "(Tác giả et al., năm)", Chương 5 chỉ có 5.1 Kết luận và 5.2 Hướng phát triển, chú thích dạng "Hình 2.1: ..." kèm dòng "(Nguồn: ...)" riêng (script `reports/word/template_fixes.py`).
 - [ ] Đối chiếu RQ ở Chương 1, 4 và 5: Chương 4–5 đã dùng đúng ba RQ ở mục 1.2.4 của `Katun.md`. Còn lại là đối chiếu lần cuối khi Chương 1–2 mới của Katun vào Word.
 - [ ] Rà thủ công 36 yêu cầu Normal đáng ngờ (Tiến): xem `reports/experiments/ra_soat/huong_dan_ra_soat_36.md`. Xong thì sửa câu "chưa được chuyên gia bảo mật xác nhận" ở mục 4.8 và 5.2.
 - [ ] Chờ Katun xử lý các điểm bên dưới.
@@ -230,7 +230,7 @@ Bối cảnh: bản Word cuối kỳ hiện vẫn dùng Chương 1–2 cũ của
 
 ### B. Cần thống nhất giữa Chương 1–2 và Chương 4–5
 
-6. **Tên chương.** `Katun.md` mục 1.4 ghi Chương 1 "Giới thiệu Tổng quan đề tài", Chương 3 "Thiết kế hệ thống và Phương pháp nghiên cứu", Chương 4 "Thực nghiệm và Đánh giá". Bản Word và báo cáo mẫu dùng "Mở đầu và tổng quan đề tài" (mẫu: "Tổng quan đề tài"), "Mô hình đề xuất", "Thực nghiệm". Đề xuất giữ tên trong Word (khớp báo cáo mẫu) và sửa lại mục 1.4 của `Katun.md`.
+6. **Tên chương và cấu trúc theo mẫu Khoa.** Mẫu của Khoa quy định: Chương 1 "Mở đầu và tổng quan đề tài" (1.1 Lý do, 1.2 Mục tiêu), Chương 2 "Cơ sở lý thuyết", Chương 3 "Mô hình đề xuất", Chương 4 "Thực nghiệm" (4.1 Dữ liệu thực nghiệm, 4.2 Cài đặt thực nghiệm), Chương 5 "Kết luận" (5.1 Kết luận, 5.2 Hướng phát triển). `Katun.md` mục 1.4 ghi Chương 1 "Giới thiệu Tổng quan đề tài", Chương 3 "Thiết kế hệ thống và Phương pháp nghiên cứu", Chương 4 "Thực nghiệm và Đánh giá". Đề xuất theo đúng tên trong mẫu Khoa và sửa lại mục 1.4. Chương 1 mới của Katun có 4 mục (1.1 đến 1.4) nhiều hơn mẫu; nên gộp 1.3, 1.4 thành tiểu mục của 1.2 hoặc hỏi thầy có cho phép giữ không.
 7. **Thuật ngữ.** `Katun.md` dùng nhiều từ tiếng Anh, Chương 4–5 dùng tiếng Việt:
 
    | `Katun.md` | Chương 4–5 |
@@ -241,5 +241,5 @@ Bối cảnh: bản Word cuối kỳ hiện vẫn dùng Chương 1–2 cũ của
    | validation, test | giữ nguyên "validation", "test" như bản cũ |
 
    Đề xuất: ở lần đầu ghi "ví dụ minh họa (demonstration)", "nhãn dự đoán sơ bộ (prior)", sau đó dùng tiếng Việt cả báo cáo, như báo cáo mẫu. Cần hai người đồng ý trước khi sửa hàng loạt.
-8. **Tài liệu tham khảo.** Bản Word giờ đánh số `[n]` theo thứ tự trích dẫn đầu tiên trong cả báo cáo (30 mục), nên số `[n]` trong `Katun.md` sẽ đổi khi vào Word. Chín tài liệu trong `Katun.md` chưa có trong danh mục Word: [8] Jiang và cộng sự, [9] Luo và cộng sự (Love Me, Love My Label), [10] Li và cộng sự (PhishDebate), [11] Luo và cộng sự (MalRAG), [12] Guo và cộng sự, [13] Fumero và cộng sự (CyberSleuth), [14] Osama và cộng sự (WAMM), [16] Lewis và cộng sự (RAG), [17] Lu và cộng sự (Fantastically Ordered Prompts). Katun cần gửi đủ thông tin (tác giả, năm, tên, nơi đăng, DOI hoặc URL) để Tiến thêm vào `reports/word/chapter5.py`. Ba mục "Nhóm đề tài" ([15], [19], [20]) cần quyết định có đưa vào danh mục chính thức hay chỉ nhắc trong bài.
+8. **Tài liệu tham khảo.** Mẫu Khoa dùng kiểu APA: trích dẫn trong bài "(Tác giả et al., năm)", danh mục xếp theo bảng chữ cái, chia nhóm Tiếng Việt và Tiếng Anh. `Katun.md` đang dùng số `[n]` kiểu IEEE, nên khi đưa vào Word phải đổi sang "(Tác giả et al., năm)". Chín tài liệu trong `Katun.md` chưa có trong danh mục Word: [8] Jiang và cộng sự, [9] Luo và cộng sự (Love Me, Love My Label), [10] Li và cộng sự (PhishDebate), [11] Luo và cộng sự (MalRAG), [12] Guo và cộng sự, [13] Fumero và cộng sự (CyberSleuth), [14] Osama và cộng sự (WAMM), [16] Lewis và cộng sự (RAG), [17] Lu và cộng sự (Fantastically Ordered Prompts). Katun cần gửi đủ thông tin (tác giả, năm, tên, nơi đăng, DOI hoặc URL) để Tiến thêm vào `reports/word/chapter5.py`. Ba mục "Nhóm đề tài" ([15], [19], [20]) cần quyết định có đưa vào danh mục chính thức hay chỉ nhắc trong bài.
 9. **Giọng văn.** Báo cáo mẫu viết đoạn liền, không in đậm giữa đoạn, hạn chế gạch đầu dòng; Chương 4–5 đã chỉnh theo. `Katun.md` đang dùng nhiều chữ in đậm đầu đoạn và danh sách đánh số, nên khi đưa vào Word cần chuyển thành đoạn văn.
